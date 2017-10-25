@@ -3,8 +3,7 @@ import Router from 'vue-router';
 const _import = require('./_import_' + process.env.NODE_ENV);
 import Full from '@/containers/Full';
 Vue.use(Router);
-export const constantRouterMap = [
-  {
+export const constantRouterMap = [{
     path: '/login',
     component: _import('login/index'),
     hidden: true
@@ -19,8 +18,7 @@ export const constantRouterMap = [
       }
       // Full,
     },
-    children: [
-      {
+    children: [{
         path: '404',
         name: 'Page404',
         component: _import('errorPages/Page404')
@@ -34,14 +32,12 @@ export const constantRouterMap = [
   }
 ];
 
-export const asyncRouterMap = [
-  {
+export const asyncRouterMap = [{
     path: '/',
     redirect: '/dashboard',
     name: '首页',
     component: Full,
-    children: [
-      {
+    children: [{
         path: '/dashboard',
         name: '介绍',
         icon: 'speedometer',
@@ -56,8 +52,7 @@ export const asyncRouterMap = [
             return c('router-view');
           }
         },
-        children: [
-          {
+        children: [{
             path: 'customer/client',
             name: '用户',
             icon: 'person',
@@ -81,21 +76,19 @@ export const asyncRouterMap = [
             return c('router-view');
           }
         },
-        children: [
-          {
-            path: 'card/charge',
-            name: '卡片管理',
-            icon: '',
-            hidden: false,
-            component: r => require(['views/card/card'], r)
-          }, {
-            path: 'card/only',
-            name: '唯鲜卡管理',
-            icon: '',
-            hidden: false,
-            component: r => require(['views/card/onlymilk'], r)
-          }
-        ]
+        children: [{
+          path: 'card/charge',
+          name: '卡片管理',
+          icon: '',
+          hidden: false,
+          component: r => require(['views/card/card'], r)
+        }, {
+          path: 'card/only',
+          name: '唯鲜卡管理',
+          icon: '',
+          hidden: false,
+          component: r => require(['views/card/onlymilk'], r)
+        }]
       },
       {
         path: '',
@@ -106,8 +99,7 @@ export const asyncRouterMap = [
             return c('router-view');
           }
         },
-        children: [
-          {
+        children: [{
             path: 'generalize/promoters',
             name: '推广员',
             icon: 'person',
@@ -131,8 +123,7 @@ export const asyncRouterMap = [
             return c('router-view');
           }
         },
-        children: [
-          {
+        children: [{
             path: 'system/role',
             name: '角色管理',
             icon: 'person',
@@ -161,17 +152,15 @@ export const asyncRouterMap = [
             return c('router-view');
           }
         },
-        children: [
-          {
-            path: 'log/audit',
-            name: '日志',
-            icon: 'person',
-            hidden: false,
-            component: r => require(['views/operation/audit'], r)
-          }
-        ]
+        children: [{
+          path: 'log/audit',
+          name: '日志',
+          icon: 'person',
+          hidden: false,
+          component: r => require(['views/operation/audit'], r)
+        }]
       }
-    
+
     ]
   },
   {
