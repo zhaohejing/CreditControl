@@ -41,7 +41,7 @@ export const asyncRouterMap = [{
         path: '/dashboard',
         name: '介绍',
         icon: 'speedometer',
-        component: r => require(['views/dashboard'], r)
+        component: r => require(['views/Dashboard'], r)
       },
       {
         path: '',
@@ -71,7 +71,7 @@ export const asyncRouterMap = [{
         path: '/customers',
         name: '客户管理',
         icon: 'card',
-        component: r => require(['views/card/card'], r)
+        component: r => require(['views/customer/index'], r)
       },
       {
         path: '/series',
@@ -117,13 +117,13 @@ export const asyncRouterMap = [{
             path: '/roles',
             name: '角色管理',
             icon: 'person',
-            component: r => require(['views/manager/role'], r)
+            component: r => require(['views/manager/Role'], r)
           },
           {
             path: '/users',
             name: '用户管理',
             icon: 'person-add',
-            component: r => require(['views/manager/account'], r)
+            component: r => require(['views/manager/Account'], r)
           }
         ]
       }

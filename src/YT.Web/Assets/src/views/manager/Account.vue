@@ -1,7 +1,7 @@
 <template>
     <div class="animated fadeIn">
         <Row>
-            <milk-table ref="list"  :layout="[17,4,3]" :columns="cols" :search-api="searchApi" :params="params">
+            <milk-table ref="list" :layout="[17,4,3]" :columns="cols" :search-api="searchApi" :params="params">
                 <template slot="search">
                     <Form ref="params" :model="params" inline :label-width="60">
                         <FormItem label="用户姓名">
@@ -130,7 +130,7 @@ export default {
         modifyAccount
     },
     created() {
-        var self=this;
+        var self = this;
         self.$root.eventHub.$on('account', () => {
             self.cancel();
         });
@@ -140,7 +140,7 @@ export default {
         this.$root.eventHub.$off('account');
     },
     methods: {
-        //删除
+        // 删除
         delete(model) {
             var table = this.$refs.list;
             this.$Modal.confirm({
