@@ -135,9 +135,6 @@
     <Compile Include="Managers\Users\UserManager.cs" />
     <Compile Include="Managers\Users\UserStore.cs" />
     <Compile Include="Models\BaseEnum.cs" />
-    <Compile Include="Models\Card.cs" />
-    <Compile Include="Models\ChargeType.cs" />
-    <Compile Include="Models\Customer.cs" />
     <Compile Include="MultiTenancy\TenantManager.cs" />
     <Compile Include="Organizations\Organization.cs" />
     <Compile Include="YtConsts.cs" />

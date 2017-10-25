@@ -40,50 +40,7 @@ namespace YT.EntityFramework
 
         public new virtual IDbSet<Organization> OrganizationUnits { get; set; }
 
-        /// <summary>
-        /// 卡片
-        /// </summary>
-        public virtual IDbSet<Card> Cards { get; set; }
-        /// <summary>
-        /// 客户
-        /// </summary>
-        public virtual IDbSet<Customer> Customers { get; set; }
-        /// <summary>
-        /// 推广员 
-        /// </summary>
-        public virtual IDbSet<Promoter> Promoters { get; set; }
-        /// <summary>
-        /// 奶鲜卡
-        /// </summary>
-        public  virtual  IDbSet<SpecialCard> SpecialCards { get; set; }
-        /// <summary>
-        /// 区域
-        /// </summary>
-        public  virtual  IDbSet<Area> Areas { get; set; }
-        /// <summary>
-        /// 订单
-        /// </summary>
-        public virtual IDbSet<Order> Order { get; set; }
-        /// <summary>
-        /// 订单明细
-        /// </summary>
-        public  virtual  IDbSet<OrderItem> OrderItem { get; set; }
-        /// <summary>
-        /// 充值记录
-        /// </summary>
-        public  virtual  IDbSet<ChargeRecord> ChargeRecord { get; set; }
-        /// <summary>
-        /// 群发记录
-        /// </summary>
-        public  virtual  IDbSet<WeChatRecord> WeChatRecord { get; set; }
-        /// <summary>
-        /// 吸管记录
-        /// </summary>
-        public  virtual  IDbSet<Straw> Straw { get; set; }
-        /// <summary>
-        /// 手机验证码
-        /// </summary>
-        public  virtual  IDbSet<VilidateCode> VilidateCode { get; set; }
+        
         public MilkDbContext()
             : base("Default")
         {

@@ -170,67 +170,8 @@ export const asyncRouterMap = [
             component: r => require(['views/operation/audit'], r)
           }
         ]
-      },
-      {
-        path: '',
-        name: '报表管理',
-        icon: 'person-stalker',
-        component: {
-          render(c) {
-            return c('router-view');
-          }
-        },
-        children: [
-          {
-            path: 'statics/a',
-            name: '销售明细表',
-            icon: 'person',
-            component: r => require(['views/statics/a'], r)
-          },
-          {
-            path: 'statics/b',
-            name: '销售汇总',
-            icon: 'person',
-            component: r => require(['views/statics/b'], r)
-          },
-          {
-            path: 'statics/c',
-            name: '顾客取货报表',
-            icon: 'person',
-            component: r => require(['views/statics/c'], r)
-          },
-          {
-            path: 'statics/d',
-            name: '顾客消费',
-            icon: 'person',
-            component: r => require(['views/statics/d'], r)
-          },
-          {
-            path: 'statics/e',
-            name: '商品销售数量',
-            icon: 'person',
-            component: r => require(['views/statics/e'], r)
-          },
-          {
-            path: 'statics/f',
-            name: '充值记录',
-            icon: 'person',
-            component: r => require(['views/statics/f'], r)
-          },
-          {
-            path: 'statics/g',
-            name: '订单管理',
-            icon: 'person',
-            component: r => require(['views/statics/g'], r)
-          },
-          {
-            path: 'statics/h',
-            name: '待补货记录',
-            icon: 'person',
-            component: r => require(['views/statics/h'], r)
-          }
-        ]
       }
+    
     ]
   },
   {
