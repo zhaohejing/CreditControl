@@ -135,6 +135,9 @@
     <Compile Include="Managers\Users\UserManager.cs" />
     <Compile Include="Managers\Users\UserStore.cs" />
     <Compile Include="Models\BaseEnum.cs" />
+    <Compile Include="Models\ChargeRecord.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="MultiTenancy\TenantManager.cs" />
     <Compile Include="Organizations\Organization.cs" />
     <Compile Include="YtConsts.cs" />
