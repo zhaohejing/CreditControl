@@ -107,7 +107,6 @@ namespace YT.Models
         [ForeignKey("OrderId")]
         public virtual ICollection<OrderItem> OrderItems { get; set; }
 
-        public int? FormId { get; set; }
     }
     /// <summary>
     /// 订单项
@@ -117,10 +116,111 @@ namespace YT.Models
     {
         public int OrderId { get; set; }
         public virtual Order Order { get; set; }
+        public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
         public string ProductName { get; set; }
         public int Price { get; set; }
         public int Count { get; set; }
         public int TotalPrice { get; set; }
+        public bool IsDeleted { get; set; }
+        [ForeignKey("OrderItemId")]
+        public virtual ICollection<CustomerForm> CustomerForms { get; set; }
+    }
+
+    public class CustomerForm : CreationAuditedEntity, ISoftDelete
+    {
+        public int OrderItemId { get; set; }
+        public virtual OrderItem OrderItem { get; set; }
+        /// <summary>
+        /// 企业名
+        /// </summary>
+        public string CompanyName { get; set; }
+        /// <summary>
+        /// 行业
+        /// </summary>
+        public string Industry { get; set; }
+        /// <summary>
+        /// 品牌
+        /// </summary>
+        public string Brands { get; set; }
+        /// <summary>
+        /// 邮箱
+        /// </summary>
+        public string Email { get; set; }
+        /// <summary>
+        /// 法人
+        /// </summary>
+        public string LegalPerson { get; set; }
+        /// <summary>
+        /// 法人手机
+        /// </summary>
+        public string LegalMobile { get; set; }
+        /// <summary>
+        /// 品牌负责人
+        /// </summary>
+        public string BrandsPerson { get; set; }
+        /// <summary>
+        /// 品牌负责人手机
+        /// </summary>
+        public string BrandsMobile { get; set; }
+        /// <summary>
+        /// 地址
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// 邮编
+        /// </summary>
+        public string PostNum { get; set; }
+        /// <summary>
+        /// 近三年描述
+        /// </summary>
+        public string MajorSecret { get; set; }
+        /// <summary>
+        /// 营业执照
+        /// </summary>
+        public Guid? License { get; set; }
+        /// <summary>
+        /// 身份证
+        /// </summary>
+        public Guid? IdentityCard { get; set; }
+        /// <summary>
+        /// 许可正
+        /// </summary>
+        public Guid? PermitCard { get; set; }
+        /// <summary>
+        /// 公司概述
+        /// </summary>
+        public string CompanyOverview { get; set; }
+        /// <summary>
+        /// 公司发展历程
+        /// </summary>
+        public string CompanyHistory { get; set; }
+        /// <summary>
+        /// 领导人履历
+        /// </summary>
+        public string LeadershipResume { get; set; }
+
+        /// <summary>
+        /// 公司产品
+        /// </summary>
+        public string CompanyProduct { get; set; }
+        /// <summary>
+        /// 相关专利
+        /// </summary>
+        public string RelevantPatent { get; set; }
+        /// <summary>
+        /// 公司个人荣誉
+        /// </summary>
+        public string Companyhonor { get; set; }
+        /// <summary>
+        /// 公益事业
+        /// </summary>
+        public string PublicWelfareUndertakings { get; set; }
+        /// <summary>
+        /// 其他说名
+        /// </summary>
+        public string Other { get; set; }
+
         public bool IsDeleted { get; set; }
     }
 }

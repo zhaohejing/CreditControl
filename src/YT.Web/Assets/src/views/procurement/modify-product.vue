@@ -1,76 +1,100 @@
 <template>
-    <Tabs value="user">
-        <TabPane label="用户信息" name="user">
+    <div>
+        <Form ref="product" :model="current.product" :rules="ruleValidate" inline :label-width="120">
             <Row>
-                <Col :md="22">
-                <Form ref="user" :model="current.user" :rules="ruleValidate" :label-width="120">
-                    <FormItem label="用户名" prop="userName">
-                        <Input v-model="current.user.userName" placeholder="请输入用户名"></Input>
+                <Col :span="16">
+                <Row>
+                    <Col :span="12">
+                    <FormItem label="商品名称">
+                        <Input v-model="current.product.id" placeholder="商品名称"></Input>
                     </FormItem>
-                    <FormItem label="姓名" prop="name">
-                        <Input v-model="current.user.name" placeholder="请输入姓名"></Input>
+                    </Col>
+                    <Col :span="12">
+                    <FormItem label="价格">
+                        <Input v-model="current.product.id" placeholder="价格"></Input>
                     </FormItem>
-                    <FormItem label="手机" prop="phoneNumber">
-                        <Input v-model="current.user.phoneNumber" placeholder="请输入手机"></Input>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col :span="12">
+                    <FormItem label="一级分类">
+                        <Select v-model="current.product.id" placeholder="请选择">
+                            <Option value="beijing">北京市</Option>
+                            <Option value="shanghai">上海市</Option>
+                            <Option value="shenzhen">深圳市</Option>
+                        </Select>
                     </FormItem>
-                    <FormItem label="是否启用">
-                        <i-switch v-model="current.user.isActive">
-                            <span slot="open">启用</span>
-                            <span slot="close">禁用</span>
-                        </i-switch>
+                    </Col>
+                    <Col :span="12">
+                    <FormItem label="二级分类">
+                        <Select v-model="current.product.id" placeholder="请选择">
+                            <Option value="beijing">北京市</Option>
+                            <Option value="shanghai">上海市</Option>
+                            <Option value="shenzhen">深圳市</Option>
+                        </Select>
                     </FormItem>
-                    <FormItem label="是否默认密码">
-                        <i-switch v-model="current.setDefaultPassword">
-                            <span slot="open">是</span>
-                            <span slot="close">否</span>
-                        </i-switch>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <FormItem label="商品简介">
+                        <Input v-model="current.product.id" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="商品简介"></Input>
                     </FormItem>
-                    <FormItem v-if="!current.setDefaultPassword" label="密码">
-                        <Input type="password" v-model="current.user.password" placeholder="请输入密码"></Input>
-                    </FormItem>
-                </Form>
+                </Row>
+
+                </Col>
+                <Col :span="8">
+                <Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+                    <div style="padding: 20px 0">
+                        <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                        <p>点击或将文件拖拽到这里上传</p>
+                    </div>
+                </Upload>
                 </Col>
             </Row>
-        </TabPane>
-        <TabPane label="角色信息" name="role">
             <Row>
-                <Col :offset="2" :md="22">
-                <CheckboxGroup v-model="current.assignedRoleNames">
-                    <Checkbox v-for="role in roles" :label="role.roleName" :key="role.roleName">{{role.roleDisplayName}}</Checkbox>
-                </CheckboxGroup>
-                </Col>
+                <vue-tinymce ref='tinymce' v-model='current.product.userName' :setting='settings'>
+
+                </vue-tinymce>
             </Row>
-        </TabPane>
-    </Tabs>
+        </Form>
+
+    </div>
 </template>
 <script>
-import { modifyUser, getUserForEdit, getRoles } from 'api/manage';
-import { allPermissions } from 'api/menu';
+import { saveProduct, getProductForEdit } from 'api/products';
+import { VueTinymce, TinymceSetting } from 'vue-tinymce';
 export default {
-    nmae:'modifyAccount',
+    nmae: 'modifyProduct',
     props: {
-        user: {
+        productId: {
             type: Number,
             default() {
                 return null
             }
         }
     },
+    components: {
+        VueTinymce, TinymceSetting
+    },
     data() {
         return {
             current: {
-                user: {
-                    id: this.user,
+                product: {
+                    id: this.productId,
                     name: '',
                     userName: '',
                     phoneNumber: '',
                     password: '',
                     isActive: true
-                },
-                assignedRoleNames: [],
-                setDefaultPassword: true
+                }
             },
-            roles: [],
+            settings: Object.assign({}, TinymceSetting, {
+                height: 200,
+                language_url: './static/langs/zh_CN.js',
+                block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;',
+            }),
             ruleValidate: {
                 name: [
                     { required: true, message: '姓名不可为空', trigger: 'blur' }
@@ -88,51 +112,34 @@ export default {
     created() {
         this.init();
     },
-    mounted() {
-
-    },
     methods: {
         async init() {
-            getUserForEdit({ id: this.current.user.id }).then(c => {
+            getProductForEdit({ id: this.current.product.id }).then(c => {
                 if (c.data.success) {
-                    this.current.user = c.data.result.user;
-                    this.roles = c.data.result.roles;
-                    this.genderRoles();
+                    this.current.product = c.data.result;
                 }
             })
         },
-     
+
         commit() {
-            this.$refs.user.validate((valid) => {
+            this.$refs.product.validate(valid => {
                 if (valid) {
-                    modifyUser(this.current).then((response) => {
+                    saveProduct(this.current).then(response => {
                         if (response.data.success) {
-                            this.$root.eventHub.$emit('account');
+                            this.$root.eventHub.$emit('product');
                         } else {
-                            this.$root.eventHub.$emit('account');
+                            this.$root.eventHub.$emit('product');
                         }
                     }).catch(erroe => {
-                         this.$Message.error(erroe.error);
-                        this.$root.eventHub.$emit('account');
+                        this.$Message.error(erroe.error);
+                        this.$root.eventHub.$emit('product');
                     });
-
                 } else {
                     this.$Message.error('表单验证失败!');
-                    this.$root.eventHub.$emit('account');
+                    this.$root.eventHub.$emit('product');
                 }
             })
-        },
-        genderRoles() {
-            this.current.assignedRoleNames = [];
-            if (this.roles) {
-                this.roles.forEach(c => {
-                    if (c.isAssigned) {
-                        this.current.assignedRoleNames.push(c.roleName);
-                    }
-                })
-            }
         }
-
     }
 }
 </script>

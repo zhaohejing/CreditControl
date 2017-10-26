@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,21 @@ namespace YT.Models
     [Table("customer")]
    public class Customer:CreationAuditedEntity,ISoftDelete,IPassivable
     {
+        /// <summary>
+        /// 公司名
+        /// </summary>
         public string CompanyName { get; set; }
+        /// <summary>
+        /// 省
+        /// </summary>
         public string Provence { get; set; }
+        /// <summary>
+        /// 市
+        /// </summary>
         public string City { get; set; }
+        /// <summary>
+        /// 地址
+        /// </summary>
         public string Address { get; set; }
         /// <summary>
         /// 联系人
@@ -27,9 +40,15 @@ namespace YT.Models
         /// 联系电话
         /// </summary>
         public string Mobile { get; set; }
+        /// <summary>
+        /// 邮箱
+        /// </summary>
+        [Required,MaxLength(200)]
 
         public string Email { get; set; }
+        [Required, MaxLength(200)]
         public string Account { get; set; }
+        [Required, MaxLength(200)]
 
         public string Password { get; set; }
         /// <summary>
@@ -48,7 +67,7 @@ namespace YT.Models
         /// <summary>
         /// 余额
         /// </summary>
-        public int Balance { get; set; }
+        public int Balance { get; set; } = 0;
         /// <summary>
         /// 状态
         /// </summary>

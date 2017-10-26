@@ -29,7 +29,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => response,
   error => {
-    debugger;
     if (error.response.status === 401) {
       store.dispatch('FedLogOut');
     }

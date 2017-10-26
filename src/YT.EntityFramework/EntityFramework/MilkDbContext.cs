@@ -40,7 +40,16 @@ namespace YT.EntityFramework
 
         public new virtual IDbSet<Organization> OrganizationUnits { get; set; }
 
-        
+        public virtual IDbSet<Customer> Customers { get; set; }
+        public virtual IDbSet<Product> Products { get; set; }
+        public virtual IDbSet<OrderItem> OrderItems { get; set; }
+        public virtual IDbSet<Order> Orders { get; set; }
+        public virtual IDbSet<ChargeRecord> ChargeRecords { get; set; }
+        public virtual IDbSet<ApplyCharge> ApplyCharges { get; set; }
+        public virtual IDbSet<Category> Categories { get; set; }
+        public virtual IDbSet<CustomerForm> CustomerForms { get; set; }
+
+
         public MilkDbContext()
             : base("Default")
         {

@@ -1,0 +1,50 @@
+import fetch from 'utils/fetch';
+// 获取所有角色信息
+export function getProducts(data) {
+    return fetch({
+        url: '/api/services/app/product/GetPagedProductsAsync',
+        method: 'post',
+         data
+    });
+}
+// 获取角色信息用于编辑
+export function getProductForEdit(data) {
+    return fetch({
+        url: '/api/services/app/product/GetProductForEditAsync',
+        method: 'post',
+        data
+    });
+}
+// 获取角色信息用于编辑
+export function getProduct(data) {
+    return fetch({
+        url: '/api/services/app/product/GetProductByIdAsync',
+        method: 'post',
+        data
+    });
+}
+
+// 保存角色
+export function saveProduct(data) {
+    return fetch({
+        url: '/api/services/app/product/CreateOrUpdateProductAsync',
+        method: 'post',
+        data
+    });
+}
+// 删除角色
+export function deleteProduct(data) {
+    return fetch({
+        url: '/api/services/app/product/DeleteProductAsync',
+        method: 'post',
+        data
+    });
+}
+// 批量删除角色
+export function deleteProducts(data) {
+    return fetch({
+        url: '/api/services/app/product/BatchDeleteProductAsync',
+        method: 'post',
+        data
+    });
+}

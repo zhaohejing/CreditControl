@@ -147,6 +147,15 @@
   <ItemGroup>
     <Compile Include="Configuration\Dto\PermissionSettingsEditDto.cs" />
     <Compile Include="Configuration\Dto\SettingInput.cs" />
+    <Compile Include="Customers\CustomerAppService.cs" />
+    <Compile Include="Customers\Dtos\CreateOrUpdateCustomerInput.cs" />
+    <Compile Include="Customers\Dtos\CustomerEditDto.cs" />
+    <Compile Include="Customers\Dtos\CustomerListDto.cs" />
+    <Compile Include="Customers\Dtos\GetCustomerForEditOutput.cs" />
+    <Compile Include="Customers\Dtos\GetCustomerInput.cs" />
+    <Compile Include="Customers\Exporting\CustomerListExcelExporter.cs" />
+    <Compile Include="Customers\Exporting\ICustomerListExcelExporter.cs" />
+    <Compile Include="Customers\ICustomerAppService.cs" />
     <Compile Include="Dto\DictionaryDto.cs" />
     <Compile Include="Navigations\Dtos\CreateOrUpdateMenuInput.cs" />
     <Compile Include="Navigations\Dtos\GetMenuForEditOutput.cs" />
@@ -157,6 +166,15 @@
     <Compile Include="Navigations\IMenuAppService.cs" />
     <Compile Include="Navigations\MenuAppService.cs" />
     <Compile Include="Navigations\MenuManager.cs" />
+    <Compile Include="Products\Dtos\CreateOrUpdateProductInput.cs" />
+    <Compile Include="Products\Dtos\GetProductForEditOutput.cs" />
+    <Compile Include="Products\Dtos\GetProductInput.cs" />
+    <Compile Include="Products\Dtos\ProductEditDto.cs" />
+    <Compile Include="Products\Dtos\ProductListDto.cs" />
+    <Compile Include="Products\Exporting\IProductListExcelExporter.cs" />
+    <Compile Include="Products\Exporting\ProductListExcelExporter.cs" />
+    <Compile Include="Products\IProductAppService.cs" />
+    <Compile Include="Products\ProductAppService.cs" />
     <Compile Include="YtApplicationModule.cs" />
     <Compile Include="YtAppServiceBase.cs" />
     <Compile Include="AppConsts.cs" />
