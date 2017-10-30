@@ -16,6 +16,15 @@ export function getProductForEdit(data) {
     });
 }
 // 获取角色信息用于编辑
+export function UpdateState(data) {
+    return fetch({
+        url: '/api/services/app/product/UpdateState',
+        method: 'post',
+        data
+    });
+}
+
+// 获取角色信息用于编辑
 export function getProduct(data) {
     return fetch({
         url: '/api/services/app/product/GetProductByIdAsync',

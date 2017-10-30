@@ -145,6 +145,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Categories\CategoryAppService.cs" />
+    <Compile Include="Categories\Dtos\CategoryEditDto.cs" />
+    <Compile Include="Categories\Dtos\CategoryListDto.cs" />
+    <Compile Include="Categories\Dtos\CreateOrUpdateCategoryInput.cs" />
+    <Compile Include="Categories\Dtos\GetCategoryForEditOutput.cs" />
+    <Compile Include="Categories\Dtos\GetCategoryInput.cs" />
+    <Compile Include="Categories\ICategoryAppService.cs" />
     <Compile Include="Configuration\Dto\PermissionSettingsEditDto.cs" />
     <Compile Include="Configuration\Dto\SettingInput.cs" />
     <Compile Include="Customers\CustomerAppService.cs" />

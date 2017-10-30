@@ -36,19 +36,23 @@ namespace YT.Customers
         /// </summary>
         Task CreateOrUpdateCustomerAsync(CreateOrUpdateCustomerInput input);
 
-
-
-
+        /// <summary>
+        /// 用户审核
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task AuditCustomer(AuditInput input);
 
         /// <summary>
-        /// 新增客户信息
+        /// 用户充值
         /// </summary>
-        Task<CustomerEditDto> CreateCustomerAsync(CustomerEditDto input);
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task ChargeCustomer(ChargeInput input);
 
-        /// <summary>
-        /// 更新客户信息
-        /// </summary>
-        Task UpdateCustomerAsync(CustomerEditDto input);
+
+
+
 
         /// <summary>
         /// 删除客户信息
@@ -60,6 +64,12 @@ namespace YT.Customers
         /// </summary>
         Task BatchDeleteCustomerAsync(List<int> input);
 
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task ResetCustomer(ResetInput input);
         #endregion
 
         #region Excel导出功能

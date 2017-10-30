@@ -14,7 +14,7 @@ namespace YT.Models
     /// 客户信息
     /// </summary>
     [Table("customer")]
-   public class Customer:CreationAuditedEntity,ISoftDelete,IPassivable
+   public class Customer:CreationAuditedEntity,ISoftDelete
     {
         /// <summary>
         /// 公司名
@@ -74,6 +74,9 @@ namespace YT.Models
         public bool? State { get; set; }
 
         public bool IsDeleted { get; set; }
-        public bool IsActive { get; set; }
+        /// <summary>
+        /// 审核意见
+        /// </summary>
+        public string AuditOpinion { get; set; }
     }
 }

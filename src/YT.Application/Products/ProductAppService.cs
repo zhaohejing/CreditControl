@@ -128,6 +128,16 @@ namespace YT.Products
             entity = await _productRepository.InsertAsync(entity);
             return entity.MapTo<ProductEditDto>();
         }
+        /// <summary>
+        /// 更新状态
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task UpdateState(EntityDto<int> input)
+        {
+            var model = await _productRepository.FirstOrDefaultAsync(input.Id);
+            model.IsActive = !model.IsActive;
+        }
 
         /// <summary>
         /// 编辑产品

@@ -34,7 +34,7 @@ namespace YT.Models
         /// <summary>
         /// 操作姓名
         /// </summary>
-        public string ActionTime { get; set; }
+        public DateTime ActionTime { get; set; }
     }
     /// <summary>
     /// 充值申请记录

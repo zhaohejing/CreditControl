@@ -1,109 +1,106 @@
 <template>
     <div class='animated fadeIn'>
         <Row>
-            <milk-table ref='list' :layout='[17,4,3]' :columns='cols' :search-api='searchApi' :params='params'>
+            <milk-table ref='list' :layout='[18,3,3]' :columns='cols' :search-api='searchApi' :params='params'>
                 <template slot='search'>
                     <Form ref='params' :model='params' inline :label-width='60'>
-                        <FormItem label='产品名称'>
-                            <Input v-model='params.name' placeholder='请输入产品名称'></Input>
+                        <FormItem label='公司名称'>
+                            <Input v-model='params.companyName' placeholder='请输入公司名称'></Input>
                         </FormItem>
-                        <FormItem label='状态'>
-                             <Select v-model='params.role'>
-                                <Option :value="null" >全部</Option>
-                                <Option value="true" >上架</Option>
-                                <Option value="false" >下架</Option>
-                            </Select>
+                        <FormItem label='联系人'>
+                            <Input v-model='params.contact' placeholder='联系人'></Input>
                         </FormItem>
-                        <FormItem label='一级分类'>
-                            <Select v-model='params.role'>
-                                <Option v-for='c in roles' :value='c.id' :key='c.id'>{{c.displayName}}</Option>
-                            </Select>
-                        </FormItem>
-                          <FormItem label='二级分类'>
-                            <Select v-model='params.role'>
-                                <Option v-for='c in roles' :value='c.id' :key='c.id'>{{c.displayName}}</Option>
-                            </Select>
+                        <FormItem label='所在城市'>
+                            <Input v-model='params.city' placeholder='所在城市'></Input>
                         </FormItem>
                     </Form>
-                </template>
-                <template slot='actions'>
-                    <Button @click='add' type='primary'>添加</Button>
                 </template>
             </milk-table>
         </Row>
         <!-- 添加和编辑窗口 -->
         <Modal :width='800' :transfer='false' v-model='modal.isEdit' :title='modal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
-            <modify-product ref='account' :user='modal.current' v-if='modal.isEdit' />
+             <Form ref="cate" :model="modal.current" :rules="ruleValidate" inline :label-width="120">
+                <FormItem label="分类名称" prop="name">
+                    <Input v-model="modal.current.name" placeholder="分类名称"></Input>
+                </FormItem>
+            </Form>
         </Modal>
 
     </div>
 </template>
 
 <script>
-import { getUsers, getRoles, deleteUser } from 'api/manage';
-import modifyProduct from './modify-client';
+import { getCustomers, deleteCustomer,auditCustomer,chargeCustomer,resetCustomer } from 'api/customer';
 export default {
-    name: 'account',
+    name: 'customer',
     data() {
         return {
             cols: [
                 {
-                    type: 'selection',
-                    align: 'center',
-                    width: '70px'
+                    title: '公司名称',
+                    key: 'companyName'
                 },
                 {
-                    title: '商品名称',
-                    key: 'productName'
-                },
-
-                {
-                    title: '创建时间',
-                    key: 'creationTime',
-                    render: (h, params) => {
-                        return this.$fmtTime(params.row.creationTime);
-                    }
+                    title: '联系人',
+                    key: 'contact'
                 },
                 {
-                    title: '价格',
-                    key: 'price'
+                    title: '所在城市',
+                    key: 'city'
                 },
                 {
-                    title: '一级分类',
-                    key: 'levelOneName'
+                    title: '余额',
+                    key: 'balance'
                 },
                 {
-                    title: '二级分类',
-                    key: 'levelTwoName'
+                    title: '详细地址',
+                    key: 'address'
                 },
                 {
                     title: '状态',
-                    key: 'isActive',
+                    key: 'state',
                     render: (h, params) => {
-                        return params.row.state ? '上架' : '下架';
+                        return params.row.state ? '已审核' : '未审核';
                     }
                 },
                 {
                     title: '操作',
                     key: 'action',
                     align: 'center',
+                    width: '250px',
                     render: (h, params) => {
-                        return h('div', [
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.edit(params.row)
-                                    }
+                        let children = [];
+                        children.push(h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small'
+                            },
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: () => {
+                                    this.detail(params.row)
                                 }
-                            }, '修改'),
-                              h('Button', {
+                            }
+                        }, '详情')) //组件1
+                        children.push(h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small'
+                            },
+                            style: {
+                                marginRight: '5px',
+                                hidden: !params.row.state
+                            },
+                            on: {
+                                click: () => {
+                                    this.delete(params.row)
+                                }
+                            }
+                        }, '删除')) //组件3
+                        if (!params.row.state) {
+                            children.push(h('Button', {
                                 props: {
                                     type: 'primary',
                                     size: 'small'
@@ -114,26 +111,23 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                        this.edit(params.row)
+                                        this.audit(params.row)
                                     }
                                 }
-                            }, '上架'),
-                                h('Button', {
+                            }, '审核')) //组件3
+                        } else {
+                            children.push(h('Button', {
                                 props: {
-                                    type: 'primary',
+                                    type: 'error',
                                     size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px',
-                                    hidden: !params.row.state
                                 },
                                 on: {
                                     click: () => {
-                                        this.edit(params.row)
+                                        this.charge(params.row)
                                     }
                                 }
-                            }, '下架'),
-                            h('Button', {
+                            }, '充值')) //组件2
+                            children.push(h('Button', {
                                 props: {
                                     type: 'error',
                                     size: 'small'
@@ -143,40 +137,39 @@ export default {
                                         this.delete(params.row)
                                     }
                                 }
-                            }, '删除')
-                        ]);
+                            }, '重置密码')) //组件2
+                        }
+
+                        return h('div', children)
                     }
                 }
             ],
-            searchApi: getUsers,
-            params: { name: '', phone: '', role: null },
+            searchApi: getCustomers,
+            params: { companyName: '', contact: '', city: '' },
             modal: {
                 isEdit: false, title: '添加', current: null
-            },
-            roles: []
+            }
         }
     },
     components: {
-        modifyProduct
     },
     created() {
-        this.$root.eventHub.$on('account', () => {
-            self.cancel();
+        this.$root.eventHub.$on('customer', () => {
+            this.cancel();
         });
-        self.initRoles();
     },
     destroyed() {
-        this.$root.eventHub.$off('account');
+        this.$root.eventHub.$off('customer');
     },
     methods: {
         // 删除
         delete(model) {
             const table = this.$refs.list;
             this.$Modal.confirm({
-                title: '删除提示', content: '确定要删除当前用户么?',
+                title: '删除提示', content: '确定要删除当前客户么?',
                 onOk: () => {
                     const parms = { id: model.id }
-                    deleteUser(parms).then(c => {
+                    deleteCustomer(parms).then(c => {
                         if (c.data.success) {
                             table.initData();
                         }
@@ -184,35 +177,25 @@ export default {
                 }
             })
         },
-        add() {
-            this.modal.isEdit = true;
-            this.modal.title = '添加用户';
+        audit(row){
+
         },
-        edit(row) {
-            this.modal.current = row.id;
-            this.modal.isEdit = true;
-            this.modal.title = '编辑用户:' + row.name;
+        charge(row){
+
         },
         save() {
-            this.$refs.account.commit();
+            this.$refs.product.commit();
         },
         cancel() {
             this.modal.isEdit = false;
             this.modal.title = '添加用户';
             this.modal.current = null;
             this.$refs.list.initData();
-        },
-        initRoles() {
-            getRoles().then(c => {
-                if (c.data.success) {
-                    this.roles = c.data.result.items;
-                }
-            })
         }
+
     }
 }
 </script>
-
 
 <style type='text/css' scoped>
 

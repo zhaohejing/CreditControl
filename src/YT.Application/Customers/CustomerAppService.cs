@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -9,6 +10,7 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using YT.Customers.Dtos;
 using YT.Customers.Exporting;
 using YT.Dto;
@@ -26,15 +28,18 @@ namespace YT.Customers
     {
         private readonly IRepository<Customer, int> _customerRepository;
         private readonly ICustomerListExcelExporter _customerListExcelExporter;
+        private readonly IRepository<ChargeRecord> _chargeRecordRepository;
+        private readonly IRepository<ApplyCharge> _applyChargeRepository;
         /// <summary>
         /// 构造方法
         /// </summary>
         public CustomerAppService(IRepository<Customer, int> customerRepository,
-      ICustomerListExcelExporter customerListExcelExporter
-  )
+      ICustomerListExcelExporter customerListExcelExporter, IRepository<ChargeRecord> chargeRecordRepository, IRepository<ApplyCharge> applyChargeRepository)
         {
             _customerRepository = customerRepository;
             _customerListExcelExporter = customerListExcelExporter;
+            _chargeRecordRepository = chargeRecordRepository;
+            _applyChargeRepository = applyChargeRepository;
         }
 
 
@@ -54,9 +59,10 @@ namespace YT.Customers
         {
 
             var query = CustomerRepositoryAsNoTrack;
-            query = query.WhereIf(input.CompanyName.IsNullOrWhiteSpace(), c => c.CompanyName.Contains(input.CompanyName))
-                .WhereIf(input.Contact.IsNullOrWhiteSpace(), c => c.Contact.Contains(input.Contact))
-                .WhereIf(input.Mobile.IsNullOrWhiteSpace(), c => c.Mobile.Contains(input.Mobile));
+            query = query.WhereIf(!input.CompanyName.IsNullOrWhiteSpace(), c => c.CompanyName.Contains(input.CompanyName))
+                .WhereIf(!input.Contact.IsNullOrWhiteSpace(), c => c.Contact.Contains(input.Contact))
+                .WhereIf(!input.City.IsNullOrWhiteSpace(), c => c.City.Contains(input.City))
+                .WhereIf(!input.Mobile.IsNullOrWhiteSpace(), c => c.Mobile.Contains(input.Mobile));
             var customerCount = await query.CountAsync();
 
             var customers = await query
@@ -93,7 +99,50 @@ namespace YT.Customers
             output.Customer = customerEditDto;
             return output;
         }
+        /// <summary>
+        /// 用户审核
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task AuditCustomer(AuditInput input)
+        {
+            var customer = await _customerRepository.FirstOrDefaultAsync(input.Id);
+            if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
+            customer.State = input.State;
+            customer.AuditOpinion = input.Opinion;
+        }
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task ResetCustomer(ResetInput input)
+        {
+            var customer = await _customerRepository.FirstOrDefaultAsync(input.Id);
+            if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
+            customer.Password = input.Password;
+        }
 
+        /// <summary>
+        /// 用户充值
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task ChargeCustomer(ChargeInput input)
+        {
+            var current =await AbpSession.Current();
+            var customer = await _customerRepository.FirstOrDefaultAsync(input.Id);
+            if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
+            customer.Balance = input.Money;
+            await _chargeRecordRepository.InsertAsync(new ChargeRecord()
+            {
+                ActionName = current.Name,
+                ActionTime = DateTime.Now,
+                ChargeMoney = input.Money,
+                CustomerId = customer.Id,
+                CustomerName = customer.CompanyName
+            });
+        }
 
         /// <summary>
         /// 通过指定id获取客户信息ListDto信息
@@ -129,7 +178,7 @@ namespace YT.Customers
         /// <summary>
         /// 新增客户信息
         /// </summary>
-        public virtual async Task<CustomerEditDto> CreateCustomerAsync(CustomerEditDto input)
+        protected virtual async Task<CustomerEditDto> CreateCustomerAsync(CustomerEditDto input)
         {
 
             var entity = input.MapTo<Customer>();
@@ -141,7 +190,7 @@ namespace YT.Customers
         /// <summary>
         /// 编辑客户信息
         /// </summary>
-        public virtual async Task UpdateCustomerAsync(CustomerEditDto input)
+        protected virtual async Task UpdateCustomerAsync(CustomerEditDto input)
         {
             var entity = await _customerRepository.GetAsync(input.Id.Value);
             input.MapTo(entity);

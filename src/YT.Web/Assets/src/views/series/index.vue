@@ -1,179 +1,151 @@
 <template>
     <div class="animated fadeIn">
         <Row>
-            <milk-table ref="list" :layout="[17,4,3]" :columns="cols" :search-api="searchApi" :params="params">
-                <template slot="search">
-                    <Form ref="params" :model="params" inline :label-width="60">
-                        <FormItem label="用户姓名">
-                            <Input v-model="params.name" placeholder="请输入用户姓名"></Input>
-                        </FormItem>
-                        <FormItem label="手机号码">
-                            <Input v-model="params.phone" placeholder="请输入手机号码"></Input>
-                        </FormItem>
-                        <FormItem label="权限角色">
-                            <Select v-model="params.role">
-                                <Option v-for="c in roles" :value="c.id" :key="c.id">{{c.displayName}}</Option>
-                            </Select>
-                        </FormItem>
-                    </Form>
-                </template>
-                <template slot="actions">
-                    <Button @click="add" type="primary">添加</Button>
-                </template>
-            </milk-table>
+            <Col :span="3">一级分类</Col>
+            <Col :span="5">
+            <Select @on-change="pickLevelOne" v-model="levelOne" style="width:200px">
+                <Option v-for="item in LevelOneList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            </Select>
+            </Col>
+            <Col :span="1">
+            <Button v-if="levelOne" @click="deleteCateOne">
+                <Icon type="close" />
+            </Button>
+            </Col>
+            <Col :span="8">
+            <Button @click="addLevelOne">添加一级分类</Button>
+            </Col>
         </Row>
-
+        <Row>
+            <Col :span="3">二级分类</Col>
+            <Col :span="5">
+            <Select v-model="levelTwo" style="width:200px">
+                <Option v-for="item in LevelTwoList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            </Select>
+            </Col>
+            <Col :span="1">
+            <Button v-if="levelTwo" @click="deleteCateTwo">
+                <Icon type="close" />
+            </Button>
+            </Col>
+            <Col :span="8">
+            <Button @click="addLevelTwo">添加二级分类</Button>
+            </Col>
+        </Row>
+        <!-- 添加和编辑窗口 -->
+        <Modal :transfer='false' v-model='modal.isEdit' :title='modal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
+            <Form ref="cate" :model="modal.current" :rules="ruleValidate" inline :label-width="120">
+                <FormItem label="分类名称" prop="name">
+                    <Input v-model="modal.current.name" placeholder="分类名称"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
     </div>
 </template>
 
 <script>
-import { getUsers, getRoles, deleteUser } from 'api/manage';
+import { getPageCates, getCates, deleteCate, deleteCates, getCateForEdit, modifyCate } from 'api/cate';
 export default {
-    name: 'account',
+    name: 'series',
     data() {
         return {
-            cols: [
-                {
-                    type: 'selection',
-                    align: 'center',
-                    width: '70px'
-                },
-                {
-                    title: '账户',
-                    key: 'userName'
-                },
-
-                {
-                    title: '用户姓名',
-                    key: 'name'
-                },
-                {
-                    title: '手机号',
-                    key: 'phoneNumber'
-                },
-                {
-                    title: '角色',
-                    key: 'roles',
-                    render: (h, params) => {
-                        let names = "";
-                        if (params.row.roles) {
-                            params.row.roles.forEach(c => {
-                                names += c.roleName + ',';
-                            })
-                        }
-                        return names;
-                    }
-                },
-                {
-                    title: '状态',
-                    key: 'isActive',
-                    render: (h, params) => {
-                        return params.row.isActive ? '启用' : '禁用';
-                    }
-                },
-                {
-                    title: '创建时间',
-                    key: 'creationTime',
-                    render: (h, params) => {
-                        return this.$fmtTime(params.row.creationTime);
-                    }
-                },
-                {
-                    title: '操作',
-                    key: 'action',
-                    align: 'center',
-                    render: (h, params) => {
-                        return h('div', [
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.edit(params.row)
-                                    }
-                                }
-                            }, '编辑'),
-                            h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.delete(params.row)
-                                    }
-                                }
-                            }, '删除')
-                        ]);
-                    }
-                }
-            ],
-            searchApi: getUsers,
-            params: { name: '', phone: '', role: null },
+            levelOne: null,
+            levelTwo: null,
+            LevelOneList: [],
+            LevelTwoList: [],
             modal: {
-                isEdit: false, title: '添加', current: null
+                isEdit: false, title: '添加一级分类', current: { id: null, name: '', parentId: null }
             },
-            roles: []
+            ruleValidate: {
+                name: [
+                    { required: true, message: '姓名不可为空', trigger: 'blur' }
+                ]
+
+            }
         }
     },
     created() {
-        var self = this;
-        self.$root.eventHub.$on('account', () => {
-            self.cancel();
-        });
-        self.initRoles();
-    },
-    destroyed() {
-        this.$root.eventHub.$off('account');
+        this.initCates();
     },
     methods: {
-        // 删除
-        delete(model) {
-            var table = this.$refs.list;
+        deleteCateOne() {
             this.$Modal.confirm({
-                title: '删除提示', content: "确定要删除当前用户么?",
+                title: '删除提示', content: '确定要删除一级分类么?',
                 onOk: () => {
-                    const parms = { id: model.id }
-                    deleteUser(parms).then(c => {
-                        if (c.data.success) {
-                            table.initData();
+                    deleteCate({ id: this.levelOne }).then(r => {
+                        if (r.data.success) {
+                            this.initCates();
+                        }
+                    })
+                }
+            })
+
+        },
+        deleteCateTwo() {
+            this.$Modal.confirm({
+                title: '删除提示', content: '确定要删除二级分类么?',
+                onOk: () => {
+                    deleteCate({ id: this.levelTwo }).then(r => {
+                        if (r.data.success) {
+                            this.pickLevelOne(this.levelOne);
                         }
                     })
                 }
             })
         },
-        add() {
+        addLevelOne() {
             this.modal.isEdit = true;
-            this.modal.title = "添加用户";
-        },
-        edit(row) {
-            this.modal.current = row.id;
-            this.modal.isEdit = true;
-            this.modal.title = "编辑用户:" + row.name;
-        },
-        save() {
-            this.$refs.account.commit();
-        },
-        cancel() {
-            this.modal.isEdit = false;
-            this.modal.title = "添加用户";
-            this.modal.current = null;
-            this.$refs.list.initData();
-        },
-        initRoles() {
-            getRoles().then(c => {
-                if (c.data.success) {
-                    this.roles = c.data.result.items;
+            getCateForEdit({ id: null }).then(r => {
+                if (r.data.result) {
+                    this.modal.current = r.data.result;
                 }
             })
+        },
+        addLevelTwo() {
+            if (!this.levelOne) {
+                this.$Message.error('请选择一级分类!');
+                return;
+            }
+            this.modal.isEdit = true;
+            getCateForEdit({ id: null }).then(r => {
+                if (r.data.result) {
+                    this.modal.current = r.data.result;
+                    this.modal.current.parentId = this.levelOne;
+                }
+            })
+        },
+        pickLevelOne(current) {
+            getCates({ id: current }).then(r => {
+                if (r.data.result) {
+                    this.LevelTwoList = r.data.result;
+                }
+            })
+        },
+        initCates() {
+            getCates({ id: null }).then(r => {
+                if (r.data.result) {
+                    this.LevelOneList = r.data.result;
+                }
+            })
+        },
+        save() {
+            this.$refs.cate.validate(valid => {
+                if (valid) {
+                    modifyCate({ categoryEditDto: this.modal.current }).then(r => {
+                        if (r.data.success) {
+                            this.initCates();
+                        }
+                    })
+                } else {
+                    this.$Message.error('表单验证失败!');
+                    return;
+                }
+            })
+
+        },
+        cancel() {
+            this.initCates();
         }
-    },
-    mounted() {
     }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class='animated fadeIn'>
         <Row>
-            <milk-table ref='list' :layout='[17,4,3]' :columns='cols' :search-api='searchApi' :params='params'>
+            <milk-table ref='list' :layout='[18,3,3]' :columns='cols' :search-api='searchApi' :params='params'>
                 <template slot='search'>
                     <Form ref='params' :model='params' inline :label-width='60'>
                         <FormItem label='产品名称'>
@@ -15,13 +15,15 @@
                             </Select>
                         </FormItem>
                         <FormItem label='一级分类'>
-                            <Select v-model='params.levelOne'>
-                                <Option v-for='c in roles' :value='c.id' :key='c.id'>{{c.displayName}}</Option>
+                            <Select @on-change="pick" v-model='params.levelOne' style="width:120px;">
+                                <Option value="">全部</Option>
+                                <Option v-for='c in Ones' :value='c.id' :key='c.id'>{{c.name}}</Option>
                             </Select>
                         </FormItem>
                         <FormItem label='二级分类'>
-                            <Select v-model='params.levelTwo'>
-                                <Option v-for='c in roles' :value='c.id' :key='c.id'>{{c.displayName}}</Option>
+                            <Select v-model='params.levelTwo' style="width:120px;">
+                                <Option value="">全部</Option>
+                                <Option v-for='c in Twos' :value='c.id' :key='c.id'>{{c.name}}</Option>
                             </Select>
                         </FormItem>
                     </Form>
@@ -40,8 +42,9 @@
 </template>
 
 <script>
-import { getProducts, deleteProduct } from 'api/products';
+import { getProducts, deleteProduct, UpdateState } from 'api/products';
 import modifyProduct from './modify-product';
+import { getCates } from 'api/cate';
 export default {
     name: 'account',
     data() {
@@ -80,45 +83,33 @@ export default {
                     title: '状态',
                     key: 'isActive',
                     render: (h, params) => {
-                        return params.row.state ? '上架' : '下架';
+                        return params.row.isActive ? '上架' : '下架';
                     }
                 },
                 {
                     title: '操作',
                     key: 'action',
                     align: 'center',
+                    width: '250px',
                     render: (h, params) => {
-                        return h('div', [
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.edit(params.row)
-                                    }
+                        let children = [];
+                        children.push(h('Button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small'
+                            },
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: () => {
+                                    this.edit(params.row)
                                 }
-                            }, '修改'),
-                            h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px',
-                                    hidden: params.row.state
-                                },
-                                on: {
-                                    click: () => {
-                                        this.edit(params.row)
-                                    }
-                                }
-                            }, '上架'),
-                            h('Button', {
+                            }
+                        }, '修改')) //组件1
+                     
+                        if (params.row.isActive) {
+                            children.push(h('Button', {
                                 props: {
                                     type: 'primary',
                                     size: 'small'
@@ -129,22 +120,41 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                        this.edit(params.row)
+                                        this.state(params.row)
                                     }
                                 }
-                            }, '下架'),
-                            h('Button', {
+                            }, '下架')) //组件3
+
+                        }else{
+                             children.push(h('Button', {
                                 props: {
-                                    type: 'error',
+                                    type: 'primary',
                                     size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px',
+                                    hidden: params.row.state
                                 },
                                 on: {
                                     click: () => {
-                                        this.delete(params.row)
+                                        this.state(params.row)
                                     }
                                 }
-                            }, '删除')
-                        ]);
+                            }, '上架')) //组件3
+
+                        }
+                           children.push(h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: () => {
+                                    this.delete(params.row)
+                                }
+                            }
+                        }, '删除')) //组件2
+                        return h('div', children)
                     }
                 }
             ],
@@ -153,7 +163,8 @@ export default {
             modal: {
                 isEdit: false, title: '添加', current: null
             },
-            roles: []
+            Ones: [],
+            Twos: []
         }
     },
     components: {
@@ -163,16 +174,32 @@ export default {
         this.$root.eventHub.$on('product', () => {
             this.cancel();
         });
+        this.initCates(null);
     },
     destroyed() {
         this.$root.eventHub.$off('product');
     },
     methods: {
+        pick() {
+            getCates({ id: this.params.levelOne }).then(c => {
+                if (c.data.success && c.data.result) {
+                    this.Twos = c.data.result;
+                }
+            })
+        },
+        state(model) {
+            const table = this.$refs.list;
+            UpdateState({ id: model.id }).then(r => {
+                if (r.data.success) {
+                    table.initData();
+                }
+            })
+        },
         // 删除
         delete(model) {
             const table = this.$refs.list;
             this.$Modal.confirm({
-                title: '删除提示', content: '确定要删除当前用户么?',
+                title: '删除提示', content: '确定要删除当前产品么?',
                 onOk: () => {
                     const parms = { id: model.id }
                     deleteProduct(parms).then(c => {
@@ -180,6 +207,18 @@ export default {
                             table.initData();
                         }
                     })
+                }
+            })
+        },
+        initCates(current) {
+            getCates({ id: current }).then(c => {
+                if (c.data.success && c.data.result) {
+                    if (current == null) {
+                        this.Ones = c.data.result;
+
+                    } else {
+                        this.Twos = c.data.result;
+                    }
                 }
             })
         },
@@ -200,6 +239,9 @@ export default {
             this.modal.title = '添加用户';
             this.modal.current = null;
             this.$refs.list.initData();
+        },
+        changeState() {
+
         }
     }
 }

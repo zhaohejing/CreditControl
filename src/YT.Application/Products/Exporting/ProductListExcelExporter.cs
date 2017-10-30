@@ -56,7 +56,7 @@ namespace YT.Products.Exporting
 
              _ => _.Price,
 
-             _ => _.LevelTwo,
+             _ => _.LevelOneName,
 
              _ => _.Description,
 

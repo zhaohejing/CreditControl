@@ -20,12 +20,12 @@ namespace YT.Products.Dtos
         /// <summary>
         /// 二级分类
         /// </summary>
-        [DisplayName("")]
-        public      string LevelTwo { get; set; }
+        [DisplayName("二级分类")]
+        public      string LevelTwoName { get; set; }
         /// <summary>
         /// 一级分类
         /// </summary>
-        public      string LevelOne { get; set; }
+        public      string LevelOneName { get; set; }
         /// <summary>
         /// 描述
         /// </summary>
@@ -51,5 +51,9 @@ namespace YT.Products.Dtos
         /// </summary>
         [DisplayName("创建时间")]
         public      DateTime CreationTime { get; set; }
+        /// <summary>
+        /// 产品名称
+        /// </summary>
+        public string ProductName { get; set; }
     }
 }

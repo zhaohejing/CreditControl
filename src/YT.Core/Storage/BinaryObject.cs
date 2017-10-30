@@ -20,12 +20,15 @@ namespace YT.Storage
         /// <summary>
         /// 文件尺寸
         /// </summary>
-        public  int? Size { get; set; }
+        public  long? Size { get; set; }
         /// <summary>
         /// 后缀名
         /// </summary>
         public  string Suffix { get; set; }
-
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get; set; }
 
         public BinaryObject()
         {

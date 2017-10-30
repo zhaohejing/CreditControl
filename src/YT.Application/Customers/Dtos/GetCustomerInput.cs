@@ -22,6 +22,10 @@ namespace YT.Customers.Dtos
         /// 手机
         /// </summary>
 		public string Mobile { get; set; }
+        /// <summary>
+        /// 城市
+        /// </summary>
+        public string City { get; set; }
 
         /// <summary>
         /// 用于排序的默认值

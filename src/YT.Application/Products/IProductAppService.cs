@@ -74,7 +74,12 @@ namespace YT.Products
 
         #endregion
 
-
+        /// <summary>
+        /// 更新状态
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task UpdateState(EntityDto<int> input);
 
 
 
