@@ -163,6 +163,9 @@
     <Compile Include="Customers\Exporting\CustomerListExcelExporter.cs" />
     <Compile Include="Customers\Exporting\ICustomerListExcelExporter.cs" />
     <Compile Include="Customers\ICustomerAppService.cs" />
+    <Compile Include="Dashboards\DashboardAppService.cs" />
+    <Compile Include="Dashboards\Dtos\CustomerLoginDto.cs" />
+    <Compile Include="Dashboards\IDashboardAppService.cs" />
     <Compile Include="Dto\DictionaryDto.cs" />
     <Compile Include="Navigations\Dtos\CreateOrUpdateMenuInput.cs" />
     <Compile Include="Navigations\Dtos\GetMenuForEditOutput.cs" />

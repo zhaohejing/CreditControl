@@ -46,6 +46,10 @@ namespace YT.Models
         [Required,MaxLength(200)]
 
         public string Email { get; set; }
+        /// <summary>
+        /// 邮箱验证码
+        /// </summary>
+        public string EmailCode { get; set; }
         [Required, MaxLength(200)]
         public string Account { get; set; }
         [Required, MaxLength(200)]
@@ -56,13 +60,10 @@ namespace YT.Models
         /// </summary>
         public Guid? License { get; set; }
         /// <summary>
-        /// 身份证正面
+        /// 身份证
         /// </summary>
-        public Guid? FaceIdentityCard { get; set; }
-        /// <summary>
-        /// 身份证背面
-        /// </summary>
-        public Guid? BackIdentityCard { get; set; }
+        public Guid? IdentityCard { get; set; }
+       
 
         /// <summary>
         /// 余额
