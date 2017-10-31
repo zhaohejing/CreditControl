@@ -53,7 +53,7 @@ namespace YT.Dashboards
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<List<ProductDetail>> GetProducts(EntityDto<int> input);
+          Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input);
 
         /// <summary>
         /// 获取所有产品列表
