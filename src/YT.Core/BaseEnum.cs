@@ -49,4 +49,41 @@ namespace YT
         }
 
     }
+
+    /// <summary>
+    /// 树结构
+    /// </summary>
+    public class TreeModel
+    {
+        public TreeModel() { }
+
+        public TreeModel(int id, string name, string url, string icon = "", IList<TreeModel> childs = null)
+        {
+            Id = id;
+            DisplayName = name;
+            Url = url;
+            IconUrl = icon;
+            Children = childs;
+        }
+        /// <summary>
+        /// key
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// 显示名
+        /// </summary>
+        public string DisplayName { get; set; }
+        /// <summary>
+        /// 路径
+        /// </summary>
+        public string Url { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string IconUrl { get; set; }
+        /// <summary>
+        /// 子集
+        /// </summary>
+        public IList<TreeModel> Children { get; set; }
+    }
 }

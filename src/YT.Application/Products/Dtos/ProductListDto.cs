@@ -56,4 +56,55 @@ namespace YT.Products.Dtos
         /// </summary>
         public string ProductName { get; set; }
     }
+    /// <summary>
+    /// 产品详情Dto
+    /// </summary>
+    [AutoMapFrom(typeof(Product))]
+    public class ProductDetail : EntityDto
+    {
+        /// <summary>
+        /// 价格
+        /// </summary>
+        [DisplayName("价格")]
+        public int Price { get; set; }
+        /// <summary>
+        /// 二级分类
+        /// </summary>
+        [DisplayName("二级分类")]
+        public string LevelTwoName { get; set; }
+        /// <summary>
+        /// 一级分类
+        /// </summary>
+        public string LevelOneName { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        [DisplayName("描述")]
+        public string Description { get; set; }
+        /// <summary>
+        /// 内容
+        /// </summary>
+        [DisplayName("内容")]
+        public string Content { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        [DisplayName("图片")]
+        public string ProfileUrl { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [DisplayName("创建时间")]
+        public DateTime CreationTime { get; set; }
+        /// <summary>
+        /// 产品名称
+        /// </summary>
+        public string ProductName { get; set; }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        
+        public int Count { get; set; } = 1;
+    }
 }

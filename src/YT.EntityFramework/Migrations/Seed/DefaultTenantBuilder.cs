@@ -1,28 +1,46 @@
 using System.Linq;
 using Abp.Configuration;
-using Abp.Localization;
 using Abp.Net.Mail;
-using YT.Configuration;
+using YT.Editions;
 using YT.EntityFramework;
+using YT.Managers.MultiTenancy;
 
-namespace YT.Migrations.Seed.Host
+namespace YT.Migrations.Seed
 {
-    public class DefaultSettingsCreator
+    public class DefaultTenantBuilder
     {
         private readonly MilkDbContext _context;
 
-        public DefaultSettingsCreator(MilkDbContext context)
+        public DefaultTenantBuilder(MilkDbContext context)
         {
             _context = context;
         }
 
         public void Create()
         {
-            AddSettingIfNotExists(YtSettings.General.MenuDefaultActive, "true");
-            AddSettingIfNotExists(YtSettings.General.PermissionDefaultActive, "true");
-            AddSettingIfNotExists(YtSettings.General.RoleDefaultActive, "true");
-            AddSettingIfNotExists(YtSettings.General.UserDefaultActive, "true");
+            CreateDefaultTenant();
+        }
+
+        private void CreateDefaultTenant()
+        {
          
+            //Default tenant
+
+            var defaultTenant = _context.Tenants.FirstOrDefault(t => t.TenancyName == Tenant.DefaultTenantName);
+            if (defaultTenant == null)
+            {
+                defaultTenant = new Tenant(Tenant.DefaultTenantName,
+                    Tenant.DefaultTenantName);
+
+                var defaultEdition = _context.Editions.FirstOrDefault(e => e.Name == EditionManager.DefaultEditionName);
+                if (defaultEdition != null)
+                {
+                    defaultTenant.EditionId = defaultEdition.Id;
+                }
+
+                _context.Tenants.Add(defaultTenant);
+                _context.SaveChanges();
+            }
             //邮件发送管理
             AddSettingIfNotExists(EmailSettingNames.DefaultFromAddress, "454258314@qq.com");
             AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, "华夏");
@@ -34,7 +52,6 @@ namespace YT.Migrations.Seed.Host
             AddSettingIfNotExists(EmailSettingNames.Smtp.EnableSsl, "true");
             AddSettingIfNotExists(EmailSettingNames.Smtp.UseDefaultCredentials, "false");
         }
-
         private void AddSettingIfNotExists(string name, string value, int? tenantId = null)
         {
             if (_context.Settings.Any(s => s.Name == name && s.TenantId == tenantId && s.UserId == null))

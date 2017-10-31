@@ -32,8 +32,6 @@ namespace YT.WebApi.Controllers
             _binaryObjectManager = binaryObjectManager;
         }
 
-        [AbpApiAuthorize]
-        [DisableAuditing]
         public AjaxResponse DownloadTempFile(FileDto file)
         {
             var filePath = Path.Combine(_appFolders.TempFolder, file.FileToken);
@@ -49,8 +47,6 @@ namespace YT.WebApi.Controllers
         /// 图片上传  
         /// </summary>
         /// <returns></returns>
-        [AbpApiAuthorize]
-        [DisableAuditing]
         [HttpPost]
         public async Task<AjaxResponse> ImageUpload()
         {
@@ -71,7 +67,7 @@ namespace YT.WebApi.Controllers
                     var orfilename = file.Headers.ContentDisposition.FileName.TrimStart('"').TrimEnd('"');
                     var fileinfo = new FileInfo(file.LocalFileName);
                     //最大文件大小
-                    const int maxSize = 1000000;
+                    const int maxSize = 10000000;
                     if (fileinfo.Length <= 0)
                     {
                         throw new  UserFriendlyException("请选择上传的文件");
@@ -87,7 +83,8 @@ namespace YT.WebApi.Controllers
                         throw new UserFriendlyException("图片类型不正确");
                     }
                     var ymd = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                    var pathName = $"{AbpSession.UserId}/{ymd}";
+                    var p = AbpSession.UserId?.ToString() ?? "total";
+                    var pathName = $"{p}/{ymd}";
                     var temp = Path.Combine(_appFolders.ImageFolder, pathName);
                     if (!Directory.Exists(temp))
                     {
@@ -120,7 +117,7 @@ namespace YT.WebApi.Controllers
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw e;
             }
             return new AjaxResponse(result);
         }
@@ -129,8 +126,6 @@ namespace YT.WebApi.Controllers
         /// 图片上传  
         /// </summary>
         /// <returns></returns>
-        [AbpApiAuthorize]
-        [DisableAuditing]
         [HttpPost]
         public async Task<AjaxResponse> FileUpload()
         {
@@ -151,7 +146,7 @@ namespace YT.WebApi.Controllers
                     string orfilename = file.Headers.ContentDisposition.FileName.TrimStart('"').TrimEnd('"');
                     FileInfo fileinfo = new FileInfo(file.LocalFileName);
                     //最大文件大小
-                    const int maxSize = 1000000;
+                    const int maxSize = 10000000;
                     if (fileinfo.Length <= 0)
                     {
                         throw new UserFriendlyException("请选择上传的文件");
@@ -166,7 +161,8 @@ namespace YT.WebApi.Controllers
                         string fileExt = orfilename.Substring(orfilename.LastIndexOf('.'));
                         //rename
                         var ymd = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                        var pathName = $"{AbpSession.UserId}/{ymd}";
+                        var p = AbpSession.UserId?.ToString() ?? "total";
+                        var pathName = $"{p}/{ymd}";
                         var temp = Path.Combine(_appFolders.ImageFolder, pathName);
                         if (!Directory.Exists(temp))
                         {
@@ -201,7 +197,7 @@ namespace YT.WebApi.Controllers
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw e;
             }
             return new AjaxResponse(result);
         }
@@ -210,8 +206,6 @@ namespace YT.WebApi.Controllers
         /// 删除图片  
         /// </summary>
         /// <returns></returns>
-        [AbpApiAuthorize]
-        [DisableAuditing]
         [HttpGet]
         public async Task DeleteFile(Guid guid)
         {

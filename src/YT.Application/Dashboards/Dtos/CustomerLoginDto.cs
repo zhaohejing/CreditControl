@@ -34,4 +34,22 @@ namespace YT.Dashboards.Dtos
         /// </summary>
         public string Email { get; set; }
     }
+    /// <summary>
+    /// 修改密码
+    /// </summary>
+    public class ChangeCustomerPasswordInput
+    {
+        /// <summary>
+        /// 邮件
+        /// </summary>
+        public string Email { get; set; }
+        /// <summary>
+        /// 验证码
+        /// </summary>
+        public string Code { get; set; }
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Password { get; set; }
+    }
 }

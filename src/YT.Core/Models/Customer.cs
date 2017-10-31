@@ -50,6 +50,10 @@ namespace YT.Models
         /// 邮箱验证码
         /// </summary>
         public string EmailCode { get; set; }
+        /// <summary>
+        /// 代码发送时间
+        /// </summary>
+        public DateTime? CodeTime { get; set; }
         [Required, MaxLength(200)]
         public string Account { get; set; }
         [Required, MaxLength(200)]

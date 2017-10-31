@@ -5,8 +5,7 @@ using Abp.MultiTenancy;
 using Abp.Zero.EntityFramework;
 using EntityFramework.DynamicFilters;
 using YT.EntityFramework;
-using YT.Migrations.Seed.Host;
-using YT.Migrations.Seed.Tenants;
+using YT.Migrations.Seed;
 
 namespace YT.Migrations
 {
@@ -30,12 +29,7 @@ namespace YT.Migrations
 
             if (Tenant == null)
             {
-                //Host seed
-              //  new InitialHostDbBuilder(context).Create();
-
-                //Default tenant seed (in host database).
                 new DefaultTenantBuilder(context).Create();
-            //    new TenantRoleAndUserBuilder(context, 1).Create();
             }
             else
             {

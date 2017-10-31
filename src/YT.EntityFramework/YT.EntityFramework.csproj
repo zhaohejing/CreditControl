@@ -155,13 +155,7 @@
     <Compile Include="EntityFramework\AbpZeroDbMigrator.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="YtDataModule.cs" />
-    <Compile Include="Migrations\Seed\Host\DefaultEditionCreator.cs" />
-    <Compile Include="Migrations\Seed\Host\DefaultLanguagesCreator.cs" />
-    <Compile Include="Migrations\Seed\Host\DefaultSettingsCreator.cs" />
-    <Compile Include="Migrations\Seed\Tenants\TenantRoleAndUserBuilder.cs" />
-    <Compile Include="Migrations\Seed\Tenants\DefaultTenantBuilder.cs" />
-    <Compile Include="Migrations\Seed\Host\HostRoleAndUserCreator.cs" />
-    <Compile Include="Migrations\Seed\Host\InitialHostDbBuilder.cs" />
+    <Compile Include="Migrations\Seed\DefaultTenantBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

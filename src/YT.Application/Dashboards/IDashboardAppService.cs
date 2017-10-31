@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services;
+using Abp.Application.Services.Dto;
 using YT.Customers.Dtos;
 using YT.Dashboards.Dtos;
+using YT.Products.Dtos;
 
 namespace YT.Dashboards
 {
@@ -29,10 +31,35 @@ namespace YT.Dashboards
           Task ResetPassword(ResetPasswordInput input);
 
         /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task ChangePassword(ChangeCustomerPasswordInput input);
+        /// <summary>
+        /// 获取用户菜单集合
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<List<TreeModel>> GetCustomerMenus(EntityDto<int> input);
+        /// <summary>
         /// 客户注册
         /// </summary>
         /// <returns></returns>
-          Task Register(CustomerEditDto input);
+        Task Register(CustomerEditDto input);
 
+        /// <summary>
+        /// 获取所有产品列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task<List<ProductDetail>> GetProducts(EntityDto<int> input);
+
+        /// <summary>
+        /// 获取所有产品列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task<ProductDetail> GetProductDetail(EntityDto<int> input);
     }
 }

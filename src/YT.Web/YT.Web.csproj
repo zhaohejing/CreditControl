@@ -466,6 +466,7 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <None Include="Properties\PublishProfiles\gl.pubxml" />
+    <None Include="Properties\PublishProfiles\hx.pubxml" />
     <None Include="Properties\PublishProfiles\settings.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
