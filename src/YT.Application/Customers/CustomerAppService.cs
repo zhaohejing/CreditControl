@@ -141,17 +141,18 @@ namespace YT.Customers
         public async Task ChargeCustomer(ChargeInput input)
         {
             var current =await AbpSession.Current();
-            var customer = await _customerRepository.FirstOrDefaultAsync(input.Id);
+            var apply = await _applyChargeRepository.FirstOrDefaultAsync(input.Id);
+            var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == apply.CustomerId);
             if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
             customer.Balance += input.Money;
             await _chargeRecordRepository.InsertAsync(new ChargeRecord()
             {
                 ActionName = current.Name,
-                ActionTime = DateTime.Now,
                 ChargeMoney = input.Money,
                 CustomerId = customer.Id,
                 CustomerName = customer.CompanyName
             });
+            apply.State = true;
         }
 
         /// <summary>

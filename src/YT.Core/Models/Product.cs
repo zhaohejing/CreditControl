@@ -125,6 +125,10 @@ namespace YT.Models
         /// </summary>
         public int? FormId { get; set; }
         public virtual CustomerForm Form { get; set; }
+        /// <summary>
+        /// 取消原因
+        /// </summary>
+        public string CancelReason { get; set; }
     }
     /// <summary>
     /// 资质认证

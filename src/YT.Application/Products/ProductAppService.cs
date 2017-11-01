@@ -9,6 +9,7 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using YT.Dto;
 using YT.Models;
 using YT.Products.Dtos;
@@ -26,17 +27,21 @@ namespace YT.Products
     {
         private readonly IRepository<Product, int> _productRepository;
         private readonly IProductListExcelExporter _productListExcelExporter;
+        private readonly IRepository<Order> _orderRepository;
 
 
-        /// <summary>
-        /// 构造方法
-        /// </summary>
+       /// <summary>
+       /// ctor
+       /// </summary>
+       /// <param name="productRepository"></param>
+       /// <param name="productListExcelExporter"></param>
+       /// <param name="orderRepository"></param>
         public ProductAppService(IRepository<Product, int> productRepository,
-            IProductListExcelExporter productListExcelExporter
-  )
+            IProductListExcelExporter productListExcelExporter, IRepository<Order> orderRepository)
         {
             _productRepository = productRepository;
             _productListExcelExporter = productListExcelExporter;
+            _orderRepository = orderRepository;
         }
 
 
@@ -75,6 +80,56 @@ namespace YT.Products
             );
         }
 
+
+        /// <summary>
+        /// 根据查询条件获取产品分页列表
+        /// </summary>
+        public async Task<PagedResultDto<OrderListDto>> GetPagedOrdersAsync(GetOrderInput input)
+        {
+
+          var  query = _orderRepository.GetAll().WhereIf(!input.Name.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Name))
+                .WhereIf(!input.Mobile.IsNullOrWhiteSpace(), c => c.Customer.Mobile.Contains(input.Mobile))
+                .WhereIf(input.Start.HasValue, c => c.CreationTime>=input.Start.Value)
+                .WhereIf(input.End.HasValue, c => c.CreationTime <input.End.Value);
+
+            var productCount = await query.CountAsync();
+
+            var products = await query
+            .OrderBy(input.Sorting)
+            .PageBy(input)
+            .ToListAsync();
+
+            var productListDtos = products.MapTo<List<OrderListDto>>();
+            return new PagedResultDto<OrderListDto>(
+            productCount,
+            productListDtos
+            );
+        }
+
+        /// <summary>
+        /// 获取订单详情
+        /// </summary>
+        public async Task<OrderListDto> GetOrderByIdAsync(EntityDto<int> input )
+        {
+            var order = await _orderRepository.FirstOrDefaultAsync(input.Id);
+            if (order==null) throw new UserFriendlyException("该订单不存在");
+            return order.MapTo<OrderListDto>();
+        }
+        /// <summary>
+        /// 完成订单
+        /// </summary>
+        public async Task CompleteOrder(EntityDto<int> input)
+        {
+            var order = await _orderRepository.FirstOrDefaultAsync(input.Id);
+            if (order == null) throw new UserFriendlyException("该订单不存在");
+                
+            if (order.State.HasValue&&!order.State.Value) throw new UserFriendlyException("该订单已取消");
+          
+            var customer = order.Customer;
+            if (customer.Balance<order.TotalPrice) throw new UserFriendlyException("该用户余额不足,请提醒充值");
+            customer.Balance -= order.TotalPrice;
+            order.State = true;
+        }
         /// <summary>
         /// 通过Id获取产品信息进行编辑或修改 
         /// </summary>

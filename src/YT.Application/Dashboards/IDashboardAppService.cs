@@ -36,6 +36,11 @@ namespace YT.Dashboards
         Task ResetPassword(ResetPasswordInput input);
 
         /// <summary>
+        /// 完成订单
+        /// </summary>
+        /// <returns></returns>
+        Task CompleteOrder(CompleteOrderInput input);
+        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="input"></param>

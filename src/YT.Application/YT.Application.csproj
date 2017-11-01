@@ -152,6 +152,13 @@
     <Compile Include="Categories\Dtos\GetCategoryForEditOutput.cs" />
     <Compile Include="Categories\Dtos\GetCategoryInput.cs" />
     <Compile Include="Categories\ICategoryAppService.cs" />
+    <Compile Include="ChargeRecords\ChargeRecordAppService.cs" />
+    <Compile Include="ChargeRecords\Dtos\ChargeRecordEditDto.cs" />
+    <Compile Include="ChargeRecords\Dtos\ChargeRecordListDto.cs" />
+    <Compile Include="ChargeRecords\Dtos\CreateOrUpdateChargeRecordInput.cs" />
+    <Compile Include="ChargeRecords\Dtos\GetChargeRecordForEditOutput.cs" />
+    <Compile Include="ChargeRecords\Dtos\GetChargeRecordInput.cs" />
+    <Compile Include="ChargeRecords\IChargeRecordAppService.cs" />
     <Compile Include="Configuration\Dto\PermissionSettingsEditDto.cs" />
     <Compile Include="Configuration\Dto\SettingInput.cs" />
     <Compile Include="Customers\CustomerAppService.cs" />
@@ -180,6 +187,7 @@
     <Compile Include="Products\Dtos\CreateOrUpdateProductInput.cs" />
     <Compile Include="Products\Dtos\GetProductForEditOutput.cs" />
     <Compile Include="Products\Dtos\GetProductInput.cs" />
+    <Compile Include="Products\Dtos\OrderListDto.cs" />
     <Compile Include="Products\Dtos\ProductEditDto.cs" />
     <Compile Include="Products\Dtos\ProductListDto.cs" />
     <Compile Include="Products\Exporting\IProductListExcelExporter.cs" />

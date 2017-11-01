@@ -57,3 +57,24 @@ export function deleteProducts(data) {
         data
     });
 }
+export function orders(data) {
+    return fetch({
+        url: '/api/services/app/product/GetPagedOrdersAsync',
+        method: 'post',
+        data
+    });
+}
+export function order(data) {
+    return fetch({
+        url: '/api/services/app/product/GetOrderByIdAsync',
+        method: 'post',
+        data
+    });
+}
+export function completeorder(data) {
+    return fetch({
+        url: '/api/services/app/product/CompleteOrder',
+        method: 'post',
+        data
+    });
+}

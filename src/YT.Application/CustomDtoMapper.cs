@@ -3,6 +3,7 @@ using YT.Authorization.Users;
 using YT.Authorization.Users.Dto;
 using YT.Managers.Users;
 using YT.Models;
+using YT.Products.Dtos;
 
 namespace YT
 {
@@ -35,6 +36,12 @@ namespace YT
                 .ForMember(dto => dto.Password, options => options.Ignore())
                 .ReverseMap()
                 .ForMember(user => user.Password, options => options.Ignore());
+
+            mapper.CreateMap<Order, OrderListDto>()
+                .ForMember(dto => dto.Mobile, options => options.MapFrom(c => c.Customer.Mobile))
+                .ForMember(dto => dto.Contact, options => options.MapFrom(c => c.Customer.Contact))
+                .ForMember(dto => dto.CompanyName, options => options.MapFrom(c => c.Customer.CompanyName))
+                .ForMember(dto => dto.ProductName, options => options.MapFrom(c => c.Product.ProductName));
         }
     }
 }

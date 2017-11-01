@@ -76,7 +76,30 @@ namespace YT.Dashboards
             if (!customer.Password.Equals(input.Password)) throw new UserFriendlyException("密码错误");
             return customer.MapTo<CustomerListDto>();
         }
-
+        /// <summary>
+        /// 完成订单
+        /// </summary>
+        /// <returns></returns>
+        public async Task CompleteOrder(CompleteOrderInput input)
+        {
+            var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.CustomerId);
+            if (customer == null) throw new UserFriendlyException("该账户不存在");
+            var order = await _ordeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNum));
+            if (order == null) throw new UserFriendlyException("该订单不存在");
+            order.State = input.State;
+            if (input.State)
+            {
+                if (customer.Balance < order.TotalPrice)
+                {
+                    throw new UserFriendlyException("账户下余额不足,请充值后再试");
+                }
+                customer.Balance -= order.TotalPrice;
+            }
+            else
+            {
+                order.CancelReason = input.CancelReason;
+            }
+        }
         /// <summary>
         /// 获取用户菜单集合
         /// </summary>

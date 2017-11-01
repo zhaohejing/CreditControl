@@ -52,4 +52,26 @@ namespace YT.Dashboards.Dtos
         /// </summary>
         public string Password { get; set; }
     }
+    /// <summary>
+    /// 完成订单
+    /// </summary>
+    public class CompleteOrderInput
+    {
+        /// <summary>
+        /// 客户id
+        /// </summary>
+        public int CustomerId { get; set; }
+        /// <summary>
+        /// 订单编号
+        /// </summary>
+        public string OrderNum { get; set; }
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public bool State { get; set; }
+        /// <summary>
+        /// 取消原因
+        /// </summary>
+        public string CancelReason { get; set; }
+    }
 }

@@ -64,6 +64,12 @@ export const asyncRouterMap = [{
             name: '订单管理',
             icon: 'person-add',
             component: r => require(['views/procurement/order'], r)
+          },
+          {
+            path: '/order',
+            name: '订单详情',
+            icon: 'person-add',
+            component: r => require(['views/procurement/orderdetail'], r)
           }
         ]
       },

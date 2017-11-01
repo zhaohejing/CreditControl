@@ -81,7 +81,20 @@ namespace YT.Products
         /// <returns></returns>
         Task UpdateState(EntityDto<int> input);
 
+        /// <summary>
+        /// 根据查询条件获取产品分页列表
+        /// </summary>
+          Task<PagedResultDto<OrderListDto>> GetPagedOrdersAsync(GetOrderInput input);
 
+        /// <summary>
+        /// 获取订单详情
+        /// </summary>
+          Task<OrderListDto> GetOrderByIdAsync(EntityDto<int> input);
+
+        /// <summary>
+        /// 完成订单
+        /// </summary>
+          Task CompleteOrder(EntityDto<int> input);
 
     }
 }
