@@ -48,7 +48,7 @@ namespace YT.EntityFramework
         public virtual IDbSet<Category> Categories { get; set; }
         public virtual IDbSet<CustomerForm> CustomerForms { get; set; }
 
-
+        public virtual  IDbSet<CustomerCost> CustomerCosts { get; set; }
         public MilkDbContext()
             : base("Default")
         {

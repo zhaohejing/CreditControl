@@ -24,6 +24,27 @@ namespace YT.Dashboards
           Task<CustomerListDto> Authenticate(CustomerLoginDto input);
 
         /// <summary>
+        /// 获取客户信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<CustomerListDto> GetInfo(EntityDto<int> input);
+
+        /// <summary>
+        /// 提交充值申请
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        Task ApplyCharge(ApplyChargeInput input);
+
+        /// <summary>
+        /// 获取所有产品列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<List<OrderProductDetail>> GetHaveProducts(EntityDto<int> input);
+        /// <summary>
         /// 创建订单
         /// </summary>
         /// <returns></returns>

@@ -63,5 +63,9 @@ namespace YT.Products.Dtos
         /// 资质认证id
         /// </summary>
         public int? FormId { get; set; }
+        /// <summary>
+        /// 取消原因
+        /// </summary>
+        public string CancelReason { get; set; }
     }
 }

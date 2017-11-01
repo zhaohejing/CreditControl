@@ -29,19 +29,21 @@ namespace YT.Products
         private readonly IProductListExcelExporter _productListExcelExporter;
         private readonly IRepository<Order> _orderRepository;
 
-
-       /// <summary>
-       /// ctor
-       /// </summary>
-       /// <param name="productRepository"></param>
-       /// <param name="productListExcelExporter"></param>
-       /// <param name="orderRepository"></param>
+        private readonly IRepository<CustomerCost> _costRepository;
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="productRepository"></param>
+        /// <param name="productListExcelExporter"></param>
+        /// <param name="orderRepository"></param>
+        /// <param name="costRepository"></param>
         public ProductAppService(IRepository<Product, int> productRepository,
-            IProductListExcelExporter productListExcelExporter, IRepository<Order> orderRepository)
+            IProductListExcelExporter productListExcelExporter, IRepository<Order> orderRepository, IRepository<CustomerCost> costRepository)
         {
             _productRepository = productRepository;
             _productListExcelExporter = productListExcelExporter;
             _orderRepository = orderRepository;
+            _costRepository = costRepository;
         }
 
 
@@ -87,10 +89,10 @@ namespace YT.Products
         public async Task<PagedResultDto<OrderListDto>> GetPagedOrdersAsync(GetOrderInput input)
         {
 
-          var  query = _orderRepository.GetAll().WhereIf(!input.Name.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Name))
-                .WhereIf(!input.Mobile.IsNullOrWhiteSpace(), c => c.Customer.Mobile.Contains(input.Mobile))
-                .WhereIf(input.Start.HasValue, c => c.CreationTime>=input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.CreationTime <input.End.Value);
+            var query = _orderRepository.GetAll().WhereIf(!input.Name.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Name))
+                  .WhereIf(!input.Mobile.IsNullOrWhiteSpace(), c => c.Customer.Mobile.Contains(input.Mobile))
+                  .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                  .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
 
             var productCount = await query.CountAsync();
 
@@ -109,10 +111,10 @@ namespace YT.Products
         /// <summary>
         /// 获取订单详情
         /// </summary>
-        public async Task<OrderListDto> GetOrderByIdAsync(EntityDto<int> input )
+        public async Task<OrderListDto> GetOrderByIdAsync(EntityDto<int> input)
         {
             var order = await _orderRepository.FirstOrDefaultAsync(input.Id);
-            if (order==null) throw new UserFriendlyException("该订单不存在");
+            if (order == null) throw new UserFriendlyException("该订单不存在");
             return order.MapTo<OrderListDto>();
         }
         /// <summary>
@@ -122,13 +124,21 @@ namespace YT.Products
         {
             var order = await _orderRepository.FirstOrDefaultAsync(input.Id);
             if (order == null) throw new UserFriendlyException("该订单不存在");
-                
-            if (order.State.HasValue&&!order.State.Value) throw new UserFriendlyException("该订单已取消");
-          
+
+            if (order.State.HasValue && !order.State.Value) throw new UserFriendlyException("该订单已取消");
+
             var customer = order.Customer;
-            if (customer.Balance<order.TotalPrice) throw new UserFriendlyException("该用户余额不足,请提醒充值");
+            if (customer.Balance < order.TotalPrice) throw new UserFriendlyException("该用户余额不足,请提醒充值");
+            var cost = new CustomerCost()
+            {
+                Balance = customer.Balance,
+                CustomerId = customer.Id
+            };
             customer.Balance -= order.TotalPrice;
+            cost.Cost = order.TotalPrice;
+            cost.CurrentBalance = customer.Balance;
             order.State = true;
+            await _costRepository.InsertAsync(cost);
         }
         /// <summary>
         /// 通过Id获取产品信息进行编辑或修改 

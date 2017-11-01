@@ -133,28 +133,7 @@ namespace YT.Customers
             customer.Password = input.Password;
         }
 
-        /// <summary>
-        /// 用户充值
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public async Task ChargeCustomer(ChargeInput input)
-        {
-            var current =await AbpSession.Current();
-            var apply = await _applyChargeRepository.FirstOrDefaultAsync(input.Id);
-            var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == apply.CustomerId);
-            if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
-            customer.Balance += input.Money;
-            await _chargeRecordRepository.InsertAsync(new ChargeRecord()
-            {
-                ActionName = current.Name,
-                ChargeMoney = input.Money,
-                CustomerId = customer.Id,
-                CustomerName = customer.CompanyName
-            });
-            apply.State = true;
-        }
-
+    
         /// <summary>
         /// 通过指定id获取客户信息ListDto信息
         /// </summary>

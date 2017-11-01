@@ -107,4 +107,41 @@ namespace YT.Products.Dtos
         
         public int Count { get; set; } = 1;
     }
+    /// <summary>
+    /// 客户已有订单
+    /// </summary>
+    public class OrderProductDetail
+    {/// <summary>
+    /// 订单id
+    /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// 产品名称
+        /// </summary>
+        public string ProductName { get; set; }
+        /// <summary>
+        /// 分类
+        /// </summary>
+        public string Cate { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string Profile { get; set; }
+        /// <summary>
+        /// 单价
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int Count { get; set; }
+        /// <summary>
+        /// 总价
+        /// </summary>
+        public int TotalPrice { get; set; }
+        /// <summary>
+        /// 资料id
+        /// </summary>
+        public  int? FormId { get; set; }
+    }
 }

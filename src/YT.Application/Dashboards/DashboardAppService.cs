@@ -33,7 +33,9 @@ namespace YT.Dashboards
         private readonly IRepository<Product> _productRepository;
         private readonly IBinaryObjectManager _binaryObjectManager;
         private readonly IRepository<Order> _ordeRepository;
-
+        private readonly IRepository<CustomerCost> _costRepository;
+        private readonly IRepository<ApplyCharge> _applyRepository;
+        private readonly IBinaryObjectManager _objectManager;
         /// <summary>
         /// host
         /// </summary>
@@ -48,13 +50,16 @@ namespace YT.Dashboards
         /// <param name="productRepository"></param>
         /// <param name="binaryObjectManager"></param>
         /// <param name="ordeRepository"></param>
+        /// <param name="costRepository"></param>
+        /// <param name="applyRepository"></param>
+        /// <param name="objectManager"></param>
         public DashboardAppService(
             IRepository<Customer> customerRepository,
             ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
             IRepository<Category> cateRepository,
             IRepository<Product> productRepository,
             IBinaryObjectManager binaryObjectManager,
-            IRepository<Order> ordeRepository)
+            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager)
         {
             _customerRepository = customerRepository;
             _smtpEmailSenderConfiguration = smtpEmailSenderConfiguration;
@@ -62,6 +67,9 @@ namespace YT.Dashboards
             _productRepository = productRepository;
             _binaryObjectManager = binaryObjectManager;
             _ordeRepository = ordeRepository;
+            _costRepository = costRepository;
+            _applyRepository = applyRepository;
+            _objectManager = objectManager;
         }
 
         /// <summary>
@@ -74,7 +82,54 @@ namespace YT.Dashboards
             var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Account.Equals(input.Account));
             if (customer == null) throw new UserFriendlyException("该账户不存在");
             if (!customer.Password.Equals(input.Password)) throw new UserFriendlyException("密码错误");
-            return customer.MapTo<CustomerListDto>();
+            var dto = customer.MapTo<CustomerListDto>();
+            if (customer.License.HasValue)
+            {
+                var pro = await _objectManager.GetOrNullAsync(customer.License.Value);
+                if (pro != null)
+                {
+                    dto.LicenseUrl = Host + pro.Url;
+
+                }
+            }
+            if (customer.IdentityCard.HasValue)
+            {
+                var pro = await _objectManager.GetOrNullAsync(customer.IdentityCard.Value);
+                if (pro != null)
+                {
+                    dto.IdentityCardUrl = Host + pro.Url;
+                }
+            }
+            return dto;
+        }
+        /// <summary>
+        /// 获取客户信息
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<CustomerListDto> GetInfo(EntityDto<int> input)
+        {
+            var customer = await _customerRepository.FirstOrDefaultAsync(input.Id);
+            if (customer == null) throw new UserFriendlyException("该账户不存在");
+            var dto = customer.MapTo<CustomerListDto>();
+            if (customer.License.HasValue)
+            {
+                var pro = await _objectManager.GetOrNullAsync(customer.License.Value);
+                if (pro != null)
+                {
+                    dto.LicenseUrl = Host + pro.Url;
+
+                }
+            }
+            if (customer.IdentityCard.HasValue)
+            {
+                var pro = await _objectManager.GetOrNullAsync(customer.IdentityCard.Value);
+                if (pro != null)
+                {
+                    dto.IdentityCardUrl = Host + pro.Url;
+                }
+            }
+            return dto;
         }
         /// <summary>
         /// 完成订单
@@ -93,12 +148,32 @@ namespace YT.Dashboards
                 {
                     throw new UserFriendlyException("账户下余额不足,请充值后再试");
                 }
+                var cost = new CustomerCost()
+                {
+                    Balance = customer.Balance,
+                    CustomerId = customer.Id
+                };
                 customer.Balance -= order.TotalPrice;
+                cost.Cost = order.TotalPrice;
+                cost.CurrentBalance = customer.Balance;
+
+                await _costRepository.InsertAsync(cost);
             }
             else
             {
                 order.CancelReason = input.CancelReason;
             }
+        }
+        /// <summary>
+        /// 提交充值申请
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task ApplyCharge(ApplyChargeInput input)
+        {
+            var apply = input.MapTo<ApplyCharge>();
+            await _applyRepository.InsertAsync(apply);
         }
         /// <summary>
         /// 获取用户菜单集合
@@ -139,6 +214,38 @@ namespace YT.Dashboards
                 if (file != null)
                 {
                     dto.ProfileUrl = Host + file.Url;
+                }
+                output.Add(dto);
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// 获取所有产品列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<OrderProductDetail>> GetHaveProducts(EntityDto<int> input)
+        {
+            var temp = (from c in await _ordeRepository.GetAllListAsync(c => c.CustomerId == input.Id)
+                        join d in await _productRepository.GetAllListAsync() on c.ProductId equals d.Id
+                        select new { c, d }).ToList();
+            var output = new List<OrderProductDetail>();
+            if (!temp.Any()) return output;
+            foreach (var o in temp)
+            {
+                var dto = new OrderProductDetail()
+                {
+                    Id = o.c.Id,
+                    Cate = o.d.LevelTwo.Name,
+                    Count = o.c.Count,
+                    FormId = o.c.FormId,
+                    Price = o.d.Price,
+                    ProductName = o.d.ProductName,TotalPrice=o.c.TotalPrice
+                };
+                if (o.d.Profile.HasValue)
+                {
+                    dto.Profile = Host + (await _objectManager.GetOrNullAsync(o.d.Profile.Value))?.Url;
                 }
                 output.Add(dto);
             }

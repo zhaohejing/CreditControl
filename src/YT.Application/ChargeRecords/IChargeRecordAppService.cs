@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using YT.ChargeRecords.Dtos;
+using YT.Customers.Dtos;
 
 namespace YT.ChargeRecords
 {
@@ -25,7 +26,25 @@ namespace YT.ChargeRecords
 
         #endregion
 
+        /// <summary>
+        /// 删除充值申请
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task DeleteApplyChargeAsync(EntityDto<int> input);
 
+        /// <summary>
+        /// 用户充值
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task ChargeCustomer(ChargeInput input);
+        /// <summary>
+        /// 用户完成充值申请
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task ChargeApplyCustomer(ChargeInput input);
 
 
     }

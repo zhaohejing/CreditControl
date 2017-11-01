@@ -27,20 +27,20 @@
           <Dropdown-item>
             <p class="dropdown-itemp">
               <Icon type="alert"></Icon>修改个人信息
-              <span class="badge badge-info">42</span>
+              <span class="badge badge-info">0</span>
             </p>
 
           </Dropdown-item>
           <Dropdown-item>
             <p class="dropdown-itemp">
               <Icon type="chatbox-working"></Icon>消息
-              <span class="badge badge-success">42</span>
+              <span class="badge badge-success">0</span>
             </p>
           </Dropdown-item>
           <Dropdown-item>
             <p class="dropdown-itemp">
               <Icon type="chatbox-working"></Icon>通知
-              <span class="badge badge-danger">42</span>
+              <span class="badge badge-danger">0</span>
             </p>
           </Dropdown-item>
           <Dropdown-item divided>
@@ -60,7 +60,7 @@
         </Dropdown-menu>
       </Dropdown>
       <li class="nav-item d-md-down-none">
-        <a class="nav-link navbar-toggler aside-menu-toggler" @click="asideToggle">&#9776;</a>
+        <a class="nav-link navbar-toggler aside-menu-toggler" @click="asideToggle"></a>
       </li>
     </ul>
   </navbar>

@@ -9,7 +9,9 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using YT.ChargeRecords.Dtos;
+using YT.Customers.Dtos;
 using YT.Models;
 
 namespace YT.ChargeRecords
@@ -24,17 +26,19 @@ namespace YT.ChargeRecords
     {
         private readonly IRepository<ChargeRecord, int> _chargeRecordRepository;
         private readonly IRepository<ApplyCharge, int> _applyRepository;
-
-       /// <summary>
-       /// ctor
-       /// </summary>
-       /// <param name="chargeRecordRepository"></param>
-       /// <param name="applyRepository"></param>
+        private readonly IRepository<Customer, int> _customerRepository;
+      /// <summary>
+      /// ctor
+      /// </summary>
+      /// <param name="chargeRecordRepository"></param>
+      /// <param name="applyRepository"></param>
+      /// <param name="customerRepository"></param>
         public ChargeRecordAppService(IRepository<ChargeRecord, int> chargeRecordRepository,
-            IRepository<ApplyCharge, int> applyRepository)
+            IRepository<ApplyCharge, int> applyRepository, IRepository<Customer, int> customerRepository)
         {
             _chargeRecordRepository = chargeRecordRepository;
             _applyRepository = applyRepository;
+            _customerRepository = customerRepository;
         }
 
 
@@ -105,6 +109,49 @@ namespace YT.ChargeRecords
             await _applyRepository.DeleteAsync(input.Id);
         }
 
+
+        /// <summary>
+        /// 用户充值
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task ChargeCustomer(ChargeInput input)
+        {
+            var current = await AbpSession.Current();
+            var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.Id);
+            if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
+            customer.Balance += input.Money;
+            await _chargeRecordRepository.InsertAsync(new ChargeRecord()
+            {
+                ActionName = current.Name,
+                ChargeMoney = input.Money,
+                CustomerId = customer.Id,
+                CustomerName = customer.CompanyName
+            });
+        }
+        /// <summary>
+        /// 用户完成充值申请
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task ChargeApplyCustomer(ChargeInput input)
+        {
+            var current = await AbpSession.Current();
+            var apply = await _applyRepository.FirstOrDefaultAsync(input.Id);
+            if (apply == null) throw new UserFriendlyException("充值申请不存在");
+            var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == apply.CustomerId);
+            if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
+            customer.Balance += input.Money;
+            await _chargeRecordRepository.InsertAsync(new ChargeRecord()
+            {
+                ActionName = current.Name,
+                ChargeMoney = input.Money,
+                CustomerId = customer.Id,
+                CustomerName = customer.CompanyName
+            });
+            apply.State = true;
+            apply.ActionName = current.Name;
+        }
         #endregion
 
 

@@ -43,14 +43,7 @@ namespace YT.Customers
         /// <returns></returns>
           Task AuditCustomer(AuditInput input);
 
-        /// <summary>
-        /// 用户充值
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-          Task ChargeCustomer(ChargeInput input);
-
-
+      
 
 
 

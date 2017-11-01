@@ -148,7 +148,8 @@
 </template>
 
 <script>
-import { getCustomers, deleteCustomer, auditCustomer, chargeCustomer, resetCustomer, getCustomer } from 'api/customer';
+import { getCustomers, deleteCustomer, auditCustomer, resetCustomer, getCustomer } from 'api/customer';
+import { chargeCustomer } from 'api/record';
 export default {
     name: 'customer',
     data() {

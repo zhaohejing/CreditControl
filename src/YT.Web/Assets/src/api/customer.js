@@ -41,7 +41,7 @@ export function deleteCustomer(data) {
         data
     });
 }
-// 删除角色
+// 客户审核
 export function auditCustomer(data) {
     return fetch({
         url: '/api/services/app/customer/AuditCustomer',
@@ -49,6 +49,7 @@ export function auditCustomer(data) {
         data
     });
 }
+// 重置密码
 export function resetCustomer(data) {
     return fetch({
         url: '/api/services/app/customer/ResetCustomer',
@@ -57,13 +58,6 @@ export function resetCustomer(data) {
     });
 }
 
-export function chargeCustomer(data) {
-    return fetch({
-        url: '/api/services/app/customer/ChargeCustomer',
-        method: 'post',
-        data
-    });
-}
 // 批量删除角色
 export function deleteCustomers(data) {
     return fetch({

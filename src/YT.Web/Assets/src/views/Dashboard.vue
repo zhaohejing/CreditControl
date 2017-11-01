@@ -1,13 +1,89 @@
 <template>
     <div class="animated fadeIn">
-        我是首页
+        <Row :gutter="16" style="margin-top:45px">
+
+            <Col :xs="24" :sm="12" :md="12" :lg="12">
+
+            <div class="state-overview">
+                <Col span="12">
+                <div class="panel purple">
+                    <div class="symbol">
+                        <Icon type="clipboard" size="50" color="white"></Icon>
+                    </div>
+                    <div class="state-value">
+                        <div class="value">
+                            230
+                        </div>
+                        <div class="title">
+                            New Order
+                        </div>
+                    </div>
+                </div>
+
+                </Col>
+                <Col span="12">
+                <div class="panel red">
+                    <div class="symbol">
+                        <Icon type="pricetags" size="50" color="white"></Icon>
+                    </div>
+                    <div class="state-value">
+                        <div class="value">
+                            3490
+                        </div>
+                        <div class="title">
+                            Copy Sold
+                        </div>
+                    </div>
+
+                </div>
+                </Col>
+            </div>
+
+            <div class="state-overview">
+                <Col span="12">
+
+                <div class="panel blue">
+                    <div class="symbol">
+                        <Icon type="cash" size="50" color="white"></Icon>
+
+                    </div>
+                    <div class="state-value">
+                        <div class="value">
+                            22014
+                        </div>
+                        <div class="title">
+                            Total Revenue
+                        </div>
+                    </div>
+                </div>
+
+                </Col>
+                <Col span="12">
+                <div class="panel green">
+                    <div class="symbol">
+                        <Icon type="eye" size="50" color="white"></Icon>
+
+                    </div>
+                    <div class="state-value">
+                        <div class="value">
+                            390
+                        </div>
+                        <div class="title">
+                            Unique Visitors
+                        </div>
+                    </div>
+                </div>
+                </Col>
+            </div>
+
+            </Col>
+        </Row>
+     
     </div>
 </template>
 
 <script>
-
 export default {
-    components: {},
     name: 'dashboard',
     data() {
         return {
@@ -27,7 +103,6 @@ export default {
         }
     },
     mounted() {
-        const token = this.$store.getters.token;
     }
 }
 </script>

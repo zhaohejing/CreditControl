@@ -52,10 +52,6 @@ namespace YT.Customers.Dtos
         /// </summary>
         public      string Account { get; set; }
         /// <summary>
-        /// 密码
-        /// </summary>
-        public      string Password { get; set; }
-        /// <summary>
         /// 营业执照
         /// </summary>
         [DisplayName("营业执照")]

@@ -54,7 +54,7 @@ namespace YT.Models
         /// <summary>
         /// 操作姓名
         /// </summary>
-        public DateTime ActionTime { get; set; }
+        public string ActionName { get; set; }
         /// <summary>
         /// 状态
         /// </summary>

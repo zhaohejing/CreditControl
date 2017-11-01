@@ -77,8 +77,6 @@ var sheet=excelPackage.Workbook.Worksheets.Add(L("Customer"));
       _ => _.Email,   
        
       _ => _.Account,   
-       
-      _ => _.Password,   
       _ => _.Balance,   
       _ => _.State,   
        

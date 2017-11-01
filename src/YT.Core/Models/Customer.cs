@@ -84,4 +84,31 @@ namespace YT.Models
         /// </summary>
         public string AuditOpinion { get; set; }
     }
+    /// <summary>
+    /// 用户消费记录
+    /// </summary>
+    [Table("CustomerCost")]
+    public class CustomerCost : CreationAuditedEntity, ISoftDelete
+    {
+        /// <summary>
+        /// 金额
+        /// </summary>
+        public int Balance { get; set; }
+        /// <summary>
+        /// 客户id
+        /// </summary>
+        public int CustomerId { get; set; }
+        /// <summary>
+        /// 消费
+        /// </summary>
+        public int Cost { get; set; }
+        /// <summary>
+        /// 剩余金额
+        /// </summary>
+        public int CurrentBalance { get; set; }
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        public bool IsDeleted { get; set; }
+    }
 }
