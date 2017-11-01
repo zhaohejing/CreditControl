@@ -47,7 +47,13 @@ namespace YT.Customers.Dtos
         /// </summary>
         [DisplayName("邮箱")]
         public      string Email { get; set; }
+        /// <summary>
+        /// 账户
+        /// </summary>
         public      string Account { get; set; }
+        /// <summary>
+        /// 密码
+        /// </summary>
         public      string Password { get; set; }
         /// <summary>
         /// 营业执照
@@ -74,6 +80,9 @@ namespace YT.Customers.Dtos
         /// </summary>
         [DisplayName("状态")]
         public      bool? State { get; set; }
+        /// <summary>
+        /// 是否激活
+        /// </summary>
         public      bool IsActive { get; set; }
         /// <summary>
         /// 创建时间
@@ -82,3 +91,4 @@ namespace YT.Customers.Dtos
         public      DateTime CreationTime { get; set; }
     }
 }
+

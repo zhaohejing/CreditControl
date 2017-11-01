@@ -1,326 +1,174 @@
+
 <template>
-    <div class="login-container" style="background-color: #141a48;margin: 0px;overflow: hidden;">
-    <div id="canvascontainer" ref='can'></div>
-
-    <Form ref="loginForm" autoComplete="on" :model="loginForm" :rules="loginRules"  class="card-box login-form">
-        <Form-item prop="email">
-            <Input type="text" v-model="loginForm.email" placeholder="Username" autoComplete="on">
-                <Icon type="ios-person-outline" slot="prepend" ></Icon>
+  <div class="login-main">
+    <div class="login-container">
+      <Row class="g-center">
+        <col span="24">
+        <img :src="logo" style="width:180px;height:90px">
+        </col>
+      </Row>
+      <Row class="g-center g-top22">
+        <col span="24"> 北京视界奇点文化传媒有限公司
+        <br/> 后台管理平台
+        </col>
+      </Row>
+      <transition name="slide-fade">
+        <Form v-if="showLogin" ref="loginForm" autoComplete="on" :model="loginForm" :rules="loginRules" class="card-box login-form">
+          <Form-item prop="user">
+            <Input type="text" v-model="loginForm.usernameOrEmailAddress" placeholder="用户名" autoComplete="on">
             </Input>
-        </Form-item>
-        <Form-item prop="password">
-            <Input type="password" v-model="loginForm.password" placeholder="Password" @keyup.enter.native="handleLogin">
-                <Icon type="ios-locked-outline" slot="prepend"></Icon>
+          </Form-item>
+          <Form-item prop="password">
+            <Input type="password" v-model="loginForm.password" placeholder="密码" @keyup.enter.native="handleLogin">
             </Input>
-        </Form-item>
-        <Form-item>
-            <Button type="primary" @click="handleLogin('loginForm')" long>登录</Button>
-        </Form-item>
-    </Form>
-
+          </Form-item>
+          <Form-item style="margin-bottom:-2px">
+            <Button type="primary" @click="login" long>登录</Button>
+          </Form-item>
+          <Row>
+            <Col class="g-tag" span="12">
+            <a @click="reset">忘记密码？</a>
+            </Col>
+            <Col class="g-tag g-right" span="12">
+            <a @click="register">新用户注册</a>
+            </Col>
+          </Row>
+        </Form>
+      </transition>
     </div>
+    <footer-tag></footer-tag>
+  </div>
 </template>
 
 <script>
-    import { isWscnEmail } from 'utils/validate';
-
-    export default {
-      name: 'login',
-      data() {
-        const validateEmail = (rule, value, callback) => {
-          if (!isWscnEmail(value)) {
-            callback(new Error('请输入正确的合法邮箱'));
-          } else {
-            callback();
-          }
-        };
-        const validatePass = (rule, value, callback) => {
-          if (value.length < 6) {
-            callback(new Error('密码不能小于6位'));
-          } else {
-            callback();
-          }
-        };
-        return {
-          loginForm: {
-            email: 'admin',
-            password: ''
-          },
-          loginRules: {
-            email: [
-                { required: true, trigger: 'blur' }
-            ],
-            password: [
-                { required: true, trigger: 'blur', validator: validatePass }
-            ]
-          },
-          loading: false,
-          showDialog: false
-        }
+import { Authenticate } from 'api/login'
+import FooterTag from 'components/Footer'
+export default {
+  name: 'login',
+  components: {
+    FooterTag
+  },
+  data() {
+    return {
+      logo: '../../../static/img/logo.png',
+      loginForm: {
+        usernameOrEmailAddress: 'admin',
+        password: '123456'
       },
-       mounted () {
-        container = document.createElement( 'div' );
-   this.$refs.can.appendChild( container );  
-
-  camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
-  camera.position.z = 1000;
-
-  scene = new THREE.Scene();
-
-  particles = new Array();
-
-  var PI2 = Math.PI * 2;
-  var material = new THREE.ParticleCanvasMaterial( {
-
-    color: 0x0078de,
-    program: function ( context ) {
-
-      context.beginPath();
-      context.arc( 0, 0, 1, 0, PI2, true );
-      context.fill();
-
+      loginRules: {
+        usernameOrEmailAddress: [
+          { required: true, trigger: 'blur' }
+        ],
+        password: [
+          { required: true, trigger: 'blur' }
+        ]
+      },
+      loading: false,
+      showDialog: false,
+      showLogin: false
     }
-
-  } );
-
-  var i = 0;
-
-  for ( var ix = 0; ix < AMOUNTX; ix ++ ) {
-
-    for ( var iy = 0; iy < AMOUNTY; iy ++ ) {
-
-      particle = particles[ i ++ ] = new THREE.Particle( material );
-      particle.position.x = ix * SEPARATION - ( ( AMOUNTX * SEPARATION ) / 2 );
-      particle.position.z = iy * SEPARATION - ( ( AMOUNTY * SEPARATION ) / 2 );
-      scene.add( particle );
-
-    }
-
-  }
-
-  renderer = new THREE.CanvasRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  container.appendChild( renderer.domElement );
-
-  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-  document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-  document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-
-  //
-
-  window.addEventListener( 'resize', onWindowResize, false );
-
-animate();
-       },
-      methods: {
-        handleLogin() {
-          this.$refs.loginForm.validate(valid => {
-            if (valid) {
-              this.loading = true;
-              this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
-                this.$Message.success('登录成功');
-                this.loading = false;
-                this.$router.push({ path: '/' });
-              }).catch(err => {
-                this.$message.error(err);
-                this.loading = false;
-              });
-            } else {
-              return false;
-            }
+  },
+  mounted() {
+    this.showLogin = true
+  },
+  methods: {
+    // 登录
+    login() {
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
+            this.$Message.success('登录成功');
+            this.loading = false;
+            this.$router.push({ path: '/' });
+          }).catch(err => {
+            this.$message.error(err);
+            this.loading = false;
           });
-        },
-        afterQRScan() {
+        } else {
+          return false;
         }
-      },
-      init() {
-      
-      },
-      destroyed() {
-      }
+      });
     }
-
-var SEPARATION = 100, AMOUNTX = 50, AMOUNTY = 50;
-
-var container;
-var camera, scene, renderer;
-
-var particles, particle, count = 0;
-
-var mouseX = 0, mouseY = 0;
-
-var windowHalfX = window.innerWidth / 2;
-var windowHalfY = window.innerHeight / 2;
-
-
-// animate();
-
-function init() {
-
-  
-
-}
-
-function onWindowResize() {
-
-  windowHalfX = window.innerWidth / 2;
-  windowHalfY = window.innerHeight / 2;
-
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-//
-
-function onDocumentMouseMove( event ) {
-
-  mouseX = event.clientX - windowHalfX;
-  mouseY = event.clientY - windowHalfY;
-
-}
-
-function onDocumentTouchStart( event ) {
-
-  if ( event.touches.length === 1 ) {
-
-    event.preventDefault();
-
-    mouseX = event.touches[ 0 ].pageX - windowHalfX;
-    mouseY = event.touches[ 0 ].pageY - windowHalfY;
-
   }
-
-}
-
-function onDocumentTouchMove( event ) {
-
-  if ( event.touches.length === 1 ) {
-
-    event.preventDefault();
-
-    mouseX = event.touches[ 0 ].pageX - windowHalfX;
-    mouseY = event.touches[ 0 ].pageY - windowHalfY;
-
-  }
-
-}
-
-//
-
-function animate() {
-
-  requestAnimationFrame( animate );
-
-  render();
-
-
-}
-
-function render() {
-
-  camera.position.x += ( mouseX - camera.position.x ) * .05;
-  camera.position.y += ( - mouseY - camera.position.y ) * .05;
-  camera.lookAt( scene.position );
-
-  var i = 0;
-
-  for ( var ix = 0; ix < AMOUNTX; ix ++ ) {
-
-    for ( var iy = 0; iy < AMOUNTY; iy ++ ) {
-
-      particle = particles[ i++ ];
-      particle.position.y = ( Math.sin( ( ix + count ) * 0.3 ) * 50 ) + ( Math.sin( ( iy + count ) * 0.5 ) * 50 );
-      particle.scale.x = particle.scale.y = ( Math.sin( ( ix + count ) * 0.3 ) + 1 ) * 2 + ( Math.sin( ( iy + count ) * 0.5 ) + 1 ) * 2;
-
-    }
-
-  }
-
-  renderer.render( scene, camera );
-
-  count += 0.1;
-
 }
 </script>
-<style>
-.login-container a{color:#0078de;}
-#canvascontainer{
-  position: absolute;
-  top: 0px;
-}
-.wz-input-group-prepend{
-  background-color: #141a48;
-   border: 1px solid #2d8cf0;
-   border-right: none;
-   color:  #2d8cf0;
-}
-
-</style>
 
 <style rel="stylesheet/scss" lang="scss">
-     .tips{
-      font-size: 14px;
+.login-main {
+  height: 100%;
+}
+
+.g-center {
+  text-align: center
+}
+
+.login-container {
+  background: url('./img/bg.jpg');
+  margin: 0px;
+  overflow: hidden;
+  height: calc(100% - 42px);
+  background-size: cover;
+  padding-top: 80px;
+  .g-top22 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-family: "圆通一简";
+    font-size: 20px;
+    color: #e7c04a;
+    text-shadow: 1px 1px 2px#002038;
+  }
+  input {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid #fff;
+    -webkit-appearance: none;
+    border-radius: 0;
+    color: #808080;
+    height: 40px;
+    padding: 4px 18px;
+  }
+  .login-form {
+    width: 440px;
+    height: 369px;
+    padding: 100px 60px 0px;
+    position: absolute;
+    left: 50%;
+    margin-left: -219px;
+    background: url('../../../static/img/login01.png');
+    border-radius: 8px;
+    button {
+      margin-top: 27px;
+      height: 40px;
+      background: #679feB;
       color: #fff;
-      margin-bottom: 5px;
-    } 
-    .login-container {
-        height: 100vh;
-        background-color: #2d3a4b;
-
-        input:-webkit-autofill {
-            -webkit-box-shadow: 0 0 0px 1000px #293444 inset !important;
-            -webkit-text-fill-color: #fff !important;
-        }
-        input {
-            background: transparent;
-            border: 1px solid #2d8cf0;
-            -webkit-appearance: none;
-            border-radius: 3px;
-            padding: 12px 5px 12px 15px;
-            color: #eeeeee;
-            height: 47px;
-        }
-        .el-input {
-            display: inline-block;
-            height: 47px;
-            width: 85%;
-        }
-        .svg-container {
-            padding: 6px 5px 6px 15px;
-            color: #889aa4;
-        }
-
-        .title {
-            font-size: 26px;
-            font-weight: 400;
-            color: #eeeeee;
-            margin: 0px auto 40px auto;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .login-form {
-            position: absolute;
-            left: 0;
-            right: 0;
-            width: 400px;
-            padding: 35px 35px 15px 35px;
-            margin: 120px auto;
-        }
-
-        .el-form-item {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            color: #454545;
-        }
-
-        .forget-pwd {
-            color: #fff;
-        }
+      border: 1px solid #679feb;
+      border-radius: 0;
+      font-size: 14px;
+      margin-bottom: 16px;
     }
+    .g-tag {
+      color: #657fa4;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .g-right {
+      text-align: right
+    }
+  }
+}
 
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translate3d(0, -50px, 0);
+  opacity: 0;
+}
 </style>

@@ -42,7 +42,6 @@ namespace YT.EntityFramework
 
         public virtual IDbSet<Customer> Customers { get; set; }
         public virtual IDbSet<Product> Products { get; set; }
-        public virtual IDbSet<OrderItem> OrderItems { get; set; }
         public virtual IDbSet<Order> Orders { get; set; }
         public virtual IDbSet<ChargeRecord> ChargeRecords { get; set; }
         public virtual IDbSet<ApplyCharge> ApplyCharges { get; set; }

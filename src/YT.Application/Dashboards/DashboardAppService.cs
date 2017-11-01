@@ -32,6 +32,7 @@ namespace YT.Dashboards
         private readonly IRepository<Category> _cateRepository;
         private readonly IRepository<Product> _productRepository;
         private readonly IBinaryObjectManager _binaryObjectManager;
+        private readonly IRepository<Order> _ordeRepository;
 
         /// <summary>
         /// host
@@ -46,15 +47,21 @@ namespace YT.Dashboards
         /// <param name="cateRepository"></param>
         /// <param name="productRepository"></param>
         /// <param name="binaryObjectManager"></param>
-        public DashboardAppService(IRepository<Customer> customerRepository,
-            ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration, IRepository<Category> cateRepository,
-            IRepository<Product> productRepository, IBinaryObjectManager binaryObjectManager)
+        /// <param name="ordeRepository"></param>
+        public DashboardAppService(
+            IRepository<Customer> customerRepository,
+            ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
+            IRepository<Category> cateRepository,
+            IRepository<Product> productRepository,
+            IBinaryObjectManager binaryObjectManager,
+            IRepository<Order> ordeRepository)
         {
             _customerRepository = customerRepository;
             _smtpEmailSenderConfiguration = smtpEmailSenderConfiguration;
             _cateRepository = cateRepository;
             _productRepository = productRepository;
             _binaryObjectManager = binaryObjectManager;
+            _ordeRepository = ordeRepository;
         }
 
         /// <summary>
@@ -130,6 +137,31 @@ namespace YT.Dashboards
             customer.Password = input.Password;
             customer.EmailCode = string.Empty;
         }
+        /// <summary>
+        /// 创建订单
+        /// </summary>
+        /// <returns></returns>
+        public async Task CreateOrder(CreateOrderInput input)
+        {
+            var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.CustomerId);
+            if (customer == null) throw new UserFriendlyException("该账户不存在");
+            var product = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
+            if (product == null) throw new UserFriendlyException("该产品不存在");
+            var totalPrice = product.Price * input.Count;
+            var dto = new Order()
+            {
+                CustomerId = input.CustomerId,
+                OrderNum = Guid.NewGuid().ToString("N"),
+                State = null,
+                Count = input.Count,
+                TotalPrice = totalPrice,
+                ProductId = product.Id,
+                Price = product.Price,
+            };
+            await _ordeRepository.InsertAsync(dto);
+        }
+
+
         /// <summary>
         /// 获取所有产品列表
         /// </summary>

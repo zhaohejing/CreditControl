@@ -36,7 +36,7 @@ const user = {
   actions: {
     // 邮箱登录
     LoginByEmail({ commit }, userInfo) {
-      const email = userInfo.email.trim();
+      const email = userInfo.usernameOrEmailAddress.trim();
       return new Promise((resolve, reject) => {
         Authenticate(email, userInfo.password)
           .then(response => {

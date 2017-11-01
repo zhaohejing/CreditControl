@@ -90,7 +90,15 @@ namespace YT.Models
         /// <summary>
         /// 价格
         /// </summary>
+        public int TotalPrice { get; set; }
+        /// <summary>
+        /// 单价
+        /// </summary>
         public int Price { get; set; }
+        /// <summary>
+        /// 个数
+        /// </summary>
+        public int Count { get; set; }
         /// <summary>
         /// 客户id
         /// </summary>
@@ -104,33 +112,27 @@ namespace YT.Models
         /// </summary>
         public bool? State { get; set; }
         public bool IsDeleted { get; set; }
-        [ForeignKey("OrderId")]
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
-
+        /// <summary>
+        /// 产品id
+        /// </summary>
+        public int ProductId { get; set; }
+        /// <summary>
+        /// dto
+        /// </summary>
+        public virtual Product Product { get; set; }
+        /// <summary>
+        /// 资质认证id
+        /// </summary>
+        public int? FormId { get; set; }
+        public virtual CustomerForm Form { get; set; }
     }
     /// <summary>
-    /// 订单项
+    /// 资质认证
     /// </summary>
-    [Table("orderitem")]
-    public class OrderItem : CreationAuditedEntity, ISoftDelete
-    {
-        public int OrderId { get; set; }
-        public virtual Order Order { get; set; }
-        public int ProductId { get; set; }
-        public virtual Product Product { get; set; }
-        public string ProductName { get; set; }
-        public int Price { get; set; }
-        public int Count { get; set; }
-        public int TotalPrice { get; set; }
-        public bool IsDeleted { get; set; }
-        [ForeignKey("OrderItemId")]
-        public virtual ICollection<CustomerForm> CustomerForms { get; set; }
-    }
+    [Table("CustomerForm")]
 
     public class CustomerForm : CreationAuditedEntity, ISoftDelete
     {
-        public int OrderItemId { get; set; }
-        public virtual OrderItem OrderItem { get; set; }
         /// <summary>
         /// 企业名
         /// </summary>
