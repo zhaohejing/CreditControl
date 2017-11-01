@@ -241,7 +241,10 @@ namespace YT.Dashboards
                     Count = o.c.Count,
                     FormId = o.c.FormId,
                     Price = o.d.Price,
-                    ProductName = o.d.ProductName,TotalPrice=o.c.TotalPrice
+                    ProductName = o.d.ProductName,
+                    TotalPrice = o.c.TotalPrice,
+                    OrderNum = o.c.OrderNum,
+                    CreationTime = o.c.CreationTime
                 };
                 if (o.d.Profile.HasValue)
                 {

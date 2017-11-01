@@ -6,7 +6,7 @@ using YT.Models;
 
 namespace YT.Products.Dtos
 {
-	/// <summary>
+    /// <summary>
     /// 产品列表Dto
     /// </summary>
     [AutoMapFrom(typeof(Product))]
@@ -16,41 +16,41 @@ namespace YT.Products.Dtos
         /// 价格
         /// </summary>
         [DisplayName("价格")]
-        public      int Price { get; set; }
+        public int Price { get; set; }
         /// <summary>
         /// 二级分类
         /// </summary>
         [DisplayName("二级分类")]
-        public      string LevelTwoName { get; set; }
+        public string LevelTwoName { get; set; }
         /// <summary>
         /// 一级分类
         /// </summary>
-        public      string LevelOneName { get; set; }
+        public string LevelOneName { get; set; }
         /// <summary>
         /// 描述
         /// </summary>
         [DisplayName("描述")]
-        public      string Description { get; set; }
+        public string Description { get; set; }
         /// <summary>
         /// 内容
         /// </summary>
         [DisplayName("内容")]
-        public      string Content { get; set; }
+        public string Content { get; set; }
         /// <summary>
         /// 是否启用
         /// </summary>
         [DisplayName("是否启用")]
-        public      bool IsActive { get; set; }
+        public bool IsActive { get; set; }
         /// <summary>
         /// 图片
         /// </summary>
         [DisplayName("图片")]
-        public      Guid? Profile { get; set; }
+        public Guid? Profile { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
         [DisplayName("创建时间")]
-        public      DateTime CreationTime { get; set; }
+        public DateTime CreationTime { get; set; }
         /// <summary>
         /// 产品名称
         /// </summary>
@@ -104,16 +104,25 @@ namespace YT.Products.Dtos
         /// <summary>
         /// 数量
         /// </summary>
-        
+
         public int Count { get; set; } = 1;
     }
     /// <summary>
     /// 客户已有订单
     /// </summary>
     public class OrderProductDetail
-    {/// <summary>
-    /// 订单id
-    /// </summary>
+    {
+        /// <summary>
+        /// 订单编号
+        /// </summary>
+        public string OrderNum { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreationTime { get; set; }
+        /// <summary>
+        /// 订单id
+        /// </summary>
         public int Id { get; set; }
         /// <summary>
         /// 产品名称
@@ -142,6 +151,6 @@ namespace YT.Products.Dtos
         /// <summary>
         /// 资料id
         /// </summary>
-        public  int? FormId { get; set; }
+        public int? FormId { get; set; }
     }
 }
