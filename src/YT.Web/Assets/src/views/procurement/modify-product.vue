@@ -91,7 +91,7 @@ export default {
                 }
             },
             upload: {
-                url: 'http://localhost:6234/api/File/ImageUpload',
+                url: 'api/api/File/ImageUpload',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.token }
 
             },

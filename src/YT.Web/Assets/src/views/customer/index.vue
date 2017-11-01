@@ -19,10 +19,8 @@
         </Row>
         <!-- 添加和编辑窗口 -->
         <Modal :width='800' :transfer='false' v-model='modal.isEdit' :title='modal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
-             <Form ref="cate" :model="modal.current" :rules="ruleValidate" inline :label-width="120">
-                <FormItem label="分类名称" prop="name">
-                    <Input v-model="modal.current.name" placeholder="分类名称"></Input>
-                </FormItem>
+             <Form ref="cate" :model="modal.current"  inline :label-width="120">
+             
             </Form>
         </Modal>
 
