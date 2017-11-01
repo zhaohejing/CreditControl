@@ -79,15 +79,7 @@ var sheet=excelPackage.Workbook.Worksheets.Add(L("Customer"));
       _ => _.Account,   
        
       _ => _.Password,   
-       
-      _ => _.License,   
-       
-      _ => _.FaceIdentityCard,   
-       
-      _ => _.BackIdentityCard,   
-       
       _ => _.Balance,   
-       
       _ => _.State,   
        
       _ => _.IsActive,   

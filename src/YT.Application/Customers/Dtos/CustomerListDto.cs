@@ -59,17 +59,12 @@ namespace YT.Customers.Dtos
         /// 营业执照
         /// </summary>
         [DisplayName("营业执照")]
-        public      Guid? License { get; set; }
+        public      string LicenseUrl { get; set; }
         /// <summary>
         /// 身份证正面
         /// </summary>
         [DisplayName("身份证正面")]
-        public      Guid? FaceIdentityCard { get; set; }
-        /// <summary>
-        /// 身份证背面
-        /// </summary>
-        [DisplayName("身份证背面")]
-        public      Guid? BackIdentityCard { get; set; }
+        public      string IdentityCardUrl { get; set; }
         /// <summary>
         /// 余额
         /// </summary>

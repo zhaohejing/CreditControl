@@ -24,11 +24,16 @@ namespace YT.Dashboards
           Task<CustomerListDto> Authenticate(CustomerLoginDto input);
 
         /// <summary>
+        /// 创建订单
+        /// </summary>
+        /// <returns></returns>
+        Task CreateOrder(CreateOrderInput input);
+        /// <summary>
         /// 重置密码链接
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task ResetPassword(ResetPasswordInput input);
+        Task ResetPassword(ResetPasswordInput input);
 
         /// <summary>
         /// 修改密码

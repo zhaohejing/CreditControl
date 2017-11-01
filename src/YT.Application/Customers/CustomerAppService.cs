@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -15,6 +16,7 @@ using YT.Customers.Dtos;
 using YT.Customers.Exporting;
 using YT.Dto;
 using YT.Models;
+using YT.Storage;
 
 namespace YT.Customers
 {
@@ -30,16 +32,24 @@ namespace YT.Customers
         private readonly ICustomerListExcelExporter _customerListExcelExporter;
         private readonly IRepository<ChargeRecord> _chargeRecordRepository;
         private readonly IRepository<ApplyCharge> _applyChargeRepository;
-        /// <summary>
-        /// 构造方法
-        /// </summary>
+        private readonly IBinaryObjectManager _objectManager;
+        private static  string Host => ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
+       /// <summary>
+       /// ctor
+       /// </summary>
+       /// <param name="customerRepository"></param>
+       /// <param name="customerListExcelExporter"></param>
+       /// <param name="chargeRecordRepository"></param>
+       /// <param name="applyChargeRepository"></param>
+       /// <param name="objectManager"></param>
         public CustomerAppService(IRepository<Customer, int> customerRepository,
-      ICustomerListExcelExporter customerListExcelExporter, IRepository<ChargeRecord> chargeRecordRepository, IRepository<ApplyCharge> applyChargeRepository)
+      ICustomerListExcelExporter customerListExcelExporter, IRepository<ChargeRecord> chargeRecordRepository, IRepository<ApplyCharge> applyChargeRepository, IBinaryObjectManager objectManager)
         {
             _customerRepository = customerRepository;
             _customerListExcelExporter = customerListExcelExporter;
             _chargeRecordRepository = chargeRecordRepository;
             _applyChargeRepository = applyChargeRepository;
+            _objectManager = objectManager;
         }
 
 
@@ -133,7 +143,7 @@ namespace YT.Customers
             var current =await AbpSession.Current();
             var customer = await _customerRepository.FirstOrDefaultAsync(input.Id);
             if (customer == null) throw new UserFriendlyException("当前客户信息不存在");
-            customer.Balance = input.Money;
+            customer.Balance += input.Money;
             await _chargeRecordRepository.InsertAsync(new ChargeRecord()
             {
                 ActionName = current.Name,
@@ -151,7 +161,27 @@ namespace YT.Customers
         {
             var entity = await _customerRepository.GetAsync(input.Id);
 
-            return entity.MapTo<CustomerListDto>();
+            var dto= entity.MapTo<CustomerListDto>();
+            if (entity.License.HasValue)
+            {
+                var pro = await _objectManager.GetOrNullAsync(entity.License.Value);
+                if (pro!=null)
+                {
+                    dto.LicenseUrl = Host + pro.Url;
+
+                }
+            }
+            if (entity.IdentityCard.HasValue)
+            {
+                var pro = await _objectManager.GetOrNullAsync(entity.IdentityCard.Value);
+                if (pro != null)
+                {
+                    dto.IdentityCardUrl =Host+ pro.Url;
+
+
+                }
+            }
+            return dto;
         }
 
 

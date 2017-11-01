@@ -17,10 +17,130 @@
                 </template>
             </milk-table>
         </Row>
-        <!-- 添加和编辑窗口 -->
-        <Modal :width='800' :transfer='false' v-model='modal.isEdit' :title='modal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
-             <Form ref="cate" :model="modal.current"  inline :label-width="120">
-             
+        <!-- 详情 -->
+        <Modal :transfer='false' v-model='detailModal.isShow' :title='detailModal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
+            <Row>
+                <Col :span="4">
+                <p>企业名称:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.companyName }}</p>
+                </Col>
+                <Col :span="4">
+                <p>省份:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.provence }}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col :span="4">
+                <p>城市:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.city }}</p>
+                </Col>
+                <Col :span="4">
+                <p>详细地址:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.address }}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col :span="4">
+                <p>联系人:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.contact }}</p>
+                </Col>
+                <Col :span="4">
+                <p>手机:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.mobile }}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col :span="4">
+                <p>邮箱:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.email }}</p>
+                </Col>
+                <Col :span="4">
+                <p>账户:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.account }}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col :span="4">
+                <p>余额:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.balance }}</p>
+                </Col>
+                <Col :span="4">
+                <p>状态:</p>
+                </Col>
+                <Col :span="8">
+                <p>{{detailModal.current.state?'已审核':'未审核' }}</p>
+                </Col>
+            </Row>
+            <Row>
+                <Col :span="4">
+                <p>营业执照:</p>
+                </Col>
+                <Col :span="8">
+                <img class="img" :src="detailModal.current.licenseUrl" />
+                </Col>
+                <Col :span="4">
+                <p>法人证明:</p>
+                </Col>
+                <Col :span="8">
+                <img class="img" :src="detailModal.current.identityCardUrl" />
+                </Col>
+            </Row>
+        </Modal>
+
+        <!-- 审核窗口 -->
+        <Modal :transfer='false' v-model='auditModal.isShow' :title='auditModal.title' :mask-closable='false' @on-ok='commitAudit' @on-cancel='cancel'>
+            <Form ref="audit" :model="auditModal.current" inline :label-width="120">
+                <Row>
+                    <Col>
+                    <FormItem label="审核状态">
+                        <i-switch v-model="auditModal.current.state" size="large">
+                        </i-switch>
+                    </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                    <FormItem v-if="!auditModal.current.state" label="审核意见" prop="name">
+                        <Input v-model="auditModal.current.opinion" type="textarea" :autosize="{minRows: 2,maxRows: 5}" style="width:300px;" placeholder="请输入..."></Input>
+                    </FormItem>
+                    </Col>
+                </Row>
+
+            </Form>
+        </Modal>
+
+        <!-- 充值窗口 -->
+        <Modal :transfer='false' v-model='chargeModal.isShow' :title='chargeModal.title' :mask-closable='false' @on-ok='commitCharge' @on-cancel='cancel'>
+            <Form ref="charge" :model="chargeModal.current" inline :label-width="120">
+                <FormItem label="充值金额" prop="name">
+                    <InputNumber :min="1" v-model="chargeModal.current.money" placeholder="充值金额"></InputNumber>
+                </FormItem>
+            </Form>
+        </Modal>
+        <!-- 重置密码窗口 -->
+        <Modal :transfer='false' v-model='resetModal.isShow' :title='resetModal.title' :mask-closable='false' @on-ok='commitReset' @on-cancel='cancel'>
+            <Form ref="charge" :model="resetModal.current" inline :label-width="120">
+                <FormItem label="新密码" prop="password">
+                    <Input type="password" v-model="resetModal.current.password" placeholder="新密码"></Input>
+                </FormItem>
             </Form>
         </Modal>
 
@@ -28,7 +148,7 @@
 </template>
 
 <script>
-import { getCustomers, deleteCustomer,auditCustomer,chargeCustomer,resetCustomer } from 'api/customer';
+import { getCustomers, deleteCustomer, auditCustomer, chargeCustomer, resetCustomer, getCustomer } from 'api/customer';
 export default {
     name: 'customer',
     data() {
@@ -119,6 +239,10 @@ export default {
                                     type: 'error',
                                     size: 'small'
                                 },
+                                style: {
+                                    marginRight: '5px',
+                                    hidden: params.row.state
+                                },
                                 on: {
                                     click: () => {
                                         this.charge(params.row)
@@ -132,7 +256,7 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                        this.delete(params.row)
+                                        this.reset(params.row)
                                     }
                                 }
                             }, '重置密码')) //组件2
@@ -144,8 +268,17 @@ export default {
             ],
             searchApi: getCustomers,
             params: { companyName: '', contact: '', city: '' },
-            modal: {
-                isEdit: false, title: '添加', current: null
+            detailModal: {
+                isShow: false, title: '客户详情', current: {}
+            },
+            auditModal: {
+                isShow: false, title: '客户审核', current: { state: true, opinion: "", id: null }
+            },
+            chargeModal: {
+                isShow: false, title: '客户充值', current: { money: 0, id: null }
+            },
+            resetModal: {
+                isShow: false, title: '密码重置', current: { passwor: 0, id: null }
             }
         }
     },
@@ -175,19 +308,76 @@ export default {
                 }
             })
         },
-        audit(row){
-
+        reset(row) {
+            this.resetModal.isShow = true;
+            this.resetModal.title = this.resetModal.title + ': ' + row.companyName;
+            this.resetModal.current.id = row.id;
         },
-        charge(row){
-
+        detail(row) {
+            getCustomer({ id: row.id }).then(r => {
+                if (r.data.success) {
+                    this.detailModal.current = r.data.result;
+                    this.detailModal.isShow = true;
+                    this.detailModal.title = this.detailModal.title + ': ' + row.companyName;
+                } else {
+                    this.$Message.warn('获取信息失败');
+                }
+            }).catch(e => {
+                this.$Message.error(e.message);
+            })
+        },
+        audit(row) {
+            this.auditModal.isShow = true;
+            this.auditModal.title = this.auditModal.title + ': ' + row.companyName;
+            this.auditModal.current.id = row.id;
+        },
+        charge(row) {
+            this.chargeModal.isShow = true;
+            this.chargeModal.title = this.chargeModal.title + ': ' + row.companyName;
+            this.chargeModal.current.id = row.id;
+        },
+        commitCharge() {
+            chargeCustomer(this.chargeModal.current).then(r => {
+                if (r.data.success) {
+                    this.$refs.list.initData();
+                }
+            }).catch(e => {
+                this.$Message.error(e.message);
+            })
+        },
+        commitReset() {
+            chargeCustomer(this.resetModal.current).then(r => {
+                if (r.data.success) {
+                    this.$refs.list.initData();
+                }
+            }).catch(e => {
+                this.$Message.error(e.message);
+            })
+        },
+        commitAudit() {
+            auditCustomer(this.auditModal.current).then(r => {
+                if (r.data.success) {
+                    this.$refs.list.initData();
+                }
+            }).catch(e => {
+                this.$Message.error(e.message);
+            })
         },
         save() {
             this.$refs.product.commit();
         },
         cancel() {
-            this.modal.isEdit = false;
-            this.modal.title = '添加用户';
-            this.modal.current = null;
+            this.auditModal.isShow = false;
+            this.auditModal.title = '客户审核';
+
+            this.chargeModal.isShow = false;
+            this.chargeModal.title = '客户充值';
+
+            this.resetModal.isShow = false;
+            this.resetModal.title = '密码重置';
+
+            this.detailModal.isShow = false;
+            this.detailModal.title = '客户详情';
             this.$refs.list.initData();
         }
 
@@ -196,5 +386,7 @@ export default {
 </script>
 
 <style type='text/css' scoped>
-
+.img {
+    width: 70%;
+}
 </style>
