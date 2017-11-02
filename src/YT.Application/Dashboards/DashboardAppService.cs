@@ -265,19 +265,20 @@ namespace YT.Dashboards
         {
             var order = await _ordeRepository.FirstOrDefaultAsync(input.Id);
             if (order == null) throw new UserFriendlyException("该订单不存在");
-                var dto = new OrderProductDetail()
-                {
-                    Id = order.Id,
-                    Cate = order.Product.LevelTwo.Name,
-                    Count = order.Count,
-                    FormId = order.FormId,
-                    Price = order.Price,
-                    ProductName = order.Product.ProductName,
-                    TotalPrice = order.TotalPrice,
-                    OrderNum = order.OrderNum,
-                    CreationTime = order.CreationTime,
-                    State = order.State,ProductId = order.ProductId
-                };
+            var dto = new OrderProductDetail()
+            {
+                Id = order.Id,
+                Cate = order.Product.LevelTwo.Name,
+                Count = order.Count,
+                FormId = order.FormId,
+                Price = order.Price,
+                ProductName = order.Product.ProductName,
+                TotalPrice = order.TotalPrice,
+                OrderNum = order.OrderNum,
+                CreationTime = order.CreationTime,
+                State = order.State,
+                ProductId = order.ProductId
+            };
             if (order.Product.Profile.HasValue)
             {
                 dto.Profile = Host + (await _objectManager.GetOrNullAsync(order.Product.Profile.Value))?.Url;
@@ -324,7 +325,7 @@ namespace YT.Dashboards
             await _ordeRepository.InsertAsync(dto);
         }
 
-       
+
 
         /// <summary>
         /// 获取所有产品列表
@@ -376,7 +377,20 @@ namespace YT.Dashboards
             var model = input.MapTo<Customer>();
             await _customerRepository.InsertAsync(model);
         }
-
+        /// <summary>
+        /// 用户modify
+        /// </summary>
+        /// <returns></returns>
+        public async Task Modify(CustomerEditDto input)
+        {
+            if (!input.Password.Equals(input.RepeatPassword)) throw new UserFriendlyException("两次密码不一致");
+            var count =
+                await
+                    _customerRepository.CountAsync(c => (c.Account.Equals(input.Account) || c.Email.Equals(input.Email)) && c.Id != input.Id.Value);
+            if (count > 0) throw new UserFriendlyException("该账户或邮箱已被注册,请重试");
+            var model = input.MapTo<Customer>();
+            await _customerRepository.UpdateAsync(model);
+        }
         /// <summary>
         /// 发送邮件
         /// </summary>

@@ -10,8 +10,12 @@ namespace YT.Customers.Dtos
     /// 客户信息列表Dto
     /// </summary>
     [AutoMapFrom(typeof(Customer))]
-    public class CustomerListDto : EntityDto<int>
+    public class CustomerListDto 
     {
+        /// <summary>
+        /// key
+        /// </summary>
+        public int? Id { get; set; }
         /// <summary>
         /// 公司名
         /// </summary>
@@ -57,10 +61,18 @@ namespace YT.Customers.Dtos
         [DisplayName("营业执照")]
         public      string LicenseUrl { get; set; }
         /// <summary>
+        /// 资质
+        /// </summary>
+        public      Guid? License { get; set; }
+        /// <summary>
         /// 身份证正面
         /// </summary>
         [DisplayName("身份证正面")]
         public      string IdentityCardUrl { get; set; }
+        /// <summary>
+        /// card
+        /// </summary>
+        public Guid? IdentityCard { get; set; }
         /// <summary>
         /// 余额
         /// </summary>
@@ -75,6 +87,8 @@ namespace YT.Customers.Dtos
         /// 是否激活
         /// </summary>
         public      bool IsActive { get; set; }
+
+  
         /// <summary>
         /// 创建时间
         /// </summary>

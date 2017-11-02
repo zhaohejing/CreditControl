@@ -86,11 +86,16 @@ namespace YT.Dashboards
         Task Register(CustomerEditDto input);
 
         /// <summary>
+        /// 用户modify
+        /// </summary>
+        /// <returns></returns>
+        Task Modify(CustomerEditDto input);
+        /// <summary>
         /// 获取所有产品列表
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input);
+        Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input);
 
         /// <summary>
         /// 获取所有产品列表
