@@ -25,14 +25,7 @@
           <Form-item style="margin-bottom:-2px">
             <Button type="primary" @click="login" long>登录</Button>
           </Form-item>
-          <Row>
-            <Col class="g-tag" span="12">
-            <a @click="reset">忘记密码？</a>
-            </Col>
-            <Col class="g-tag g-right" span="12">
-            <a @click="register">新用户注册</a>
-            </Col>
-          </Row>
+         
         </Form>
       </transition>
     </div>
