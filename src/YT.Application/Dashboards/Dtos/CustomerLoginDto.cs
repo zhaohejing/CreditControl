@@ -74,4 +74,6 @@ namespace YT.Dashboards.Dtos
         /// </summary>
         public string CancelReason { get; set; }
     }
+
+  
 }

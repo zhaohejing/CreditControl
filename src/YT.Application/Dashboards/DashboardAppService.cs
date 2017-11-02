@@ -244,7 +244,9 @@ namespace YT.Dashboards
                     ProductName = o.d.ProductName,
                     TotalPrice = o.c.TotalPrice,
                     OrderNum = o.c.OrderNum,
-                    CreationTime = o.c.CreationTime
+                    CreationTime = o.c.CreationTime,
+                    State = o.c.State,
+                    ProductId = o.d.Id
                 };
                 if (o.d.Profile.HasValue)
                 {
@@ -253,6 +255,34 @@ namespace YT.Dashboards
                 output.Add(dto);
             }
             return output;
+        }
+        /// <summary>
+        /// 获取所有产品列表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<OrderProductDetail> GetHaveProduct(EntityDto<int> input)
+        {
+            var order = await _ordeRepository.FirstOrDefaultAsync(input.Id);
+            if (order == null) throw new UserFriendlyException("该订单不存在");
+                var dto = new OrderProductDetail()
+                {
+                    Id = order.Id,
+                    Cate = order.Product.LevelTwo.Name,
+                    Count = order.Count,
+                    FormId = order.FormId,
+                    Price = order.Price,
+                    ProductName = order.Product.ProductName,
+                    TotalPrice = order.TotalPrice,
+                    OrderNum = order.OrderNum,
+                    CreationTime = order.CreationTime,
+                    State = order.State,ProductId = order.ProductId
+                };
+            if (order.Product.Profile.HasValue)
+            {
+                dto.Profile = Host + (await _objectManager.GetOrNullAsync(order.Product.Profile.Value))?.Url;
+            }
+            return dto;
         }
         /// <summary>
         /// 修改密码
@@ -294,6 +324,7 @@ namespace YT.Dashboards
             await _ordeRepository.InsertAsync(dto);
         }
 
+       
 
         /// <summary>
         /// 获取所有产品列表

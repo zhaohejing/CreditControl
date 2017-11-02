@@ -137,6 +137,15 @@ namespace YT.Products.Dtos
         /// </summary>
         public string Profile { get; set; }
         /// <summary>
+        /// 产品id
+        /// </summary>
+        public int ProductId { get; set; }
+        /// <summary>
+        /// 订单状态
+        /// </summary>
+        public bool? State { get; set; }
+
+        /// <summary>
         /// 单价
         /// </summary>
         public int Price { get; set; }
