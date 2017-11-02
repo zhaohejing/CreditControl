@@ -105,3 +105,4 @@ namespace YT.Dashboards
           Task<ProductDetail> GetProductDetail(EntityDto<int> input);
     }
 }
+
