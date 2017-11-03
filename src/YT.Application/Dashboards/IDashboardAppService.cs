@@ -31,6 +31,13 @@ namespace YT.Dashboards
         Task<CustomerListDto> GetInfo(EntityDto<int> input);
 
         /// <summary>
+        /// 获取用户消费记录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+          Task<List<CustomerCostListDto>> GetCustomerCosts(GetCustomerCostsInput input);
+
+        /// <summary>
         /// 获取订单详情
         /// </summary>
         /// <param name="input"></param>

@@ -177,6 +177,22 @@ namespace YT.Dashboards
             order.FormId = form.Id;
         }
         /// <summary>
+        /// 获取用户消费记录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<CustomerCostListDto>> GetCustomerCosts(GetCustomerCostsInput input)
+        {
+            var now = DateTime.Now.Date;
+            DateTime left = now.AddMonths(-input.Num);
+            var lists = await _costRepository.GetAllListAsync(c => c.CustomerId == input.CustomerId
+                                                                   && c.CreationTime >= left
+            );
+            if (!lists.Any()) return null;
+            return lists.MapTo<List<CustomerCostListDto>>();
+        }
+
+        /// <summary>
         /// 获取订单扩展信息
         /// </summary>
         /// <returns></returns>
