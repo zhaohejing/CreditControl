@@ -244,8 +244,8 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input)
         {
-            var products = await _productRepository.GetAll()
-                .WhereIf(input.Id.HasValue, c => c.LevelTwoId == input.Id.Value && c.IsActive).ToListAsync();
+            var products = await _productRepository.GetAll().Where(c=>c.IsActive)
+                .WhereIf(input.Id.HasValue, c => c.LevelTwoId == input.Id.Value).ToListAsync();
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
             foreach (var product in products)
