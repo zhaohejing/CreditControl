@@ -144,7 +144,7 @@ export default {
             }
           });
         } else {
-          this.$Message.error("表单验证失败!");
+          this.$Message.error("请完善表单数据!");
           return;
         }
       });

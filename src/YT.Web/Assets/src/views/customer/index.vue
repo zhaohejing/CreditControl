@@ -148,246 +148,298 @@
 </template>
 
 <script>
-import { getCustomers, deleteCustomer, auditCustomer, resetCustomer, getCustomer } from 'api/customer';
-import { chargeCustomer } from 'api/record';
+import {
+  getCustomers,
+  deleteCustomer,
+  auditCustomer,
+  resetCustomer,
+  getCustomer
+} from "api/customer";
+import { chargeCustomer } from "api/record";
 export default {
-    name: 'customer',
-    data() {
-        return {
-            cols: [
+  name: "customer",
+  data() {
+    return {
+      cols: [
+        {
+          title: "公司名称",
+          key: "companyName"
+        },
+        {
+          title: "联系人",
+          key: "contact"
+        },
+        {
+          title: "所在城市",
+          key: "city"
+        },
+        {
+          title: "余额",
+          key: "balance"
+        },
+        {
+          title: "详细地址",
+          key: "address"
+        },
+        {
+          title: "状态",
+          key: "state",
+          render: (h, params) => {
+            return params.row.state ? "已审核" : "未审核";
+          }
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          width: "250px",
+          render: (h, params) => {
+            let children = [];
+            children.push(
+              h(
+                "Button",
                 {
-                    title: '公司名称',
-                    key: 'companyName'
-                },
-                {
-                    title: '联系人',
-                    key: 'contact'
-                },
-                {
-                    title: '所在城市',
-                    key: 'city'
-                },
-                {
-                    title: '余额',
-                    key: 'balance'
-                },
-                {
-                    title: '详细地址',
-                    key: 'address'
-                },
-                {
-                    title: '状态',
-                    key: 'state',
-                    render: (h, params) => {
-                        return params.row.state ? '已审核' : '未审核';
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                      this.detail(params.row);
                     }
+                  }
                 },
+                "详情"
+              )
+            ); //组件1
+            children.push(
+              h(
+                "Button",
                 {
-                    title: '操作',
-                    key: 'action',
-                    align: 'center',
-                    width: '250px',
-                    render: (h, params) => {
-                        let children = [];
-                        children.push(h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small'
-                            },
-                            style: {
-                                marginRight: '5px'
-                            },
-                            on: {
-                                click: () => {
-                                    this.detail(params.row)
-                                }
-                            }
-                        }, '详情')) //组件1
-                        children.push(h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small'
-                            },
-                            style: {
-                                marginRight: '5px',
-                                hidden: !params.row.state
-                            },
-                            on: {
-                                click: () => {
-                                    this.delete(params.row)
-                                }
-                            }
-                        }, '删除')) //组件3
-                        if (!params.row.state) {
-                            children.push(h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px',
-                                    hidden: params.row.state
-                                },
-                                on: {
-                                    click: () => {
-                                        this.audit(params.row)
-                                    }
-                                }
-                            }, '审核')) //组件3
-                        } else {
-                            children.push(h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px',
-                                    hidden: params.row.state
-                                },
-                                on: {
-                                    click: () => {
-                                        this.charge(params.row)
-                                    }
-                                }
-                            }, '充值')) //组件2
-                            children.push(h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.reset(params.row)
-                                    }
-                                }
-                            }, '重置密码')) //组件2
-                        }
-
-                        return h('div', children)
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px",
+                    hidden: !params.row.state
+                  },
+                  on: {
+                    click: () => {
+                      this.delete(params.row);
                     }
-                }
-            ],
-            searchApi: getCustomers,
-            params: { companyName: '', contact: '', city: '' },
-            detailModal: {
-                isShow: false, title: '客户详情', current: {}
-            },
-            auditModal: {
-                isShow: false, title: '客户审核', current: { state: true, opinion: "", id: null }
-            },
-            chargeModal: {
-                isShow: false, title: '客户充值', current: { money: 0, id: null }
-            },
-            resetModal: {
-                isShow: false, title: '密码重置', current: { passwor: 0, id: null }
+                  }
+                },
+                "删除"
+              )
+            ); //组件3
+            if (!params.row.state) {
+              children.push(
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px",
+                      hidden: params.row.state
+                    },
+                    on: {
+                      click: () => {
+                        this.audit(params.row);
+                      }
+                    }
+                  },
+                  "审核"
+                )
+              ); //组件3
+            } else {
+              children.push(
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "error",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px",
+                      hidden: params.row.state
+                    },
+                    on: {
+                      click: () => {
+                        this.charge(params.row);
+                      }
+                    }
+                  },
+                  "充值"
+                )
+              ); //组件2
+              children.push(
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "error",
+                      size: "small"
+                    },
+                    on: {
+                      click: () => {
+                        this.reset(params.row);
+                      }
+                    }
+                  },
+                  "重置密码"
+                )
+              ); //组件2
             }
+
+            return h("div", children);
+          }
         }
+      ],
+      searchApi: getCustomers,
+      params: { companyName: "", contact: "", city: "" },
+      detailModal: {
+        isShow: false,
+        title: "客户详情",
+        current: {}
+      },
+      auditModal: {
+        isShow: false,
+        title: "客户审核",
+        current: { state: true, opinion: "", id: null }
+      },
+      chargeModal: {
+        isShow: false,
+        title: "客户充值",
+        current: { money: 0, id: null }
+      },
+      resetModal: {
+        isShow: false,
+        title: "密码重置",
+        current: { passwor: 0, id: null }
+      }
+    };
+  },
+  components: {},
+  created() {
+    this.$root.eventHub.$on("customer", () => {
+      this.cancel();
+    });
+  },
+  destroyed() {
+    this.$root.eventHub.$off("customer");
+  },
+  methods: {
+    // 删除
+    delete(model) {
+      const table = this.$refs.list;
+      this.$Modal.confirm({
+        title: "删除提示",
+        content: "确定要删除当前客户么?",
+        onOk: () => {
+          const parms = { id: model.id };
+          deleteCustomer(parms).then(c => {
+            if (c.data.success) {
+              table.initData();
+            }
+          });
+        }
+      });
     },
-    components: {
+    reset(row) {
+      this.resetModal.isShow = true;
+      this.resetModal.title = this.resetModal.title + ": " + row.companyName;
+      this.resetModal.current.id = row.id;
     },
-    created() {
-        this.$root.eventHub.$on('customer', () => {
-            this.cancel();
+    detail(row) {
+      getCustomer({ id: row.id })
+        .then(r => {
+          if (r.data.success) {
+            this.detailModal.current = r.data.result;
+            this.detailModal.isShow = true;
+            this.detailModal.title =
+              this.detailModal.title + ": " + row.companyName;
+          } else {
+            this.$Message.warn("获取信息失败");
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.message);
         });
     },
-    destroyed() {
-        this.$root.eventHub.$off('customer');
+    audit(row) {
+      this.auditModal.isShow = true;
+      this.auditModal.title = this.auditModal.title + ": " + row.companyName;
+      this.auditModal.current.id = row.id;
     },
-    methods: {
-        // 删除
-        delete(model) {
-            const table = this.$refs.list;
-            this.$Modal.confirm({
-                title: '删除提示', content: '确定要删除当前客户么?',
-                onOk: () => {
-                    const parms = { id: model.id }
-                    deleteCustomer(parms).then(c => {
-                        if (c.data.success) {
-                            table.initData();
-                        }
-                    })
-                }
-            })
-        },
-        reset(row) {
-            this.resetModal.isShow = true;
-            this.resetModal.title = this.resetModal.title + ': ' + row.companyName;
-            this.resetModal.current.id = row.id;
-        },
-        detail(row) {
-            getCustomer({ id: row.id }).then(r => {
-                if (r.data.success) {
-                    this.detailModal.current = r.data.result;
-                    this.detailModal.isShow = true;
-                    this.detailModal.title = this.detailModal.title + ': ' + row.companyName;
-                } else {
-                    this.$Message.warn('获取信息失败');
-                }
-            }).catch(e => {
-                this.$Message.error(e.message);
-            })
-        },
-        audit(row) {
-            this.auditModal.isShow = true;
-            this.auditModal.title = this.auditModal.title + ': ' + row.companyName;
-            this.auditModal.current.id = row.id;
-        },
-        charge(row) {
-            this.chargeModal.isShow = true;
-            this.chargeModal.title = this.chargeModal.title + ': ' + row.companyName;
-            this.chargeModal.current.id = row.id;
-        },
-        commitCharge() {
-            chargeCustomer(this.chargeModal.current).then(r => {
-                if (r.data.success) {
-                    this.$refs.list.initData();
-                }
-            }).catch(e => {
-                this.$Message.error(e.message);
-            })
-        },
-        commitReset() {
-            chargeCustomer(this.resetModal.current).then(r => {
-                if (r.data.success) {
-                    this.$refs.list.initData();
-                }
-            }).catch(e => {
-                this.$Message.error(e.message);
-            })
-        },
-        commitAudit() {
-            auditCustomer(this.auditModal.current).then(r => {
-                if (r.data.success) {
-                    this.$refs.list.initData();
-                }
-            }).catch(e => {
-                this.$Message.error(e.message);
-            })
-        },
-        save() {
-            this.$refs.product.commit();
-        },
-        cancel() {
-            this.auditModal.isShow = false;
-            this.auditModal.title = '客户审核';
-
-            this.chargeModal.isShow = false;
-            this.chargeModal.title = '客户充值';
-
-            this.resetModal.isShow = false;
-            this.resetModal.title = '密码重置';
-
-            this.detailModal.isShow = false;
-            this.detailModal.title = '客户详情';
+    charge(row) {
+      this.chargeModal.isShow = true;
+      this.chargeModal.title = this.chargeModal.title + ": " + row.companyName;
+      this.chargeModal.current.id = row.id;
+    },
+    commitCharge() {
+      chargeCustomer(this.chargeModal.current)
+        .then(r => {
+          if (r.data.success) {
             this.$refs.list.initData();
-        }
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.message);
+        });
+    },
+    commitReset() {
+      chargeCustomer(this.resetModal.current)
+        .then(r => {
+          if (r.data.success) {
+            this.$refs.list.initData();
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.message);
+        });
+    },
+    commitAudit() {
+      auditCustomer(this.auditModal.current)
+        .then(r => {
+          if (r.data.success) {
+            this.$refs.list.initData();
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.message);
+        });
+    },
+    save() {
+      this.$refs.product.commit();
+    },
+    cancel() {
+      this.auditModal.isShow = false;
+      this.auditModal.title = "客户审核";
 
+      this.chargeModal.isShow = false;
+      this.chargeModal.title = "客户充值";
+
+      this.resetModal.isShow = false;
+      this.resetModal.title = "密码重置";
+
+      this.detailModal.isShow = false;
+      this.detailModal.title = "客户详情";
+      this.$refs.list.initData();
     }
-}
+  }
+};
 </script>
 
 <style type='text/css' scoped>
 .img {
-    width: 70%;
+  width: 70%;
 }
 </style>
