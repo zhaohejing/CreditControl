@@ -33,7 +33,6 @@ namespace YT.Customers
         private readonly IRepository<ChargeRecord> _chargeRecordRepository;
         private readonly IRepository<ApplyCharge> _applyChargeRepository;
         private readonly IBinaryObjectManager _objectManager;
-        private static  string Host => ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
        /// <summary>
        /// ctor
        /// </summary>

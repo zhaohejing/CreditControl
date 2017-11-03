@@ -172,6 +172,7 @@
     <Compile Include="Customers\ICustomerAppService.cs" />
     <Compile Include="Dashboards\DashboardAppService.cs" />
     <Compile Include="Dashboards\Dtos\CreateOrderInput.cs" />
+    <Compile Include="Dashboards\Dtos\CustomerFormEditDto.cs" />
     <Compile Include="Dashboards\Dtos\CustomerLoginDto.cs" />
     <Compile Include="Dashboards\IDashboardAppService.cs" />
     <Compile Include="Dto\DictionaryDto.cs" />

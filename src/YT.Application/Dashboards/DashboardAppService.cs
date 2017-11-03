@@ -35,11 +35,9 @@ namespace YT.Dashboards
         private readonly IRepository<Order> _ordeRepository;
         private readonly IRepository<CustomerCost> _costRepository;
         private readonly IRepository<ApplyCharge> _applyRepository;
+        private readonly IRepository<CustomerForm> _formRepository;
         private readonly IBinaryObjectManager _objectManager;
-        /// <summary>
-        /// host
-        /// </summary>
-        private static readonly string Host = ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
+
 
         /// <summary>
         /// ctor
@@ -53,13 +51,14 @@ namespace YT.Dashboards
         /// <param name="costRepository"></param>
         /// <param name="applyRepository"></param>
         /// <param name="objectManager"></param>
+        /// <param name="formRepository"></param>
         public DashboardAppService(
             IRepository<Customer> customerRepository,
             ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
             IRepository<Category> cateRepository,
             IRepository<Product> productRepository,
             IBinaryObjectManager binaryObjectManager,
-            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager)
+            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository)
         {
             _customerRepository = customerRepository;
             _smtpEmailSenderConfiguration = smtpEmailSenderConfiguration;
@@ -70,6 +69,7 @@ namespace YT.Dashboards
             _costRepository = costRepository;
             _applyRepository = applyRepository;
             _objectManager = objectManager;
+            _formRepository = formRepository;
         }
 
         /// <summary>
@@ -165,6 +165,18 @@ namespace YT.Dashboards
             }
         }
         /// <summary>
+        /// 创建订单扩展信息
+        /// </summary>
+        /// <returns></returns>
+        public async Task ModifyForm(CustomerFormEditDto input)
+        {
+            var order = await _ordeRepository.FirstOrDefaultAsync(input.OrderId);
+            var form = input.MapTo<CustomerForm>();
+            await _formRepository.InsertOrUpdateAsync(form);
+            await CurrentUnitOfWork.SaveChangesAsync();
+            order.FormId = form.Id;
+        }
+        /// <summary>
         /// 提交充值申请
         /// </summary>
         /// <param name="input"></param>
@@ -202,7 +214,7 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input)
         {
-            var products = await _productRepository.GetAll()
+            var products = await _productRepository.GetAll().Where(c => c.IsActive)
                 .WhereIf(input.Id.HasValue, c => c.LevelTwoId == input.Id.Value && c.IsActive).ToListAsync();
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
@@ -305,7 +317,7 @@ namespace YT.Dashboards
         /// 创建订单
         /// </summary>
         /// <returns></returns>
-        public async Task CreateOrder(CreateOrderInput input)
+        public async Task<OrderListDto> CreateOrder(CreateOrderInput input)
         {
             var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.CustomerId);
             if (customer == null) throw new UserFriendlyException("该账户不存在");
@@ -322,7 +334,9 @@ namespace YT.Dashboards
                 ProductId = product.Id,
                 Price = product.Price,
             };
-            await _ordeRepository.InsertAsync(dto);
+            dto = await _ordeRepository.InsertAsync(dto);
+            await CurrentUnitOfWork.SaveChangesAsync();
+            return dto.MapTo<OrderListDto>();
         }
 
 

@@ -45,6 +45,12 @@ namespace YT.Dashboards
         Task ApplyCharge(ApplyChargeInput input);
 
         /// <summary>
+        /// 创建订单扩展信息
+        /// </summary>
+        /// <returns></returns>
+          Task ModifyForm(CustomerFormEditDto input);
+
+        /// <summary>
         /// 获取所有产品列表
         /// </summary>
         /// <param name="input"></param>
@@ -54,7 +60,7 @@ namespace YT.Dashboards
         /// 创建订单
         /// </summary>
         /// <returns></returns>
-        Task CreateOrder(CreateOrderInput input);
+        Task<OrderListDto> CreateOrder(CreateOrderInput input);
         /// <summary>
         /// 重置密码链接
         /// </summary>

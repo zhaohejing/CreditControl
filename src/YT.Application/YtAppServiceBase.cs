@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.IdentityFramework;
@@ -30,6 +31,10 @@ namespace YT
         /// ½ÇÉ«¹ÜÀí
         /// </summary>
         public RoleManager RoleManager { get; set; }
+        /// <summary>
+        /// host
+        /// </summary>
+        protected static readonly string Host = ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
         /// <summary>
         /// 
         /// </summary>
