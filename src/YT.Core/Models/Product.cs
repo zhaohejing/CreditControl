@@ -194,6 +194,10 @@ namespace YT.Models
         /// </summary>
         public Guid? PermitCard { get; set; }
         /// <summary>
+        /// 公司logo
+        /// </summary>
+        public Guid? CompanyLogo { get; set; }
+        /// <summary>
         /// 公司概述
         /// </summary>
         public string CompanyOverview { get; set; }

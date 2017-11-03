@@ -71,13 +71,33 @@ namespace YT.Dashboards.Dtos
         /// </summary>
         public Guid? License { get; set; }
         /// <summary>
+        /// 
+        /// </summary>
+        public string LicenseUrl { get; set; }
+        /// <summary>
         /// 身份证
         /// </summary>
         public Guid? IdentityCard { get; set; }
         /// <summary>
+        /// 
+        /// </summary>
+        public string IdentityCardUrl { get; set; }
+        /// <summary>
         /// 许可正
         /// </summary>
         public Guid? PermitCard { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string PermitCardUrl { get; set; }
+        /// <summary>
+        /// 公司logo
+        /// </summary>
+        public Guid? CompanyLogo { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string CompanyLogoUrl { get; set; }
         /// <summary>
         /// 公司概述
         /// </summary>
@@ -90,7 +110,7 @@ namespace YT.Dashboards.Dtos
         /// 领导人履历
         /// </summary>
         public string LeadershipResume { get; set; }
-
+       
         /// <summary>
         /// 公司产品
         /// </summary>

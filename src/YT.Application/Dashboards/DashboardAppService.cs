@@ -183,7 +183,28 @@ namespace YT.Dashboards
         public async Task<CustomerFormEditDto> GetFormByOrder(EntityDto input)
         {
             var order = await _ordeRepository.FirstOrDefaultAsync(input.Id);
-            return order.Form!=null ? order.Form.MapTo<CustomerFormEditDto>() : new CustomerFormEditDto();
+            if (order.Form != null)
+            {
+                var model = order.Form.MapTo<CustomerFormEditDto>();
+                if (model.License.HasValue)
+                {
+                    model.LicenseUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.License.Value))?.Url;
+                }
+                if (model.IdentityCard.HasValue)
+                {
+                    model.IdentityCardUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.IdentityCard.Value))?.Url;
+                }
+                if (model.CompanyLogo.HasValue)
+                {
+                    model.CompanyLogoUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.CompanyLogo.Value))?.Url;
+                }
+                if (model.PermitCard.HasValue)
+                {
+                    model.PermitCardUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.PermitCard.Value))?.Url;
+                }
+                return model;
+            }
+            return  new CustomerFormEditDto();
         }
         /// <summary>
         /// 提交充值申请
