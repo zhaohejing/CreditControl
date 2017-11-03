@@ -91,7 +91,7 @@ export default {
                 }
             },
             upload: {
-                url: 'api/api/File/ImageUpload',
+                url: 'http://47.93.2.82:9999/api/File/ImageUpload',
                 headers: { Authorization: 'Bearer ' + this.$store.getters.token }
 
             },
