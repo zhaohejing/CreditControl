@@ -44,110 +44,116 @@
 </template>
 
 <script>
-import { getPageCates, getCates, deleteCate, deleteCates, getCateForEdit, modifyCate } from 'api/cate';
+import {
+  getPageCates,
+  getCates,
+  deleteCate,
+  deleteCates,
+  getCateForEdit,
+  modifyCate
+} from "api/cate";
 export default {
-    name: 'series',
-    data() {
-        return {
-            levelOne: null,
-            levelTwo: null,
-            LevelOneList: [],
-            LevelTwoList: [],
-            modal: {
-                isEdit: false, title: '添加一级分类', current: { id: null, name: '', parentId: null }
-            },
-            ruleValidate: {
-                name: [
-                    { required: true, message: '姓名不可为空', trigger: 'blur' }
-                ]
-
+  name: "series",
+  data() {
+    return {
+      levelOne: null,
+      levelTwo: null,
+      LevelOneList: [],
+      LevelTwoList: [],
+      modal: {
+        isEdit: false,
+        title: "添加一级分类",
+        current: { id: null, name: "", parentId: null }
+      },
+      ruleValidate: {
+        name: [{ required: true, message: "姓名不可为空", trigger: "blur" }]
+      }
+    };
+  },
+  created() {
+    this.initCates();
+  },
+  methods: {
+    deleteCateOne() {
+      this.$Modal.confirm({
+        title: "删除提示",
+        content: "确定要删除一级分类么?",
+        onOk: () => {
+          deleteCate({ id: this.levelOne }).then(r => {
+            if (r.data.success) {
+              this.initCates();
             }
+          });
         }
+      });
     },
-    created() {
-        this.initCates();
-    },
-    methods: {
-        deleteCateOne() {
-            this.$Modal.confirm({
-                title: '删除提示', content: '确定要删除一级分类么?',
-                onOk: () => {
-                    deleteCate({ id: this.levelOne }).then(r => {
-                        if (r.data.success) {
-                            this.initCates();
-                        }
-                    })
-                }
-            })
-
-        },
-        deleteCateTwo() {
-            this.$Modal.confirm({
-                title: '删除提示', content: '确定要删除二级分类么?',
-                onOk: () => {
-                    deleteCate({ id: this.levelTwo }).then(r => {
-                        if (r.data.success) {
-                            this.pickLevelOne(this.levelOne);
-                        }
-                    })
-                }
-            })
-        },
-        addLevelOne() {
-            this.modal.isEdit = true;
-            getCateForEdit({ id: null }).then(r => {
-                if (r.data.result) {
-                    this.modal.current = r.data.result;
-                }
-            })
-        },
-        addLevelTwo() {
-            if (!this.levelOne) {
-                this.$Message.error('请选择一级分类!');
-                return;
+    deleteCateTwo() {
+      this.$Modal.confirm({
+        title: "删除提示",
+        content: "确定要删除二级分类么?",
+        onOk: () => {
+          deleteCate({ id: this.levelTwo }).then(r => {
+            if (r.data.success) {
+              this.pickLevelOne(this.levelOne);
             }
-            this.modal.isEdit = true;
-            getCateForEdit({ id: null }).then(r => {
-                if (r.data.result) {
-                    this.modal.current = r.data.result;
-                    this.modal.current.parentId = this.levelOne;
-                }
-            })
-        },
-        pickLevelOne(current) {
-            getCates({ id: current }).then(r => {
-                if (r.data.result) {
-                    this.LevelTwoList = r.data.result;
-                }
-            })
-        },
-        initCates() {
-            getCates({ id: null }).then(r => {
-                if (r.data.result) {
-                    this.LevelOneList = r.data.result;
-                }
-            })
-        },
-        save() {
-            this.$refs.cate.validate(valid => {
-                if (valid) {
-                    modifyCate({ categoryEditDto: this.modal.current }).then(r => {
-                        if (r.data.success) {
-                            this.initCates();
-                        }
-                    })
-                } else {
-                    this.$Message.error('表单验证失败!');
-                    return;
-                }
-            })
-
-        },
-        cancel() {
-            this.initCates();
+          });
         }
+      });
+    },
+    addLevelOne() {
+      this.modal.isEdit = true;
+      getCateForEdit({ id: null }).then(r => {
+        if (r.data.result) {
+          this.modal.current = r.data.result;
+        }
+      });
+    },
+    addLevelTwo() {
+      if (!this.levelOne) {
+        this.$Message.error("请选择一级分类!");
+        return;
+      }
+      this.modal.isEdit = true;
+      getCateForEdit({ id: null }).then(r => {
+        if (r.data.result) {
+          this.modal.current = r.data.result;
+          this.modal.current.parentId = this.levelOne;
+        }
+      });
+    },
+    pickLevelOne(current) {
+      getCates({ id: current }).then(r => {
+        if (r.data.result) {
+          this.LevelTwoList = r.data.result;
+        }
+      });
+    },
+    initCates() {
+      getCates({ id: null }).then(r => {
+        if (r.data.result) {
+          this.LevelOneList = r.data.result;
+        }
+      });
+    },
+    save() {
+      this.$refs.cate.validate(valid => {
+        if (valid) {
+          modifyCate({ categoryEditDto: this.modal.current }).then(r => {
+            if (r.data.success) {
+              this.initCates();
+            }
+          });
+        } else {
+          this.$Message.error("表单验证失败!");
+          return;
+        }
+      });
+    },
+    cancel() {
+      this.initCates();
     }
-}
+  }
+};
 </script>
 
 
