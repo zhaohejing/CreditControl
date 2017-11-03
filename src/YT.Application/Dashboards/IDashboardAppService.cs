@@ -45,6 +45,12 @@ namespace YT.Dashboards
         Task ApplyCharge(ApplyChargeInput input);
 
         /// <summary>
+        /// 获取订单扩展信息
+        /// </summary>
+        /// <returns></returns>
+          Task<CustomerFormEditDto> GetFormByOrder(EntityDto input);
+
+        /// <summary>
         /// 创建订单扩展信息
         /// </summary>
         /// <returns></returns>

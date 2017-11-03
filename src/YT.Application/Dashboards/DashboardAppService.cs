@@ -177,6 +177,15 @@ namespace YT.Dashboards
             order.FormId = form.Id;
         }
         /// <summary>
+        /// 获取订单扩展信息
+        /// </summary>
+        /// <returns></returns>
+        public async Task<CustomerFormEditDto> GetFormByOrder(EntityDto input)
+        {
+            var order = await _ordeRepository.FirstOrDefaultAsync(input.Id);
+            return order.Form!=null ? order.Form.MapTo<CustomerFormEditDto>() : new CustomerFormEditDto();
+        }
+        /// <summary>
         /// 提交充值申请
         /// </summary>
         /// <param name="input"></param>
