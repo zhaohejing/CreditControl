@@ -214,19 +214,22 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input)
         {
-            var products = await _productRepository.GetAll().Where(c => c.IsActive)
+            var products = await _productRepository.GetAll()
                 .WhereIf(input.Id.HasValue, c => c.LevelTwoId == input.Id.Value && c.IsActive).ToListAsync();
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
             foreach (var product in products)
             {
                 var dto = product.MapTo<ProductDetail>();
-                if (!product.Profile.HasValue) continue;
-                var file = await _binaryObjectManager.GetOrNullAsync(product.Profile.Value);
-                if (file != null)
+                if (product.Profile.HasValue)
                 {
-                    dto.ProfileUrl = Host + file.Url;
+                    var file = await _binaryObjectManager.GetOrNullAsync(product.Profile.Value);
+                    if (file != null)
+                    {
+                        dto.ProfileUrl = Host + file.Url;
+                    }
                 }
+              
                 output.Add(dto);
             }
             return output;
