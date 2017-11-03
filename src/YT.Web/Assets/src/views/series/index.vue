@@ -79,11 +79,15 @@ export default {
         title: "删除提示",
         content: "确定要删除一级分类么?",
         onOk: () => {
-          deleteCate({ id: this.levelOne }).then(r => {
-            if (r.data.success) {
-              this.initCates();
-            }
-          });
+          deleteCate({ id: this.levelOne })
+            .then(r => {
+              if (r.data.success) {
+                this.initCates();
+              }
+            })
+            .catch(e => {
+              this.$Message.error(e.response.data.error.message);
+            });
         }
       });
     },
@@ -92,11 +96,15 @@ export default {
         title: "删除提示",
         content: "确定要删除二级分类么?",
         onOk: () => {
-          deleteCate({ id: this.levelTwo }).then(r => {
-            if (r.data.success) {
-              this.pickLevelOne(this.levelOne);
-            }
-          });
+          deleteCate({ id: this.levelTwo })
+            .then(r => {
+              if (r.data.success) {
+                this.pickLevelOne(this.levelOne);
+              }
+            })
+            .catch(e => {
+              this.$Message.error(e.response.data.error.message);
+            });
         }
       });
     },
