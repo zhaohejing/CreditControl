@@ -8,6 +8,7 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using YT.Categories.Dtos;
 using YT.Models;
 
@@ -161,7 +162,10 @@ namespace YT.Categories
         /// </summary>
         public async Task DeleteCategoryAsync(EntityDto<int> input)
         {
-            await _categoryRepository.DeleteAsync(input.Id);
+            var cate = await _categoryRepository.FirstOrDefaultAsync(input.Id);
+            if(cate.Name=="访谈类产品"|| cate.Name == "电视版"|| cate.Name == "网络版")
+                throw  new UserFriendlyException("访谈类不可删除");
+            cate.IsDeleted = true;
         }
 
         /// <summary>

@@ -4,7 +4,7 @@ export function getProducts(data) {
     return fetch({
         url: '/api/services/app/product/GetPagedProductsAsync',
         method: 'post',
-         data
+        data
     });
 }
 // 获取角色信息用于编辑
@@ -23,7 +23,13 @@ export function UpdateState(data) {
         data
     });
 }
-
+export function getFormByOrder(data) {
+    return fetch({
+        url: '/api/services/app/dashboard/GetFormByOrder',
+        method: 'post',
+        data
+    });
+}
 // 获取角色信息用于编辑
 export function getProduct(data) {
     return fetch({

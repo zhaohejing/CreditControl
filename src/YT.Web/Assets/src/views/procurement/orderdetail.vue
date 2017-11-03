@@ -6,7 +6,7 @@
             <Col :span="8"> 状态:{{order.state==null?'未完成':(order.state?'已完成':'已取消') }}
             </Col>
             <Col :span="8">
-            <a @click="form" v-if="order.formId">查看表单</a>
+            <a @click="viewForm" v-if="order.formId">查看表单</a>
             </Col>
         </Row>
         <Row>
@@ -49,87 +49,245 @@
             <Button type="ghost" @click="back" style="margin-left: 8px">返回</Button>
             <Button v-if="order.state==null" type="primary" @click="complete">完成</Button>
             </Col>
-
         </Row>
+           <!-- 添加和编辑窗口 -->
+        <Modal :width='800'
+         :transfer='false'
+         v-model='modal.isShow'
+          :title='modal.title'
+           :mask-closable='false' 
+           @on-ok='save' @on-cancel='cancel'>
+  <Form ref='form' :model='form'  inline>
+                <div class="infoBox">
+                     <Row class='basic'>
+                        <Col span='24'>公司基本信息</Col>
+                    </Row>
+                    <div class="infoInput">
+                        <FormItem label="公司名称" prop='companyName'>
+                            <Input v-model="form.companyName"></Input>
+                        </FormItem>
+                        <FormItem label="所属行业">
+                            <Input v-model="form.industry"></Input>
+                        </FormItem>
+                        <FormItem label="品牌名称">
+                            <Input v-model="form.brands"></Input>
+                        </FormItem>
+                        <FormItem label="法人代表">
+                            <Input v-model="form.legalPerson"></Input>
+                        </FormItem>
+                        <FormItem label="法人代表手机号码">
+                            <Input v-model="form.legalMobile"></Input>
+                        </FormItem>
+                        <FormItem label="品牌负责人">
+                            <Input v-model="form.brandsPerson"></Input>
+                        </FormItem>
+                        <FormItem label="品牌负责人手机号码">
+                            <Input v-model="form.brandsMobile"></Input>
+                        </FormItem>
+                        <FormItem label="联系地址">
+                            <Input v-model="form.address"></Input>
+                        </FormItem>
+                        <FormItem label="邮编">
+                            <Input v-model="form.postNum"></Input>
+                        </FormItem>
+                        <FormItem label="电子邮箱" prop='email'>
+                            <Input v-model="form.email"></Input>
+                        </FormItem>
+                    </div>
+                </div>
+                <div class="infoBox">
+                     <Row class='basic'>
+                        <Col span='24'>资质上传</Col>
+                    </Row>
+                    <Row class='fileUpload'>
+                        <Row>
+                            <Col span="9">
+                                <template class="demo-upload-list" v-if="form.license">
+                                    <img :src="form.licenseUrl">
+                                    <div class="demo-upload-list-cover">
+                                        <Icon type="ios-trash-outline" @click.native="removeLicense(form.license)"></Icon>
+                                    </div>
+                                </template>
+                              
+                                <p class='g9b9ea0 g-center'>企业有效期营业执照复本电子版上传</p>
+                            </Col>
+                            <Col span="9" offset="6">
+                                <template class="demo-upload-list" v-if="form.permitCard">
+                                    <img :src="form.permitCardUrl">
+                                    <div class="demo-upload-list-cover">
+                                        <Icon type="ios-trash-outline" @click.native="removePermitCard(form.permitCard)"></Icon>
+                                    </div>
+                                </template>
+                             
+                                <p class='g9b9ea0 g-center'>企业法人身份证正反面电子版上传</p>
+                            </Col>
+                        </Row>
+                        <Row style="margin-top:45px">
+                            <Col span="9">
+                                <template class="demo-upload-list" v-if="form.identityCard">
+                                    <img :src="form.identityCardUrl">
+                                    <div class="demo-upload-list-cover">
+                                        <Icon type="ios-trash-outline" @click.native="removeLicense(form.identityCard)"></Icon>
+                                    </div>
+                                </template>
+                                <p class='g9b9ea0 g-center'>企业或品牌Logo（上传）</p>
+                            </Col>
+                            <Col span="9" offset="6">
+                                <template class="demo-upload-list" v-if="form.companyLogo">
+                                    <img :src="form.companyLogoUrl">
+                                    <div class="demo-upload-list-cover">
+                                        <Icon type="ios-trash-outline" @click.native="removeLogo(form.companyLogo)"></Icon>
+                                    </div>
+                                </template>
+                            
+                                <p class='g9b9ea0 g-center'>企业所属行业特有许可证电子版上传</p>
+                            </Col>
+                        </Row>
+                    </Row>
+                </div>
+                <div class="infoBox infoTextArea">
+                     <Row class="basic" style="margin:0">
+                        <Col span='24'>需求描述</Col>
+                    </Row>
+                    <Row class="c9">
+                        <col span="24">一、公司概述（800字内）</col>
+                    </Row>
+                    <Input v-model="form.companyOverview" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">二、公司发展历程（800字内）</col>
+                    </Row>
+                    <Input v-model="form.companyHistory" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">三、领导人履历（800字内）</col>
+                    </Row>
+                    <Input v-model="form.leadershipResume" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">四、公司产品或服务介绍（500字内）</col>
+                    </Row>
+                    <Input v-model="form.companyProduct" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">五、相关专利介绍（500字内）</col>
+                    </Row>
+                    <Input v-model="form.relevantPatent" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">六、公司或个人所获荣誉（500字内）</col>
+                    </Row>
+                    <Input v-model="form.companyhonor" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">七、是否参与或从事过公益事业（500字内）</col>
+                    </Row>
+                    <Input v-model="form.publicWelfareUndertakings" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">八、近三年是否有重大舆情</col>
+                    </Row>
+                    <Input v-model="form.majorSecret" type="textarea" :rows="5"></Input>
+                    <Row class="c9">
+                        <col span="24">九、其他说明（800字内）</col>
+                    </Row>
+                    <Input v-model="form.other" type="textarea" :rows="5"></Input>
+                </div>
+            </Form>  
+        </Modal>
     </div>
 </template>
 
 <script>
-import { order, completeorder } from 'api/products';
+import { order, completeorder, getFormByOrder } from "api/products";
 export default {
-    name: 'orderdetail',
-    data() {
-        return {
-            order: null
-        }
+  name: "orderdetail",
+  data() {
+    return {
+      order: {},
+      form: {},
+      modal: {
+        isShow: false,
+        title: "表单详情"
+      }
+    };
+  },
+  created() {
+    this.init();
+  },
+  destroyed() {},
+  methods: {
+    init() {
+      order({ id: this.$route.query.id })
+        .then(r => {
+          if (r.data.success) {
+            this.order = r.data.result;
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.response.data.error.message);
+        });
     },
-    created() {
-        this.init();
-    },
-    destroyed() {
-    },
-    methods: {
-        init() {
-            order({ id: this.$route.query.id }).then(r => {
-                if (r.data.success) {
-                    this.order = r.data.result;
-                }
-            }).catch(e => {
-                this.$Message.error(e.response.data.error.message);
+    // 完成
+    complete() {
+      this.$Modal.confirm({
+        title: "操作提示",
+        content: "确定要完成当前订单么?",
+        onOk: () => {
+          const parms = { id: this.order.id };
+          completeorder(parms)
+            .then(c => {
+              if (c.data.success) {
+                this.$Message.success("提交成功");
+                this.$router.push({ path: "/orders" });
+              }
             })
-        },
-        // 完成
-        complete() {
-            this.$Modal.confirm({
-                title: '操作提示', content: "确定要完成当前订单么?",
-                onOk: () => {
-                    const parms = { id: this.order.id }
-                    completeorder(parms).then(c => {
-                        if (c.data.success) {
-                            this.$Message.success('提交成功');
-                            this.$router.push({ path: '/orders' })
-                        }
-                    }).catch(e => {
-                        this.$Message.error(e.response.data.error.message);
-                    })
-                }
-            })
-        },
-        back() {
-            this.$router.push({ path: '/orders' })
-        },
-        form(row) {
-            this.modal.isShow = true;
+            .catch(e => {
+              this.$Message.error(e.response.data.error.message);
+            });
         }
+      });
+    },
+    back() {
+      this.$router.push({ path: "/orders" });
+    },
+    save() {
+      this.modal.isShow = false;
+    },
+    cancel() {
+      this.modal.isShow = false;
+    },
+    viewForm() {
+        debugger;
+      getFormByOrder({ id: this.order.id }).then(r => {
+        if (r.data.success) {
+          this.form = r.data.result;
+          this.modal.isShow = true;
+        }
+      });
     }
-}
+  }
+};
 </script>
 
 
 <style type="text/css" scoped>
 table.gridtable {
-    width: 100%;
-    font-family: verdana, arial, sans-serif;
-    font-size: 11px;
-    color: #333333;
-    border-width: 1px;
-    border-color: #666666;
-    border-collapse: collapse;
+  width: 100%;
+  font-family: verdana, arial, sans-serif;
+  font-size: 11px;
+  color: #333333;
+  border-width: 1px;
+  border-color: #666666;
+  border-collapse: collapse;
 }
 
 table.gridtable th {
-    border-width: 1px;
-    padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #dedede;
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #dedede;
 }
 
 table.gridtable td {
-    border-width: 1px;
-    padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
+  border-width: 1px;
+  padding: 8px;
+  border-style: solid;
+  border-color: #666666;
+  background-color: #ffffff;
 }
 </style>
