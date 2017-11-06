@@ -67,5 +67,9 @@ namespace YT.Products.Dtos
         /// 取消原因
         /// </summary>
         public string CancelReason { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreationTime { get; set; }
     }
 }

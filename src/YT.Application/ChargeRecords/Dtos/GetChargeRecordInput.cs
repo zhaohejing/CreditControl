@@ -37,7 +37,7 @@ namespace YT.ChargeRecords.Dtos
             {
 
 
-                Sorting = "Id";
+                Sorting = "CreationTime desc";
             }
         }
     }

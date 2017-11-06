@@ -119,7 +119,19 @@ namespace YT.Models
         /// <summary>
         /// dto
         /// </summary>
-        public virtual Product Product { get; set; }
+        public string  ProductName { get; set; }
+        /// <summary>
+        /// 一级分类
+        /// </summary>
+        public string  LevelOne { get; set; }
+        /// <summary>
+        /// 二级分类
+        /// </summary>
+        public string  LevelTwo { get; set; }
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public Guid? Profile { get; set; }
         /// <summary>
         /// 资质认证id
         /// </summary>

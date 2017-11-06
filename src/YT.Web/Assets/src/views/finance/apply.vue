@@ -33,127 +33,143 @@
 </template>
 
 <script>
-import { applys, apply,clear } from 'api/record';
+import { applys, apply, clear } from "api/record";
 export default {
-    name: 'account',
-    data() {
-        return {
-            cols: [
-                {
-                    title: '公司名',
-                    key: 'customerName'
-                },
+  name: "account",
+  data() {
+    return {
+      cols: [
+        {
+          title: "公司名",
+          key: "customerName"
+        },
 
-                {
-                    title: '充值金额',
-                    key: 'chargeMoney'
-                },
-                {
-                    title: '操作人',
-                    key: 'actionName'
-                },
-                {
-                    title: '状态',
-                    key: 'state',
-                    render: (h, params) => {
-                        return params.row.state == null ? '未处理' : (params.row.state ? '已处理' : '已取消');
+        {
+          title: "充值金额",
+          key: "chargeMoney"
+        },
+        {
+          title: "操作人",
+          key: "actionName"
+        },
+        {
+          title: "状态",
+          key: "state",
+          render: (h, params) => {
+            return params.row.state == null
+              ? "未处理"
+              : params.row.state ? "已处理" : "已取消";
+          }
+        },
+        {
+          title: "创建时间",
+          key: "creationTime",
+          render: (h, params) => {
+            return this.$fmtTime(params.row.creationTime);
+          }
+        },
+        {
+          title: "操作",
+          key: "action",
+          align: "center",
+          width: "250px",
+          render: (h, params) => {
+            let children = [];
+            if (params.row.state == null) {
+              children.push(
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.charge(params.row);
+                      }
                     }
-                },
-                {
-                    title: '创建时间',
-                    key: 'creationTime',
-                    render: (h, params) => {
-                        return this.$fmtTime(params.row.creationTime);
+                  },
+                  "充值"
+                )
+              ); //组件1
+              children.push(
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "error",
+                      size: "small"
+                    },
+                    on: {
+                      click: () => {
+                        this.delete(params.row);
+                      }
                     }
-                },
-                {
-                    title: '操作',
-                    key: 'action',
-                    align: 'center',
-                    width: '250px',
-                    render: (h, params) => {
-                        let children = [];
-                        if (params.row.state == null) {
-                            children.push(h('Button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.charge(params.row)
-                                    }
-                                }
-                            }, '充值')) //组件1
-                        }
-                        children.push(h('Button', {
-                            props: {
-                                type: 'error',
-                                size: 'small'
-                            },
-                            on: {
-                                click: () => {
-                                    this.delete(params.row)
-                                }
-                            }
-                        }, '删除')) //组件2
-                        return h('div', children)
-                    }
-                }
-            ],
-            searchApi: applys,
-            params: { name: '', money: '', start: null, end: null },
-            chargeModal: {
-                isShow: false, title: '客户充值', current: { money: 0, id: null }
-            },
+                  },
+                  "删除"
+                )
+              ); //组件2
+            }
+
+            return h("div", children);
+          }
         }
+      ],
+      searchApi: applys,
+      params: { name: "", money: "", start: null, end: null },
+      chargeModal: {
+        isShow: false,
+        title: "客户充值",
+        current: { money: 0, id: null }
+      }
+    };
+  },
+  created() {},
+  destroyed() {},
+  methods: {
+    charge(row) {
+      this.chargeModal.isShow = true;
+      this.chargeModal.title = this.chargeModal.title + ": " + row.customerName;
+      this.chargeModal.current.id = row.id;
     },
-    created() {
-
-    },
-    destroyed() {
-    },
-    methods: {
-        charge(row) {
-            this.chargeModal.isShow = true;
-            this.chargeModal.title = this.chargeModal.title + ': ' + row.customerName;
-            this.chargeModal.current.id = row.id;
-        },
-        commitCharge() {
-            apply(this.chargeModal.current).then(r => {
-                if (r.data.success) {
-                    this.$refs.list.initData();
-                }
-            }).catch(e => {
-                this.$Message.error(e.message);
-            })
-        },
-        delete(row) {
-            const table = this.$refs.list;
-            this.$Modal.confirm({
-                title: '删除提示', content: '确定要删除当前记录么?',
-                onOk: () => {
-                    const parms = { id: row.id }
-                    clear(parms).then(c => {
-                        if (c.data.success) {
-                            table.initData();
-                        }
-                    })
-                }
-            })
-        },
-        cancel() {
-            this.chargeModal.isShow = false;
-            this.chargeModal.title = '客户充值';
-            this.chargeModal.current.money = 0;
+    commitCharge() {
+      apply(this.chargeModal.current)
+        .then(r => {
+          if (r.data.success) {
             this.$refs.list.initData();
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.message);
+        });
+    },
+    delete(row) {
+      const table = this.$refs.list;
+      this.$Modal.confirm({
+        title: "删除提示",
+        content: "确定要删除当前记录么?",
+        onOk: () => {
+          const parms = { id: row.id };
+          clear(parms).then(c => {
+            if (c.data.success) {
+              table.initData();
+            }
+          });
         }
+      });
+    },
+    cancel() {
+      this.chargeModal.isShow = false;
+      this.chargeModal.title = "客户充值";
+      this.chargeModal.current.money = 0;
+      this.$refs.list.initData();
     }
-
-}
+  }
+};
 </script>
 
 

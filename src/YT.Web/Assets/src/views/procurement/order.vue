@@ -34,7 +34,10 @@ export default {
                     title: '订单号',
                     key: 'orderNum'
                 },
-
+                  {
+                    title: '商品名',
+                    key: 'productName'
+                },
                 {
                     title: '价格',
                     key: 'totalPrice'
@@ -68,6 +71,7 @@ export default {
                 {
                     title: '操作',
                     key: 'action',
+                    width:'130px',
                     align: 'center',
                     render: (h, params) => {
                         const childs = [];

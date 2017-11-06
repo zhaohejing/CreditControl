@@ -9,7 +9,7 @@ namespace YT.Storage
     /// <summary>
     /// ÎÄ¼þ´æ´¢
     /// </summary>
-    [Table("yt_objectstorage")]
+    [Table("milk_objectstorage")]
     public sealed class BinaryObject : Entity<Guid>
     {
         /// <summary>

@@ -36,7 +36,7 @@ namespace YT.Customers.Dtos
             {
 			
 		
-                Sorting = "Id";
+                Sorting = "CreationTime desc";
             }
         }
     }

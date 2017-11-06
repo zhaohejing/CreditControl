@@ -40,8 +40,7 @@ namespace YT
             mapper.CreateMap<Order, OrderListDto>()
                 .ForMember(dto => dto.Mobile, options => options.MapFrom(c => c.Customer.Mobile))
                 .ForMember(dto => dto.Contact, options => options.MapFrom(c => c.Customer.Contact))
-                .ForMember(dto => dto.CompanyName, options => options.MapFrom(c => c.Customer.CompanyName))
-                .ForMember(dto => dto.ProductName, options => options.MapFrom(c => c.Product.ProductName));
+                .ForMember(dto => dto.CompanyName, options => options.MapFrom(c => c.Customer.CompanyName));
         }
     }
 }

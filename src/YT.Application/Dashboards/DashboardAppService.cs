@@ -220,7 +220,7 @@ namespace YT.Dashboards
                 }
                 return model;
             }
-            return  new CustomerFormEditDto();
+            return new CustomerFormEditDto();
         }
         /// <summary>
         /// 提交充值申请
@@ -260,7 +260,7 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input)
         {
-            var products = await _productRepository.GetAll().Where(c=>c.IsActive)
+            var products = await _productRepository.GetAll().Where(c => c.IsActive)
                 .WhereIf(input.Id.HasValue, c => c.LevelTwoId == input.Id.Value).ToListAsync();
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
@@ -275,7 +275,7 @@ namespace YT.Dashboards
                         dto.ProfileUrl = Host + file.Url;
                     }
                 }
-              
+
                 output.Add(dto);
             }
             return output;
@@ -288,30 +288,31 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<List<OrderProductDetail>> GetHaveProducts(EntityDto<int> input)
         {
-            var temp = (from c in await _ordeRepository.GetAllListAsync(c => c.CustomerId == input.Id)
-                        join d in await _productRepository.GetAllListAsync() on c.ProductId equals d.Id
-                        select new { c, d }).ToList();
+            var temp =
+                await
+                    _ordeRepository.GetAllListAsync(c => c.CustomerId == input.Id && c.State.HasValue && c.State.Value);
+          
             var output = new List<OrderProductDetail>();
             if (!temp.Any()) return output;
             foreach (var o in temp)
             {
                 var dto = new OrderProductDetail()
                 {
-                    Id = o.c.Id,
-                    Cate = o.d.LevelTwo.Name,
-                    Count = o.c.Count,
-                    FormId = o.c.FormId,
-                    Price = o.d.Price,
-                    ProductName = o.d.ProductName,
-                    TotalPrice = o.c.TotalPrice,
-                    OrderNum = o.c.OrderNum,
-                    CreationTime = o.c.CreationTime,
-                    State = o.c.State,
-                    ProductId = o.d.Id
+                    Id = o.Id,
+                    Cate = o.LevelTwo,
+                    Count = o.Count,
+                    FormId = o.FormId,
+                    Price = o.Price,
+                    ProductName = o.ProductName,
+                    TotalPrice = o.TotalPrice,
+                    OrderNum = o.OrderNum,
+                    CreationTime = o.CreationTime,
+                    State = o.State,
+                    ProductId = o.Id
                 };
-                if (o.d.Profile.HasValue)
+                if (o.Profile.HasValue)
                 {
-                    dto.Profile = Host + (await _objectManager.GetOrNullAsync(o.d.Profile.Value))?.Url;
+                    dto.Profile = Host + (await _objectManager.GetOrNullAsync(o.Profile.Value))?.Url;
                 }
                 output.Add(dto);
             }
@@ -329,20 +330,20 @@ namespace YT.Dashboards
             var dto = new OrderProductDetail()
             {
                 Id = order.Id,
-                Cate = order.Product.LevelTwo.Name,
+                Cate = order.LevelTwo,
                 Count = order.Count,
                 FormId = order.FormId,
                 Price = order.Price,
-                ProductName = order.Product.ProductName,
+                ProductName = order.ProductName,
                 TotalPrice = order.TotalPrice,
                 OrderNum = order.OrderNum,
                 CreationTime = order.CreationTime,
                 State = order.State,
                 ProductId = order.ProductId
             };
-            if (order.Product.Profile.HasValue)
+            if (order.Profile.HasValue)
             {
-                dto.Profile = Host + (await _objectManager.GetOrNullAsync(order.Product.Profile.Value))?.Url;
+                dto.Profile = Host + (await _objectManager.GetOrNullAsync(order.Profile.Value))?.Url;
             }
             return dto;
         }
@@ -382,6 +383,10 @@ namespace YT.Dashboards
                 TotalPrice = totalPrice,
                 ProductId = product.Id,
                 Price = product.Price,
+                ProductName = product.ProductName,
+                LevelOne = product.LevelOne.Name,
+                LevelTwo = product.LevelTwo.Name,
+                Profile = product.Profile
             };
             dto = await _ordeRepository.InsertAsync(dto);
             await CurrentUnitOfWork.SaveChangesAsync();
