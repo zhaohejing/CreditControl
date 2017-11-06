@@ -75,7 +75,7 @@ export default {
             this.loading = false;
             this.$router.push({ path: '/' });
           }).catch(err => {
-            this.$message.error(err);
+            this.$Message.error(err.response.data.error.details);
             this.loading = false;
           });
         } else {
