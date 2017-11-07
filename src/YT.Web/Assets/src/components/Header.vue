@@ -2,7 +2,7 @@
   <navbar>
     <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button"
      @click="mobileSidebarToggle">&#9776;</button>
-    <a class="navbar-brand"></a>
+     <img :src="logo" style="width:180px;height:60px">
     <ul class="nav navbar-nav d-md-down-none">
       <li class="nav-item">
         <a class="nav-link navbar-toggler sidebar-toggler" @click="sidebarMinimize">&#9776;</a>
@@ -66,18 +66,20 @@
   </navbar>
 </template>
 <script>
-
-import navbar from './Navbar'
-import { mapGetters, mapActions } from 'vuex';
+import navbar from "./Navbar";
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'header',
+  name: "header",
   components: {
-    navbar,
+    navbar
+  },
+  data() {
+    return {
+      logo: "../../../static/img/logo.png"
+    };
   },
   computed: {
-    ...mapGetters([
-      'name'
-    ]),
+    ...mapGetters(["name"])
   },
   created: function() {
     this.GetInfo();
@@ -85,38 +87,39 @@ export default {
   methods: {
     Logout(e) {
       e.preventDefault();
-      this.$store.dispatch('LogOut').then(() => {
-        this.$router.push({ path: '/login' });
-      }).catch(err => {
-        this.$message.error(err);
-      });
+      this.$store
+        .dispatch("LogOut")
+        .then(() => {
+          this.$router.push({ path: "/login" });
+        })
+        .catch(err => {
+          this.$message.error(err);
+        });
     },
     click() {
       // do nothing
     },
     sidebarToggle(e) {
-      e.preventDefault()
-      document.body.classList.toggle('sidebar-hidden')
+      e.preventDefault();
+      document.body.classList.toggle("sidebar-hidden");
     },
     sidebarMinimize(e) {
-      e.preventDefault()
+      e.preventDefault();
 
-      document.body.classList.toggle('sidebar-minimized')
+      document.body.classList.toggle("sidebar-minimized");
     },
     mobileSidebarToggle(e) {
-      e.preventDefault()
+      e.preventDefault();
 
-      document.body.classList.toggle('sidebar-mobile-show')
+      document.body.classList.toggle("sidebar-mobile-show");
     },
     asideToggle(e) {
-      e.preventDefault()
-      document.body.classList.toggle('aside-menu-hidden')
+      e.preventDefault();
+      document.body.classList.toggle("aside-menu-hidden");
     },
-    ...mapActions([
-      'GetInfo'
-    ])
+    ...mapActions(["GetInfo"])
   }
-}
+};
 </script>
 
 <style type="text/css">
