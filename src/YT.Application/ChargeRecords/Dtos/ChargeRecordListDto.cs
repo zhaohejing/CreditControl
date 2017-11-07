@@ -57,6 +57,10 @@ namespace YT.ChargeRecords.Dtos
         /// </summary>
         public int ChargeMoney { get; set; }
         /// <summary>
+        /// 实际到账金额
+        /// </summary>
+        public int? ActrueMoney { get; set; }
+        /// <summary>
         /// 操作人
         /// </summary>
         public string ActionName { get; set; }

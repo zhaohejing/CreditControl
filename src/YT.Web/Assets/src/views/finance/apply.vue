@@ -48,6 +48,11 @@ export default {
           title: "充值金额",
           key: "chargeMoney"
         },
+         {
+          title: "实到金额",
+          key: "actrueMoney"
+        },
+        
         {
           title: "操作人",
           key: "actionName"

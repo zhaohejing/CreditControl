@@ -150,6 +150,7 @@ namespace YT.ChargeRecords
                 CustomerName = customer.CompanyName
             });
             apply.State = true;
+            apply.ActrueMoney = input.Money;
             apply.ActionName = current.Name;
         }
         #endregion
