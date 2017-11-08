@@ -171,6 +171,7 @@ namespace YT.Dashboards
         public async Task ModifyForm(CustomerFormEditDto input)
         {
             var order = await _ordeRepository.FirstOrDefaultAsync(input.OrderId);
+            if(order==null)throw new UserFriendlyException("订单信息不存在");
             var form = input.MapTo<CustomerForm>();
             await _formRepository.InsertOrUpdateAsync(form);
             await CurrentUnitOfWork.SaveChangesAsync();
@@ -290,7 +291,7 @@ namespace YT.Dashboards
         {
             var temp =
                 await
-                    _ordeRepository.GetAllListAsync(c => c.CustomerId == input.Id && c.State.HasValue && c.State.Value);
+                    _ordeRepository.GetAllListAsync(c => c.CustomerId == input.Id );
           
             var output = new List<OrderProductDetail>();
             if (!temp.Any()) return output;
