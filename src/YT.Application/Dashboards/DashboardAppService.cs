@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
+using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Auditing;
+using Abp.Authorization;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
+using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Abp.Net.Mail.Smtp;
 using Abp.UI;
-using Nito.AsyncEx.Synchronous;
+using YT.ChargeRecords.Dtos;
 using YT.Customers.Dtos;
 using YT.Dashboards.Dtos;
 using YT.Models;
 using YT.Products.Dtos;
 using YT.Storage;
 
+
 namespace YT.Dashboards
 {
     /// <summary>
     /// 前段接口
     /// </summary>
-    [DisableAuditing]
     public class DashboardAppService : YtAppServiceBase, IDashboardAppService
     {
         private readonly IRepository<Customer> _customerRepository;
@@ -287,15 +288,18 @@ namespace YT.Dashboards
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<List<OrderProductDetail>> GetHaveProducts(EntityDto<int> input)
+        public async Task<PagedResultDto<OrderProductDetail>> GetHaveProducts(GetHaveProductInput input)
         {
-            var temp =
-                await
-                    _ordeRepository.GetAllListAsync(c => c.CustomerId == input.Id );
           
+            var query = _ordeRepository.GetAll().Where(c=>c.CustomerId==input.CustomerId);
+            var chargeRecordCount = await query.CountAsync();
+            var chargeRecords = await query
+            .OrderBy(input.Sorting)
+            .PageBy(input)
+            .ToListAsync();
             var output = new List<OrderProductDetail>();
-            if (!temp.Any()) return output;
-            foreach (var o in temp)
+            if (chargeRecordCount<=0) return new PagedResultDto<OrderProductDetail>(0,output);
+            foreach (var o in chargeRecords)
             {
                 var dto = new OrderProductDetail()
                 {
@@ -317,7 +321,10 @@ namespace YT.Dashboards
                 }
                 output.Add(dto);
             }
-            return output;
+            return new PagedResultDto<OrderProductDetail>(
+            chargeRecordCount,
+            output
+            );
         }
         /// <summary>
         /// 获取所有产品列表

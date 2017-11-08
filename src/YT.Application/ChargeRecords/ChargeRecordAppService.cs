@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Dynamic;
@@ -6,12 +7,14 @@ using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.AutoMapper;
+using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Abp.UI;
 using YT.ChargeRecords.Dtos;
 using YT.Customers.Dtos;
+using YT.Dashboards.Dtos;
 using YT.Models;
 
 namespace YT.ChargeRecords
@@ -27,18 +30,22 @@ namespace YT.ChargeRecords
         private readonly IRepository<ChargeRecord, int> _chargeRecordRepository;
         private readonly IRepository<ApplyCharge, int> _applyRepository;
         private readonly IRepository<Customer, int> _customerRepository;
-      /// <summary>
-      /// ctor
-      /// </summary>
-      /// <param name="chargeRecordRepository"></param>
-      /// <param name="applyRepository"></param>
-      /// <param name="customerRepository"></param>
+        private readonly IRepository<CustomerCost, int> _costRepository;
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="chargeRecordRepository"></param>
+        /// <param name="applyRepository"></param>
+        /// <param name="customerRepository"></param>
+        /// <param name="costRepository"></param>
         public ChargeRecordAppService(IRepository<ChargeRecord, int> chargeRecordRepository,
-            IRepository<ApplyCharge, int> applyRepository, IRepository<Customer, int> customerRepository)
+            IRepository<ApplyCharge, int> applyRepository, IRepository<Customer, int> customerRepository,
+            IRepository<CustomerCost, int> costRepository)
         {
             _chargeRecordRepository = chargeRecordRepository;
             _applyRepository = applyRepository;
             _customerRepository = customerRepository;
+            _costRepository = costRepository;
         }
 
 
@@ -47,6 +54,43 @@ namespace YT.ChargeRecords
 
 
         #endregion
+
+
+        /// <summary>
+        /// 获取用户消费记录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PagedResultDto<CustomerCostListDto>> GetCustomerCosts(GetCustomerCostsPagesInput input)
+        {
+            var list = from c in await _costRepository.GetAllListAsync()
+                       join d in await _customerRepository.GetAllListAsync()
+                       on c.CustomerId equals d.Id
+                       select new { c, d };
+            var query = list.WhereIf(!input.CustomerName.IsNullOrWhiteSpace(),
+                c => c.d.CompanyName.Contains(input.CustomerName))
+                  .WhereIf(input.Start.HasValue, c => c.c.CreationTime >= input.Start.Value)
+                  .WhereIf(input.End.HasValue, c => c.c.CreationTime > input.End.Value);
+            var chargeRecordCount = query.Count();
+
+            var chargeRecords = query.OrderByDescending(c=>c.c.CreationTime).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+
+            var chargeRecordListDtos = chargeRecords.Select(c => new CustomerCostListDto()
+            {
+                Balance = c.c.Balance,
+                Cost = c.c.Cost,
+                CurrentBalance = c.c.CurrentBalance,
+                CustomerId = c.c.CustomerId,
+                CustomerName = c.d.CompanyName,
+                CreationTime = c.c.CreationTime,
+                Id = c.c.Id
+            }).ToList();
+            return new PagedResultDto<CustomerCostListDto>(
+            chargeRecordCount,
+            chargeRecordListDtos
+            );
+
+        }
 
 
         #region 充值记录管理
@@ -82,10 +126,10 @@ namespace YT.ChargeRecords
         public async Task<PagedResultDto<ApplyChargeListDto>> GetPagedApplyChargesAsync(GetChargeRecordInput input)
         {
 
-         var   query = _applyRepository.GetAll().WhereIf(!input.Name.IsNullOrWhiteSpace(), c => c.CustomerName.Contains(input.Name))
-                .WhereIf(input.Money.HasValue, c => c.ChargeMoney == input.Money.Value)
-                .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                .WhereIf(input.End.HasValue, c => c.CreationTime > input.End.Value);
+            var query = _applyRepository.GetAll().WhereIf(!input.Name.IsNullOrWhiteSpace(), c => c.CustomerName.Contains(input.Name))
+                   .WhereIf(input.Money.HasValue, c => c.ChargeMoney == input.Money.Value)
+                   .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                   .WhereIf(input.End.HasValue, c => c.CreationTime > input.End.Value);
             var chargeRecordCount = await query.CountAsync();
 
             var chargeRecords = await query

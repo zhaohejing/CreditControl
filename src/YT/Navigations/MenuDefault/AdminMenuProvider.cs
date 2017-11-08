@@ -37,7 +37,8 @@ namespace YT.Navigations.MenuDefault
                     Childs = new List<MenuDefinition>()
                     {
                         new MenuDefinition("充值记录","/chargerecord","",true,StaticPermissionsName.Page_Finance_ChargeRecord),
-                        new MenuDefinition("重置申请记录","/applyforcharge","",true,StaticPermissionsName.Page_Finance_ApplyforCharge),
+                        new MenuDefinition("充值申请记录","/applyforcharge","",true,StaticPermissionsName.Page_Finance_ApplyforCharge),
+                        new MenuDefinition("消费记录","/cost","",true,StaticPermissionsName.Page_Finance_Costs),
                     }
                 },
 

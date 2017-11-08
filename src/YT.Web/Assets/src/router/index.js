@@ -85,7 +85,7 @@ export const asyncRouterMap = [{
         icon: 'person-stalker',
         component: r => require(['views/series/index'], r)
       },
-  {
+      {
         path: '',
         name: '财务管理',
         icon: 'person-stalker',
@@ -106,6 +106,11 @@ export const asyncRouterMap = [{
             name: '充值申请记录',
             icon: 'person-add',
             component: r => require(['views/finance/apply'], r)
+          }, {
+            path: '/cost',
+            name: '消费记录',
+            icon: 'person-stalker',
+            component: r => require(['views/finance/cost'], r)
           }
         ]
       },

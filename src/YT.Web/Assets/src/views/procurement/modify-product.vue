@@ -11,7 +11,7 @@
                     </Col>
                     <Col :span='12'>
                     <FormItem label='价格' prop='price'>
-                        <InputNumber :min='0' v-model='current.productEditDto.price' placeholder='价格'></InputNumber>
+                        <InputNumber precision="0" :min='0' v-model='current.productEditDto.price' placeholder='价格'></InputNumber>
                     </FormItem>
                     </Col>
                 </Row>

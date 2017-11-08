@@ -35,3 +35,10 @@ export function clear(data) {
          data
     });
 }
+export function costs(data) {
+    return fetch({
+        url: '/api/services/app/chargeRecord/GetCustomerCosts',
+        method: 'post',
+         data
+    });
+}

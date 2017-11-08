@@ -73,7 +73,8 @@ namespace YT.Authorizations.PermissionDefault
                                        new PermissionDefinition(StaticPermissionsName.Page_Finance_ApplyforCharge_Delete,"删除","",PermissionType.Control),
                                    }
                                },
-                               new PermissionDefinition(StaticPermissionsName.Page_Finance_ChargeRecord,"充值记录","充值记录",PermissionType.Control)
+                               new PermissionDefinition(StaticPermissionsName.Page_Finance_ChargeRecord,"充值记录","充值记录",PermissionType.Control),
+                               new PermissionDefinition(StaticPermissionsName.Page_Finance_Costs,"消费记录","消费记录",PermissionType.Control)
                            }
                        },
 
@@ -160,6 +161,8 @@ namespace YT.Authorizations.PermissionDefault
         public const string Page_Finance_ApplyforCharge = "page.finance.applyforcharge";
         public const string Page_Finance_ApplyforCharge_Delete = "page.finance.applyforcharge.delete";
         public const string Page_Finance_ApplyforCharge_Charge = "page.finance.applyforcharge.charge";
+        public const string Page_Finance_Costs = "page.finance.costs";
+
 
         /// <summary>
         /// xitong

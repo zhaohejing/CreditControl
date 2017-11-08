@@ -4,6 +4,7 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using YT.ChargeRecords.Dtos;
 using YT.Customers.Dtos;
+using YT.Dashboards.Dtos;
 
 namespace YT.ChargeRecords
 {
@@ -46,6 +47,12 @@ namespace YT.ChargeRecords
         /// <returns></returns>
           Task ChargeApplyCustomer(ChargeInput input);
 
+        /// <summary>
+        /// 获取用户消费记录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<PagedResultDto<CustomerCostListDto>> GetCustomerCosts(GetCustomerCostsPagesInput input);
 
     }
 }

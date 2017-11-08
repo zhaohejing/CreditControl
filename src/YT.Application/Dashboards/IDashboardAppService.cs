@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using YT.ChargeRecords.Dtos;
 using YT.Customers.Dtos;
 using YT.Dashboards.Dtos;
 using YT.Products.Dtos;
@@ -68,7 +69,7 @@ namespace YT.Dashboards
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<List<OrderProductDetail>> GetHaveProducts(EntityDto<int> input);
+        Task<PagedResultDto<OrderProductDetail>> GetHaveProducts(GetHaveProductInput input);
         /// <summary>
         /// 创建订单
         /// </summary>
