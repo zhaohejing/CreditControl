@@ -140,7 +140,7 @@ namespace YT.Dashboards
         {
             var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.CustomerId);
             if (customer == null) throw new UserFriendlyException("该账户不存在");
-            var order = await _ordeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNum));
+            var order = await _ordeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNum)&&!c.State.HasValue);
             if (order == null) throw new UserFriendlyException("该订单不存在");
             order.State = input.State;
             if (input.State)
@@ -187,9 +187,9 @@ namespace YT.Dashboards
         {
             var now = DateTime.Now.Date;
             DateTime left = now.AddMonths(-input.Num);
-            var lists = await _costRepository.GetAllListAsync(c => c.CustomerId == input.CustomerId
+            var lists = await _costRepository.GetAll().Where(c => c.CustomerId == input.CustomerId
                                                                    && c.CreationTime >= left
-            );
+            ).OrderByDescending(c=>c.CreationTime).ToListAsync();
             if (!lists.Any()) return null;
             return lists.MapTo<List<CustomerCostListDto>>();
         }

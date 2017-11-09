@@ -89,7 +89,7 @@ export default {
                                 }
                             }
                         }, '查看'));
-                        if (!params.row || !params.row.state) {
+                        if (!params.row || params.row.state==null) {
                             childs.push(h('Button', {
                                 props: {
                                     type: 'error',
