@@ -24,7 +24,7 @@
           </span>
         </a>
         <Dropdown-menu slot="list">
-          <Dropdown-item>
+          <!-- <Dropdown-item>
             <p class="dropdown-itemp">
               <Icon type="alert"></Icon>修改个人信息
               <span class="badge badge-info">0</span>
@@ -50,7 +50,7 @@
           <Dropdown-item>
             <p class="dropdown-itemp">
               <Icon type="android-settings"></Icon> 个人设置</p>
-          </Dropdown-item>
+          </Dropdown-item> -->
           <Dropdown-item>
             <a href="" @click="Logout">
               <p class="dropdown-itemp">
