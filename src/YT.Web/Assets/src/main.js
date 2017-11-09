@@ -11,8 +11,6 @@ import 'iview/dist/styles/iview.css';
 import TreeView from 'vue-json-tree-view';
 import MilkTable from 'components/table/mtable';
 import TreeGrid from 'components/table/treegrid';
-import vuePicturePreview from 'vue-picture-preview'
-Vue.use(vuePicturePreview)
 Vue.use(iView);
 Vue.use(TreeView);
 Vue.component('milk-table', MilkTable);

@@ -103,7 +103,10 @@
                         <Row>
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.license">
-                                    <img style="width:200px;height:150px;" v-preview="form.licenseUrl" :src="form.licenseUrl">
+                                    <a :href="form.licenseUrl" download="img">
+                                    <img style="width:200px;height:150px;"  :src="form.licenseUrl">
+
+                                    </a>
                                   
                                 </template>
                               
@@ -111,7 +114,8 @@
                             </Col>
                             <Col span="9" offset="6">
                                 <template class="demo-upload-list" v-if="form.permitCard">
-                                    <img style="width:200px;height:150px;" v-preview="form.permitCardUrl" :src="form.permitCardUrl">
+                                 <a :href="form.permitCardUrl" download="img"><img style="width:200px;height:150px;" 
+                                  :src="form.permitCardUrl"></a>   
                                 
                                 </template>
                              
@@ -121,14 +125,20 @@
                         <Row style="margin-top:45px">
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.identityCard">
-                                    <img style="width:200px;height:150px;" v-preview="form.identityCardUrl" :src="form.identityCardUrl">
+                                    <a :href="form.identityCardUrl" download="img">
                                    
+
+                                    </a>
+                                    <img style="width:200px;height:150px;"  :src="form.identityCardUrl">
                                 </template>
                                 <p class='g9b9ea0 g-center'>企业或品牌Logo（上传）</p>
                             </Col>
                             <Col span="9" offset="6">
                                 <template class="demo-upload-list" v-if="form.companyLogo">
-                                    <img style="width:200px;height:150px;" v-preview="form.companyLogoUrl" :src="form.companyLogoUrl">
+                                    <a  :href="form.companyLogoUrl" download="img">
+                                    <img style="width:200px;height:150px;"  :src="form.companyLogoUrl">
+
+                                    </a>
                                   
                                 </template>
                             

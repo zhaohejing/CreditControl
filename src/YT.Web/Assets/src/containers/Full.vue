@@ -12,7 +12,6 @@
       <AppAside/>
     </div>
     <AppFooter/>
-     <lg-preview></lg-preview>
 
   </div>
 </template>
