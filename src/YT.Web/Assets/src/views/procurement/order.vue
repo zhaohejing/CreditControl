@@ -24,137 +24,151 @@
 </template>
 
 <script>
-import { orders, order, completeorder } from 'api/products';
+import { orders, order, completeorder } from "api/products";
 export default {
-    name: 'account',
-    data() {
-        return {
-            cols: [
+  name: "account",
+  data() {
+    return {
+      cols: [
+        {
+          title: "订单号",
+          key: "orderNum"
+        },
+        {
+          title: "商品名称",
+          key: "productName"
+        },
+        {
+          title: "消费价格",
+          key: "totalPrice"
+        },
+        {
+          title: "用户名称",
+          key: "contact"
+        },
+        {
+          title: "代理商名称",
+          key: "companyName"
+        },
+        {
+          title: "创建时间",
+          key: "creationTime",
+          render: (h, params) => {
+            return this.$fmtTime(params.row.creationTime);
+          }
+        },
+        {
+          title: "状态",
+          key: "isActive",
+          render: (h, params) => {
+            return params.row.state != null
+              ? params.row.state != null && params.row.state ? "已完成" : "已取消"
+              : "未完成";
+          }
+        },
+        {
+          title: "操作",
+          key: "action",
+          width: "130px",
+          align: "center",
+          render: (h, params) => {
+            const childs = [];
+            childs.push(
+              h(
+                "Button",
                 {
-                    title: '订单号',
-                    key: 'orderNum'
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                      this.detail(params.row);
+                    }
+                  }
                 },
+                "查看"
+              )
+            );
+            if (!params.row || params.row.state == null) {
+              childs.push(
+                h(
+                  "Button",
                   {
-                    title: '商品名',
-                    key: 'productName'
-                },
-                {
-                    title: '价格',
-                    key: 'totalPrice'
-                },
-                {
-                    title: '公司名称',
-                    key: 'companyName'
-                },
-                {
-                    title: '联系人',
-                    key: 'contact',
-                },
-                {
-                    title: '手机号',
-                    key: 'mobile',
-                },
-                {
-                    title: '创建时间',
-                    key: 'creationTime',
-                    render: (h, params) => {
-                        return this.$fmtTime(params.row.creationTime);
+                    props: {
+                      type: "error",
+                      size: "small"
+                    },
+                    on: {
+                      click: () => {
+                        this.complete(params.row);
+                      }
                     }
-                },
-                {
-                    title: '状态',
-                    key: 'isActive',
-                    render: (h, params) => {
-                        return params.row.state != null ? (params.row.state != null && params.row.state ? '已完成' : '已取消') : '未完成';
-                    }
-                },
-                {
-                    title: '操作',
-                    key: 'action',
-                    width:'130px',
-                    align: 'center',
-                    render: (h, params) => {
-                        const childs = [];
-                        childs.push(h('Button', {
-                            props: {
-                                type: 'primary',
-                                size: 'small'
-                            },
-                            style: {
-                                marginRight: '5px'
-                            },
-                            on: {
-                                click: () => {
-                                    this.detail(params.row)
-                                }
-                            }
-                        }, '查看'));
-                        if (!params.row || params.row.state==null) {
-                            childs.push(h('Button', {
-                                props: {
-                                    type: 'error',
-                                    size: 'small'
-                                },
-                                on: {
-                                    click: () => {
-                                        this.complete(params.row)
-                                    }
-                                }
-                            }, '完成'));
-                        }
-                        return h('div', childs);
-                    }
-                }
-            ],
-            searchApi: orders,
-            params: { name: '', mobile: '', start: null, end: null },
-            modal: {
-                isShow: false, title: '订单详情', current: null
+                  },
+                  "完成"
+                )
+              );
             }
+            return h("div", childs);
+          }
         }
-    },
-    created() {
-        var self = this;
-        self.$root.eventHub.$on('order', () => {
-            self.cancel();
-        });
-    },
-    destroyed() {
-        this.$root.eventHub.$off('order');
-    },
-    methods: {
-        // 完成
-        complete(model) {
-            var table = this.$refs.list;
-            this.$Modal.confirm({
-                title: '操作提示', content: "确定要完成当前订单么?",
-                onOk: () => {
-                    const parms = { id: model.id }
-                    completeorder(parms).then(c => {
-                        if (c.data.success) {
-                            table.initData();
-                        }
-                    }).catch(e => {
-                        this.$Message.error(e.response.data.error.message);
-                    })
-                }
+      ],
+      searchApi: orders,
+      params: { name: "", mobile: "", start: null, end: null },
+      modal: {
+        isShow: false,
+        title: "订单详情",
+        current: null
+      }
+    };
+  },
+  created() {
+    var self = this;
+    self.$root.eventHub.$on("order", () => {
+      self.cancel();
+    });
+  },
+  destroyed() {
+    this.$root.eventHub.$off("order");
+  },
+  methods: {
+    // 完成
+    complete(model) {
+      var table = this.$refs.list;
+      this.$Modal.confirm({
+        title: "操作提示",
+        content: "确定要完成当前订单么?",
+        onOk: () => {
+          const parms = { id: model.id };
+          completeorder(parms)
+            .then(c => {
+              if (c.data.success) {
+                table.initData();
+              }
             })
-        },
-        detail(row) {
-            this.$router.push({ path: '/order', query: { id: row.id } })
-        },
-        save() {
-            this.$refs.account.commit();
-        },
-        cancel() {
-            this.modal.isShow = false;
-            this.modal.current = null;
-            this.$refs.list.initData();
+            .catch(e => {
+              this.$Message.error(e.response.data.error.message);
+            });
         }
+      });
     },
-    mounted() {
+    detail(row) {
+      this.$router.push({ path: "/order", query: { id: row.id } });
+    },
+    save() {
+      this.$refs.account.commit();
+    },
+    cancel() {
+      this.modal.isShow = false;
+      this.modal.current = null;
+      this.$refs.list.initData();
     }
-}
+  },
+  mounted() {}
+};
 </script>
 
 
