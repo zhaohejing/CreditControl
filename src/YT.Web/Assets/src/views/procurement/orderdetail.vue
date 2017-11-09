@@ -103,7 +103,7 @@
                         <Row>
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.license">
-                                    <img class="imgshow" v-preview="form.licenseUrl" :src="form.licenseUrl">
+                                    <img style="width:200px;height:150px;" v-preview="form.licenseUrl" :src="form.licenseUrl">
                                   
                                 </template>
                               
@@ -111,7 +111,7 @@
                             </Col>
                             <Col span="9" offset="6">
                                 <template class="demo-upload-list" v-if="form.permitCard">
-                                    <img class="imgshow" v-preview="form.permitCardUrl" :src="form.permitCardUrl">
+                                    <img style="width:200px;height:150px;" v-preview="form.permitCardUrl" :src="form.permitCardUrl">
                                 
                                 </template>
                              
@@ -121,14 +121,14 @@
                         <Row style="margin-top:45px">
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.identityCard">
-                                    <img class="imgshow" v-preview="form.identityCardUrl" :src="form.identityCardUrl">
+                                    <img style="width:200px;height:150px;" v-preview="form.identityCardUrl" :src="form.identityCardUrl">
                                    
                                 </template>
                                 <p class='g9b9ea0 g-center'>企业或品牌Logo（上传）</p>
                             </Col>
                             <Col span="9" offset="6">
                                 <template class="demo-upload-list" v-if="form.companyLogo">
-                                    <img class="imgshow" v-preview="form.companyLogoUrl" :src="form.companyLogoUrl">
+                                    <img style="width:200px;height:150px;" v-preview="form.companyLogoUrl" :src="form.companyLogoUrl">
                                   
                                 </template>
                             
@@ -281,8 +281,5 @@ table.gridtable td {
   border-color: #666666;
   background-color: #ffffff;
 }
-imgshow{
-    width: 200px;
-    height: 150px;
-}
+
 </style>
