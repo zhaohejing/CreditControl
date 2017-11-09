@@ -103,20 +103,16 @@
                         <Row>
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.license">
-                                    <img :src="form.licenseUrl">
-                                    <div class="demo-upload-list-cover">
-                                        <Icon type="ios-trash-outline" @click.native="removeLicense(form.license)"></Icon>
-                                    </div>
+                                    <img class="imgshow" v-preview="form.licenseUrl" :src="form.licenseUrl">
+                                  
                                 </template>
                               
                                 <p class='g9b9ea0 g-center'>企业有效期营业执照复本电子版上传</p>
                             </Col>
                             <Col span="9" offset="6">
                                 <template class="demo-upload-list" v-if="form.permitCard">
-                                    <img :src="form.permitCardUrl">
-                                    <div class="demo-upload-list-cover">
-                                        <Icon type="ios-trash-outline" @click.native="removePermitCard(form.permitCard)"></Icon>
-                                    </div>
+                                    <img class="imgshow" v-preview="form.permitCardUrl" :src="form.permitCardUrl">
+                                
                                 </template>
                              
                                 <p class='g9b9ea0 g-center'>企业法人身份证正反面电子版上传</p>
@@ -125,19 +121,15 @@
                         <Row style="margin-top:45px">
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.identityCard">
-                                    <img :src="form.identityCardUrl">
-                                    <div class="demo-upload-list-cover">
-                                        <Icon type="ios-trash-outline" @click.native="removeLicense(form.identityCard)"></Icon>
-                                    </div>
+                                    <img class="imgshow" v-preview="form.identityCardUrl" :src="form.identityCardUrl">
+                                   
                                 </template>
                                 <p class='g9b9ea0 g-center'>企业或品牌Logo（上传）</p>
                             </Col>
                             <Col span="9" offset="6">
                                 <template class="demo-upload-list" v-if="form.companyLogo">
-                                    <img :src="form.companyLogoUrl">
-                                    <div class="demo-upload-list-cover">
-                                        <Icon type="ios-trash-outline" @click.native="removeLogo(form.companyLogo)"></Icon>
-                                    </div>
+                                    <img class="imgshow" v-preview="form.companyLogoUrl" :src="form.companyLogoUrl">
+                                  
                                 </template>
                             
                                 <p class='g9b9ea0 g-center'>企业所属行业特有许可证电子版上传</p>
@@ -251,7 +243,6 @@ export default {
       this.modal.isShow = false;
     },
     viewForm() {
-        debugger;
       getFormByOrder({ id: this.order.id }).then(r => {
         if (r.data.success) {
           this.form = r.data.result;
@@ -289,5 +280,9 @@ table.gridtable td {
   border-style: solid;
   border-color: #666666;
   background-color: #ffffff;
+}
+imgshow{
+    width: 200px;
+    height: 150px;
 }
 </style>

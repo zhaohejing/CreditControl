@@ -29,6 +29,7 @@
     "vue-chart": "2.0.0",
     "vue-chartjs": "2.7.1",
     "vue-json-tree-view": "^2.0.7",
+    "vue-picture-preview": "0.0.1",
     "vue-router": "2.5.3",
     "vue-tinymce": "github:lpreterite/vue-tinymce",
     "vuex": "2.3.1"

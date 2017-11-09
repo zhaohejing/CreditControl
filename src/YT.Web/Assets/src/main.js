@@ -11,13 +11,15 @@ import 'iview/dist/styles/iview.css';
 import TreeView from 'vue-json-tree-view';
 import MilkTable from 'components/table/mtable';
 import TreeGrid from 'components/table/treegrid';
+import vuePicturePreview from 'vue-picture-preview'
+Vue.use(vuePicturePreview)
 Vue.use(iView);
 Vue.use(TreeView);
 Vue.component('milk-table', MilkTable);
 Vue.component('tree-table', TreeGrid);
 /* 格式化日期*/
 Vue.prototype.$fmtTime = (date, format) => {
-  return dtime(date).format(format || 'YYYY-MM-DD HH:mm:ss');
+    return dtime(date).format(format || 'YYYY-MM-DD HH:mm:ss');
 };
 
 /* 列表格式转换成树格式
@@ -27,62 +29,62 @@ Vue.prototype.$fmtTime = (date, format) => {
  * @param grants 已授权信息
  */
 const converToTreedata = (data, parentId, pidField, grants) => {
-  const list = [];
-  data.forEach(item => {
-    if (item[pidField] === parentId) {
-      item.children = converToTreedata(data, item.id, pidField, grants);
-      item.title = item.displayName;
-      if (grants) {
-        const temp = grants.findIndex(key => key === item.name);
-        if (temp > 0) {
-          if (!item.children || item.children.length <= 0) {
-            item.checked = true;
-            item.expand = true;
-          } else {
-            item.checked = false;
-            item.expand = true;
-          }
-        } else {
-          item.checked = false;
-          item.expand = true;
+    const list = [];
+    data.forEach(item => {
+        if (item[pidField] === parentId) {
+            item.children = converToTreedata(data, item.id, pidField, grants);
+            item.title = item.displayName;
+            if (grants) {
+                const temp = grants.findIndex(key => key === item.name);
+                if (temp > 0) {
+                    if (!item.children || item.children.length <= 0) {
+                        item.checked = true;
+                        item.expand = true;
+                    } else {
+                        item.checked = false;
+                        item.expand = true;
+                    }
+                } else {
+                    item.checked = false;
+                    item.expand = true;
+                }
+            }
+            list.push(item);
         }
-      }
-      list.push(item);
-    }
-  });
-  return list;
+    });
+    return list;
 };
 Vue.prototype.$converToTreedata = converToTreedata;
 Vue.config.productionTip = false;
 router.beforeEach((to, from, next) => {
-const token = localStorage.getItem('Milk-Token');
-  if (!token) {
-    if (to.path != '/login') {
-      next({
-        path: '/login'
-      });
+    const token = localStorage.getItem('Milk-Token');
+    if (!token) {
+        if (to.path != '/login') {
+            next({
+                path: '/login'
+            });
+        } else {
+            next();
+        }
+        return;
     } else {
-      next();
+        if (from.path == '/login' && to.path != '/') {
+            next({
+                path: '/'
+            });
+        }
+        next();
     }
-    return;
-  } else {
-    if (from.path == '/login' && to.path != '/') {
-      next({
-        path: '/'
-      });
-    }
-    next();
-  }
 });
 new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  data: {
-    eventHub: new Vue()
-  },
-  components: {
-    App
-  }
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    data: {
+        eventHub: new Vue()
+    },
+    components: {
+        App
+    }
 });

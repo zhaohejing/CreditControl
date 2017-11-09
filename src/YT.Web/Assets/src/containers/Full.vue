@@ -12,18 +12,20 @@
       <AppAside/>
     </div>
     <AppFooter/>
+     <lg-preview></lg-preview>
+
   </div>
 </template>
 
 <script>
-import AppHeader from '../components/Header'
-import Sidebar from '../components/Sidebar'
-import AppAside from '../components/Aside'
-import AppFooter from '../components/Footer'
-import Breadcrumb from '../components/Breadcrumb'
-import { mapGetters, mapActions } from 'vuex';
+import AppHeader from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import AppAside from "../components/Aside";
+import AppFooter from "../components/Footer";
+import Breadcrumb from "../components/Breadcrumb";
+import { mapGetters, mapActions } from "vuex";
 export default {
-  name: 'full',
+  name: "full",
   components: {
     AppHeader,
     Sidebar,
@@ -35,33 +37,29 @@ export default {
     this.GetInfo();
   },
   computed: {
-    ...mapGetters([
-      'name'
-    ]),
+    ...mapGetters(["name"]),
     name() {
-      return this.$route.name
+      return this.$route.name;
     },
     list() {
-      return this.$route.matched
+      return this.$route.matched;
     }
   },
   methods: {
-    ...mapActions([
-      'GetInfo'
-    ])
+    ...mapActions(["GetInfo"])
   }
   //,
   // watch: {
   //   name: function(newvalue) {
   //     debugger;
   //     if (newValue && newValue!=='') {
-	// 			}else{
-	// 			 this.$Message.error('请重新登陆');
-	// 				setTimeout(() => {
-	// 					this.$router.replace('/login')
-	// 				}, 500)
-	// 			}
+  // 			}else{
+  // 			 this.$Message.error('请重新登陆');
+  // 				setTimeout(() => {
+  // 					this.$router.replace('/login')
+  // 				}, 500)
+  // 			}
   //   }
   // }
-}
+};
 </script>
