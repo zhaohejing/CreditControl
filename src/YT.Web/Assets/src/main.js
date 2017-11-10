@@ -16,9 +16,9 @@ Vue.use(TreeView);
 Vue.component('milk-table', MilkTable);
 Vue.component('tree-table', TreeGrid);
 /* 格式化日期*/
-Vue.prototype.$fmtTime = (date, format) => {
-    return dtime(date).format(format || 'YYYY-MM-DD HH:mm:ss');
-};
+Vue.prototype.$fmtTime = (date, format) =>
+    dtime(date).format(format || 'YYYY-MM-DD HH:mm:ss');
+
 
 /* 列表格式转换成树格式
  * @param data 数组
@@ -57,7 +57,7 @@ Vue.config.productionTip = false;
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('Milk-Token');
     if (!token) {
-        if (to.path != '/login') {
+        if (to.path !== '/login') {
             next({
                 path: '/login'
             });
@@ -66,7 +66,7 @@ router.beforeEach((to, from, next) => {
         }
         return;
     } else {
-        if (from.path == '/login' && to.path != '/') {
+        if (from.path === '/login' && to.path !== '/') {
             next({
                 path: '/'
             });
