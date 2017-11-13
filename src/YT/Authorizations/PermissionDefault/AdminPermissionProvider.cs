@@ -36,6 +36,7 @@ namespace YT.Authorizations.PermissionDefault
                                        new PermissionDefinition(StaticPermissionsName.Page_Procurement_Products_Edit,"编辑商品","",PermissionType.Control),
                                        new PermissionDefinition(StaticPermissionsName.Page_Procurement_Products_Delete,"删除商品","",PermissionType.Control),
                                        new PermissionDefinition(StaticPermissionsName.Page_Procurement_Products_Export,"导出商品","",PermissionType.Control),
+                                       new PermissionDefinition(StaticPermissionsName.Page_Procurement_Products_Pricing,"商品定价","",PermissionType.Control),
                                    }
                                },
                                new PermissionDefinition(StaticPermissionsName.Page_Procurement_Orders,"订单管理","订单管理",PermissionType.Control)
@@ -130,6 +131,8 @@ namespace YT.Authorizations.PermissionDefault
         public const string Page_Procurement_Products_Edit = "page.procurement.products.edit";
         public const string Page_Procurement_Products_Delete = "page.procurement.products.delete";
         public const string Page_Procurement_Products_Export = "page.procurement.products.export";
+        public const string Page_Procurement_Products_Pricing = "page.procurement.products.pricing";
+        
         /// <summary>
         /// 订单权限
         /// </summary>

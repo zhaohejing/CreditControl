@@ -19,7 +19,6 @@ namespace YT.Navigations.MenuDefault
         {
             return new List<MenuDefinition>()
            {
-              new MenuDefinition("控制台","/dashboard","ionic",true,StaticPermissionsName.Page_Dashboard),
                 new MenuDefinition("采购商品","","speedometer",true,StaticPermissionsName.Page_Procurement)
                 {
                     Childs = new List<MenuDefinition>()

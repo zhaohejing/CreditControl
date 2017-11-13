@@ -13,10 +13,10 @@ namespace YT.Products.Dtos
     public class ProductListDto : EntityDto<int>
     {
         /// <summary>
-        /// 价格
+        /// 是否需要填写form表单
         /// </summary>
-        [DisplayName("价格")]
-        public int Price { get; set; }
+        [DisplayName("是否需要填写form表单")]
+        public bool RequireForm { get; set; }
         /// <summary>
         /// 二级分类
         /// </summary>
@@ -63,10 +63,10 @@ namespace YT.Products.Dtos
     public class ProductDetail : EntityDto
     {
         /// <summary>
-        /// 价格
+        /// 是否需要填写form表单
         /// </summary>
-        [DisplayName("价格")]
-        public int Price { get; set; }
+        [DisplayName("是否需要填写form表单")]
+        public bool RequireForm { get; set; }
         /// <summary>
         /// 二级分类
         /// </summary>

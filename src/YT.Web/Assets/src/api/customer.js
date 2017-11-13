@@ -4,13 +4,20 @@ export function getCustomers(data) {
     return fetch({
         url: '/api/services/app/customer/GetPagedCustomersAsync',
         method: 'post',
-         data
+        data
     });
 }
 // 获取角色信息用于编辑
 export function getCustomerForEdit(data) {
     return fetch({
         url: '/api/services/app/customer/GetCustomerForEditAsync',
+        method: 'post',
+        data
+    });
+}
+export function prices(data) {
+    return fetch({
+        url: '/api/services/app/customerPreferencePrice/GetCustomerPricesAsync',
         method: 'post',
         data
     });

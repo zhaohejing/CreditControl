@@ -49,6 +49,10 @@ namespace YT.EntityFramework
         public virtual IDbSet<CustomerForm> CustomerForms { get; set; }
 
         public virtual  IDbSet<CustomerCost> CustomerCosts { get; set; }
+        /// <summary>
+        /// 客户定价
+        /// </summary>
+        public  virtual  IDbSet<CustomerPreferencePrice> CustomerPreferencePrices { get; set; }
         public MilkDbContext()
             : base("Default")
         {

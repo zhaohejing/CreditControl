@@ -27,11 +27,11 @@ namespace YT.Products.Dtos
         public string ProductName { get; set; }
 
         /// <summary>
-        /// 价格
+        /// 是否需要填写form表单
         /// </summary>
-        [DisplayName("价格")]
+        [DisplayName("是否需要填写form表单")]
         [Required]
-        public int Price { get; set; }
+        public bool RequireForm { get; set; }
 
         /// <summary>
         /// 一级分类

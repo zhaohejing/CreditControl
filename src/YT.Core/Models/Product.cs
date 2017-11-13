@@ -22,7 +22,11 @@ namespace YT.Models
         /// <summary>
         /// 价格
         /// </summary>
-        public int Price { get; set; }
+      //  public int Price { get; set; }
+        /// <summary>
+        /// 是否需要添加form信息
+        /// </summary>
+        public bool RequireForm { get; set; }
         /// <summary>
         /// 一级分类
         /// </summary>
@@ -60,6 +64,11 @@ namespace YT.Models
         /// 图片
         /// </summary>
         public Guid? Profile { get; set; }
+        /// <summary>
+        /// 客户定价
+        /// </summary>
+        [ForeignKey("ProductId")]
+        public  virtual ICollection<CustomerPreferencePrice> CustomerPrices { get; set; }
     }
 
     /// <summary>

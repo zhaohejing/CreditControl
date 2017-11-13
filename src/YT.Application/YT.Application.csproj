@@ -161,6 +161,13 @@
     <Compile Include="ChargeRecords\IChargeRecordAppService.cs" />
     <Compile Include="Configuration\Dto\PermissionSettingsEditDto.cs" />
     <Compile Include="Configuration\Dto\SettingInput.cs" />
+    <Compile Include="CustomerPreferencePrices\CustomerPreferencePriceAppService.cs" />
+    <Compile Include="CustomerPreferencePrices\Dtos\CreateOrUpdateCustomerPreferencePriceInput.cs" />
+    <Compile Include="CustomerPreferencePrices\Dtos\CustomerPreferencePriceEditDto.cs" />
+    <Compile Include="CustomerPreferencePrices\Dtos\CustomerPreferencePriceListDto.cs" />
+    <Compile Include="CustomerPreferencePrices\Dtos\GetCustomerPreferencePriceForEditOutput.cs" />
+    <Compile Include="CustomerPreferencePrices\Dtos\GetCustomerPreferencePriceInput.cs" />
+    <Compile Include="CustomerPreferencePrices\ICustomerPreferencePriceAppService.cs" />
     <Compile Include="Customers\CustomerAppService.cs" />
     <Compile Include="Customers\Dtos\CreateOrUpdateCustomerInput.cs" />
     <Compile Include="Customers\Dtos\CustomerEditDto.cs" />

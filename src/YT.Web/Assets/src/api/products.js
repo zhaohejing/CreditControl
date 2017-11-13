@@ -30,6 +30,20 @@ export function getFormByOrder(data) {
         data
     });
 }
+export function prices(data) {
+    return fetch({
+        url: '/api/services/app/customerPreferencePrice/GetProductPricesAsync',
+        method: 'post',
+        data
+    });
+}
+export function pricing(data) {
+    return fetch({
+        url: '/api/services/app/customerPreferencePrice/ModifyPriceAsync',
+        method: 'post',
+        data
+    });
+}
 // 获取角色信息用于编辑
 export function getProduct(data) {
     return fetch({

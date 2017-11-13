@@ -381,7 +381,8 @@ namespace YT.Dashboards
             if (customer == null) throw new UserFriendlyException("该账户不存在");
             var product = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.ProductId);
             if (product == null) throw new UserFriendlyException("该产品不存在");
-            var totalPrice = product.Price * input.Count;
+            var price = product.CustomerPrices.First(c => c.CustomerId == customer.Id);
+            var totalPrice = price.Price * input.Count;
             var dto = new Order()
             {
                 CustomerId = input.CustomerId,
@@ -390,7 +391,7 @@ namespace YT.Dashboards
                 Count = input.Count,
                 TotalPrice = totalPrice,
                 ProductId = product.Id,
-                Price = product.Price,
+                Price = price.Price,
                 ProductName = product.ProductName,
                 LevelOne = product.LevelOne.Name,
                 LevelTwo = product.LevelTwo.Name,

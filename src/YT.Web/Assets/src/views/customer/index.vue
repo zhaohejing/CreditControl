@@ -280,6 +280,29 @@ export default {
                   "充值"
                 )
               ); //组件2
+
+              children.push(
+                h(
+                  "Button",
+                  {
+                    props: {
+                      type: "primary",
+                      size: "small"
+                    },
+                    style: {
+                      marginRight: "5px",
+                      hidden: params.row.state
+                    },
+                    on: {
+                      click: () => {
+                        this.pricing(params.row);
+                      }
+                    }
+                  },
+                  "定价"
+                )
+              ); //组件2
+
               children.push(
                 h(
                   "Button",
@@ -351,6 +374,12 @@ export default {
             }
           });
         }
+      });
+    },
+    pricing(row) {
+      this.$router.push({
+        path: "customerpricing",
+        query: { customerId: row.id }
       });
     },
     reset(row) {

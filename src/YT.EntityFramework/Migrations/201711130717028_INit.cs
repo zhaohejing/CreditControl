@@ -5,7 +5,7 @@ namespace YT.Migrations
     using System.Data.Entity.Infrastructure.Annotations;
     using System.Data.Entity.Migrations;
     
-    public partial class init : DbMigration
+    public partial class INit : DbMigration
     {
         public override void Up()
         {
@@ -177,6 +177,28 @@ namespace YT.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
+                "dbo.CustomerPreferencePrice",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        CustomerId = c.Int(nullable: false),
+                        ProductId = c.Int(nullable: false),
+                        Price = c.Int(nullable: false),
+                        IsDeleted = c.Boolean(nullable: false),
+                        CreationTime = c.DateTime(nullable: false, precision: 0),
+                        CreatorUserId = c.Long(),
+                    },
+                annotations: new Dictionary<string, object>
+                {
+                    { "DynamicFilter_CustomerPreferencePrice_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
+                })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.customer", t => t.CustomerId, cascadeDelete: true)
+                .ForeignKey("dbo.product", t => t.ProductId, cascadeDelete: true)
+                .Index(t => t.CustomerId)
+                .Index(t => t.ProductId);
+            
+            CreateTable(
                 "dbo.customer",
                 c => new
                     {
@@ -206,6 +228,33 @@ namespace YT.Migrations
                     { "DynamicFilter_Customer_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                 })
                 .PrimaryKey(t => t.Id);
+            
+            CreateTable(
+                "dbo.product",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        ProductName = c.String(unicode: false),
+                        RequireForm = c.Boolean(nullable: false),
+                        LevelOneId = c.Int(nullable: false),
+                        LevelTwoId = c.Int(nullable: false),
+                        Description = c.String(unicode: false),
+                        Content = c.String(unicode: false),
+                        IsDeleted = c.Boolean(nullable: false),
+                        IsActive = c.Boolean(nullable: false),
+                        Profile = c.Guid(),
+                        CreationTime = c.DateTime(nullable: false, precision: 0),
+                        CreatorUserId = c.Long(),
+                    },
+                annotations: new Dictionary<string, object>
+                {
+                    { "DynamicFilter_Product_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
+                })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.category", t => t.LevelOneId, cascadeDelete: true)
+                .ForeignKey("dbo.category", t => t.LevelTwoId, cascadeDelete: true)
+                .Index(t => t.LevelOneId)
+                .Index(t => t.LevelTwoId);
             
             CreateTable(
                 "dbo.AbpFeatures",
@@ -448,33 +497,6 @@ namespace YT.Migrations
                 .ForeignKey("dbo.milk_roles", t => t.RoleId, cascadeDelete: true)
                 .Index(t => t.RoleId)
                 .Index(t => t.UserId);
-            
-            CreateTable(
-                "dbo.product",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        ProductName = c.String(unicode: false),
-                        Price = c.Int(nullable: false),
-                        LevelOneId = c.Int(nullable: false),
-                        LevelTwoId = c.Int(nullable: false),
-                        Description = c.String(unicode: false),
-                        Content = c.String(unicode: false),
-                        IsDeleted = c.Boolean(nullable: false),
-                        IsActive = c.Boolean(nullable: false),
-                        Profile = c.Guid(),
-                        CreationTime = c.DateTime(nullable: false, precision: 0),
-                        CreatorUserId = c.Long(),
-                    },
-                annotations: new Dictionary<string, object>
-                {
-                    { "DynamicFilter_Product_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
-                })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.category", t => t.LevelOneId, cascadeDelete: true)
-                .ForeignKey("dbo.category", t => t.LevelTwoId, cascadeDelete: true)
-                .Index(t => t.LevelOneId)
-                .Index(t => t.LevelTwoId);
             
             CreateTable(
                 "dbo.milk_roles",
@@ -804,13 +826,15 @@ namespace YT.Migrations
             DropForeignKey("dbo.milk_users", "DeleterUserId", "dbo.milk_users");
             DropForeignKey("dbo.milk_users", "CreatorUserId", "dbo.milk_users");
             DropForeignKey("dbo.AbpUserClaims", "UserId", "dbo.milk_users");
-            DropForeignKey("dbo.product", "LevelTwoId", "dbo.category");
-            DropForeignKey("dbo.product", "LevelOneId", "dbo.category");
             DropForeignKey("dbo.AbpOrganizationUnits", "ParentId", "dbo.AbpOrganizationUnits");
             DropForeignKey("dbo.order", "FormId", "dbo.CustomerForm");
             DropForeignKey("dbo.order", "CustomerId", "dbo.customer");
             DropForeignKey("dbo.milk_menu", "ParentId", "dbo.milk_menu");
             DropForeignKey("dbo.AbpFeatures", "EditionId", "dbo.AbpEditions");
+            DropForeignKey("dbo.product", "LevelTwoId", "dbo.category");
+            DropForeignKey("dbo.product", "LevelOneId", "dbo.category");
+            DropForeignKey("dbo.CustomerPreferencePrice", "ProductId", "dbo.product");
+            DropForeignKey("dbo.CustomerPreferencePrice", "CustomerId", "dbo.customer");
             DropForeignKey("dbo.category", "ParentId", "dbo.category");
             DropIndex("dbo.milk_permission", new[] { "ParentId" });
             DropIndex("dbo.AbpUserNotifications", new[] { "UserId", "State", "CreationTime" });
@@ -830,8 +854,6 @@ namespace YT.Migrations
             DropIndex("dbo.milk_roles", new[] { "CreatorUserId" });
             DropIndex("dbo.milk_roles", new[] { "LastModifierUserId" });
             DropIndex("dbo.milk_roles", new[] { "DeleterUserId" });
-            DropIndex("dbo.product", new[] { "LevelTwoId" });
-            DropIndex("dbo.product", new[] { "LevelOneId" });
             DropIndex("dbo.AbpPermissions", new[] { "UserId" });
             DropIndex("dbo.AbpPermissions", new[] { "RoleId" });
             DropIndex("dbo.AbpOrganizationUnits", new[] { "ParentId" });
@@ -840,6 +862,10 @@ namespace YT.Migrations
             DropIndex("dbo.AbpNotificationSubscriptions", new[] { "NotificationName", "EntityTypeName", "EntityId", "UserId" });
             DropIndex("dbo.milk_menu", new[] { "ParentId" });
             DropIndex("dbo.AbpFeatures", new[] { "EditionId" });
+            DropIndex("dbo.product", new[] { "LevelTwoId" });
+            DropIndex("dbo.product", new[] { "LevelOneId" });
+            DropIndex("dbo.CustomerPreferencePrice", new[] { "ProductId" });
+            DropIndex("dbo.CustomerPreferencePrice", new[] { "CustomerId" });
             DropIndex("dbo.category", new[] { "ParentId" });
             DropIndex("dbo.AbpBackgroundJobs", new[] { "IsAbandoned", "NextTryTime" });
             DropTable("dbo.milk_permission");
@@ -905,11 +931,6 @@ namespace YT.Migrations
                     { "DynamicFilter_Role_MayHaveTenant", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                     { "DynamicFilter_Role_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                 });
-            DropTable("dbo.product",
-                removedAnnotations: new Dictionary<string, object>
-                {
-                    { "DynamicFilter_Product_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
-                });
             DropTable("dbo.AbpPermissions",
                 removedAnnotations: new Dictionary<string, object>
                 {
@@ -958,10 +979,20 @@ namespace YT.Migrations
                 {
                     { "DynamicFilter_TenantFeatureSetting_MustHaveTenant", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                 });
+            DropTable("dbo.product",
+                removedAnnotations: new Dictionary<string, object>
+                {
+                    { "DynamicFilter_Product_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
+                });
             DropTable("dbo.customer",
                 removedAnnotations: new Dictionary<string, object>
                 {
                     { "DynamicFilter_Customer_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
+                });
+            DropTable("dbo.CustomerPreferencePrice",
+                removedAnnotations: new Dictionary<string, object>
+                {
+                    { "DynamicFilter_CustomerPreferencePrice_SoftDelete", "EntityFramework.DynamicFilters.DynamicFilterDefinition" },
                 });
             DropTable("dbo.CustomerForm",
                 removedAnnotations: new Dictionary<string, object>

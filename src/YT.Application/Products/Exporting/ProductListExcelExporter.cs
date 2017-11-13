@@ -53,9 +53,6 @@ namespace YT.Products.Exporting
  L("CreationTime")
                     );
                 AddObjects(sheet, 2, productListDtos,
-
-             _ => _.Price,
-
              _ => _.LevelOneName,
 
              _ => _.Description,

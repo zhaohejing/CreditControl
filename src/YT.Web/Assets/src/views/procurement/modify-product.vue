@@ -10,8 +10,12 @@
                     </FormItem>
                     </Col>
                     <Col :span='12'>
-                    <FormItem label='价格' prop='price'>
-                        <InputNumber precision="0" :min='0' v-model='current.productEditDto.price' placeholder='价格'></InputNumber>
+                    <FormItem label='是否需要填写表单' >
+                         <i-switch v-model="current.productEditDto.RequireForm" size="large">
+                <span slot="open">是</span>
+                <span slot="close">否</span>
+                          </i-switch>
+                        <!-- <InputNumber precision="0" :min='0' v-model='current.productEditDto.price' placeholder='价格'></InputNumber> -->
                     </FormItem>
                     </Col>
                 </Row>
@@ -59,113 +63,115 @@
     </div>
 </template>
 <script>
-import { saveProduct, getProductForEdit } from 'api/products';
-import { VueTinymce, TinymceSetting } from 'vue-tinymce';
-import { getCates } from 'api/cate';
+import { saveProduct, getProductForEdit } from "api/products";
+import { VueTinymce, TinymceSetting } from "vue-tinymce";
+import { getCates } from "api/cate";
 export default {
-    nmae: 'modifyProduct',
-    props: {
-        productId: {
-            type: Number,
-            default() {
-                return null
-            }
-        }
-    },
-    components: {
-        VueTinymce, TinymceSetting
-    },
-    data() {
-        return {
-            current: {
-                productEditDto: {
-                    id: this.productId,
-                    productName: '',
-                    price: 0,
-                    levelOneId: 0,
-                    levelTwoId: 0,
-                    description: '',
-                    content: '',
-                    isActive: true,
-                    profile: ''
-                }
-            },
-            upload: {
-                url: 'http://47.93.2.82:9999/api/File/ImageUpload',
-                headers: { Authorization: 'Bearer ' + this.$store.getters.token }
-
-            },
-            Series: {
-                One: null, OneList: null, TwoList: null
-            },
-            settings: Object.assign({}, TinymceSetting, {
-                height: 200,
-                language_url: './static/langs/zh_CN.js',
-                block_formats: 'Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;',
-            }),
-            ruleValidate: {
-                productName: [
-                    { required: true, message: '产品名不可为空', trigger: 'blur' }
-                ]
-            }
-        }
-    },
-    created() {
-        this.init();
-        this.initCate();
-    },
-    methods: {
-        async init() {
-            getProductForEdit({ id: this.current.productEditDto.id }).then(c => {
-                if (c.data.success) {
-                    this.current.productEditDto = c.data.result.product;
-                }
-            })
-
-        },
-        async initCate() {
-            getCates({ id: null }).then(c => {
-                if (c.data.success && c.data.result) {
-                    this.Series.OneList = c.data.result;
-                }
-            })
-        },
-        pick(current) {
-            getCates({ id: current }).then(c => {
-                if (c.data.success && c.data.result) {
-                    this.Series.TwoList = c.data.result;
-                }
-            })
-        },
-        commit() {
-            this.$refs.product.validate(valid => {
-                if (valid) {
-                    saveProduct(this.current).then(response => {
-                        if (response.data.success) {
-                            this.$root.eventHub.$emit('product');
-                        } else {
-                            this.$root.eventHub.$emit('product');
-                        }
-                    }).catch(erroe => {
-                        this.$Message.error(erroe.error);
-                        this.$root.eventHub.$emit('product');
-                    });
-                } else {
-                    this.$Message.error('表单验证失败!');
-                    this.$root.eventHub.$emit('product');
-                }
-            })
-        },
-        error(error, file, filelist) {
-            if (!file.success) {
-                this.$Message.error(file.error.message);
-            }
-        },
-        success(response, file, filelist) {
-            if (response.success) {
-                this.current.productEditDto.profile = response.result[0].guid;
-            }
-        }
+  nmae: "modifyProduct",
+  props: {
+    productId: {
+      type: Number,
+      default() {
+        return null;
+      }
     }
-}
+  },
+  components: {
+    VueTinymce,
+    TinymceSetting
+  },
+  data() {
+    return {
+      current: {
+        productEditDto: {
+          id: this.productId,
+          productName: "",
+          RequireForm: true,
+          levelOneId: 0,
+          levelTwoId: 0,
+          description: "",
+          content: "",
+          isActive: true,
+          profile: ""
+        }
+      },
+      upload: {
+        url: "http://47.93.2.82:9999/api/File/ImageUpload",
+        headers: { Authorization: "Bearer " + this.$store.getters.token }
+      },
+      Series: {
+        One: null,
+        OneList: null,
+        TwoList: null
+      },
+      settings: Object.assign({}, TinymceSetting, {
+        height: 200,
+        language_url: "./static/langs/zh_CN.js",
+        block_formats:
+          "Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;"
+      }),
+      ruleValidate: {
+        productName: [{ required: true, message: "产品名不可为空", trigger: "blur" }]
+      }
+    };
+  },
+  created() {
+    this.init();
+    this.initCate();
+  },
+  methods: {
+    async init() {
+      getProductForEdit({ id: this.current.productEditDto.id }).then(c => {
+        if (c.data.success) {
+          this.current.productEditDto = c.data.result.product;
+        }
+      });
+    },
+    async initCate() {
+      getCates({ id: null }).then(c => {
+        if (c.data.success && c.data.result) {
+          this.Series.OneList = c.data.result;
+        }
+      });
+    },
+    pick(current) {
+      getCates({ id: current }).then(c => {
+        if (c.data.success && c.data.result) {
+          this.Series.TwoList = c.data.result;
+        }
+      });
+    },
+    commit() {
+      this.$refs.product.validate(valid => {
+        if (valid) {
+          saveProduct(this.current)
+            .then(response => {
+              if (response.data.success) {
+                this.$root.eventHub.$emit("product");
+              } else {
+                this.$root.eventHub.$emit("product");
+              }
+            })
+            .catch(erroe => {
+              this.$Message.error(erroe.error);
+              this.$root.eventHub.$emit("product");
+            });
+        } else {
+          this.$Message.error("表单验证失败!");
+          this.$root.eventHub.$emit("product");
+        }
+      });
+    },
+    error(error, file, filelist) {
+      if (!file.success) {
+        this.$Message.error(file.error.message);
+      }
+    },
+    success(response, file, filelist) {
+      if (response.success) {
+        this.current.productEditDto.profile = response.result[0].guid;
+      }
+    }
+  }
+};
 </script>

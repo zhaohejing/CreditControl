@@ -85,6 +85,32 @@ namespace YT.Models
         public string AuditOpinion { get; set; }
     }
     /// <summary>
+    /// 用户折扣价格设置
+    /// </summary>
+    [Table("CustomerPreferencePrice")]
+    public class CustomerPreferencePrice : CreationAuditedEntity, ISoftDelete
+    {
+        /// <summary>
+        /// 用户id
+        /// </summary>
+        public int CustomerId { get; set; }
+        public virtual  Customer Customer { get; set; }
+        /// <summary>
+        /// 产品id
+        /// </summary>
+        public  int ProductId { get; set; }
+        /// <summary>
+        /// 产品dto
+        /// </summary>
+        public  virtual  Product Product { get; set; }
+        /// <summary>
+        /// 产品价格
+        /// </summary>
+        public int Price { get; set; }
+
+        public bool IsDeleted { get; set; }
+    }
+    /// <summary>
     /// 用户消费记录
     /// </summary>
     [Table("CustomerCost")]
