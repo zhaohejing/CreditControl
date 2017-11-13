@@ -37,29 +37,31 @@ namespace YT.Dashboards
         private readonly IRepository<CustomerCost> _costRepository;
         private readonly IRepository<ApplyCharge> _applyRepository;
         private readonly IRepository<CustomerForm> _formRepository;
+        private readonly IRepository<CustomerPreferencePrice> _customerPriceRepository;
         private readonly IBinaryObjectManager _objectManager;
 
 
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="customerRepository"></param>
-        /// <param name="smtpEmailSenderConfiguration"></param>
-        /// <param name="cateRepository"></param>
-        /// <param name="productRepository"></param>
-        /// <param name="binaryObjectManager"></param>
-        /// <param name="ordeRepository"></param>
-        /// <param name="costRepository"></param>
-        /// <param name="applyRepository"></param>
-        /// <param name="objectManager"></param>
-        /// <param name="formRepository"></param>
+       /// <summary>
+       /// ctor
+       /// </summary>
+       /// <param name="customerRepository"></param>
+       /// <param name="smtpEmailSenderConfiguration"></param>
+       /// <param name="cateRepository"></param>
+       /// <param name="productRepository"></param>
+       /// <param name="binaryObjectManager"></param>
+       /// <param name="ordeRepository"></param>
+       /// <param name="costRepository"></param>
+       /// <param name="applyRepository"></param>
+       /// <param name="objectManager"></param>
+       /// <param name="formRepository"></param>
+       /// <param name="customerPriceRepository"></param>
         public DashboardAppService(
             IRepository<Customer> customerRepository,
             ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
             IRepository<Category> cateRepository,
             IRepository<Product> productRepository,
             IBinaryObjectManager binaryObjectManager,
-            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository)
+            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository, IRepository<CustomerPreferencePrice> customerPriceRepository)
         {
             _customerRepository = customerRepository;
             _smtpEmailSenderConfiguration = smtpEmailSenderConfiguration;
@@ -71,6 +73,7 @@ namespace YT.Dashboards
             _applyRepository = applyRepository;
             _objectManager = objectManager;
             _formRepository = formRepository;
+            _customerPriceRepository = customerPriceRepository;
         }
 
         /// <summary>
@@ -260,18 +263,19 @@ namespace YT.Dashboards
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input)
+        public async Task<List<ProductDetail>> GetProducts(GetProductByFilter input)
         {
-            var products = await _productRepository.GetAll().Where(c => c.IsActive)
-                .WhereIf(input.Id.HasValue, c => c.LevelTwoId == input.Id.Value).ToListAsync();
+            var products = await _customerPriceRepository.GetAll().Where(c => c.Product.IsActive && c.Price > 0&&c.CustomerId==input.CustomerId)
+                .WhereIf(input.CateId.HasValue, c => c.Product.LevelOneId == input.CateId.Value).ToListAsync();
+          
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
-            foreach (var product in products)
+            foreach (var oc in products)
             {
-                var dto = product.MapTo<ProductDetail>();
-                if (product.Profile.HasValue)
+                var dto = oc.Product.MapTo<ProductDetail>();
+                if (oc.Product.Profile.HasValue)
                 {
-                    var file = await _binaryObjectManager.GetOrNullAsync(product.Profile.Value);
+                    var file = await _binaryObjectManager.GetOrNullAsync(oc.Product.Profile.Value);
                     if (file != null)
                     {
                         dto.ProfileUrl = Host + file.Url;
@@ -327,7 +331,7 @@ namespace YT.Dashboards
             );
         }
         /// <summary>
-        /// 获取所有产品列表
+        /// 获取产品详情
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

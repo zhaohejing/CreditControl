@@ -115,7 +115,7 @@ namespace YT.Dashboards
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<List<ProductDetail>> GetProducts(NullableIdDto<int> input);
+        Task<List<ProductDetail>> GetProducts(GetProductByFilter input);
 
         /// <summary>
         /// 获取所有产品列表

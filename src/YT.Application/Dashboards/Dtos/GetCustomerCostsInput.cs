@@ -12,6 +12,22 @@ using YT.Models;
 namespace YT.Dashboards.Dtos
 {
     /// <summary>
+    /// 按条件获取商品
+    /// </summary>
+    public class GetProductByFilter
+    {
+        /// <summary>
+        /// kehu id
+        /// 
+        /// </summary>
+        public int CustomerId { get; set; }
+        /// <summary>
+        /// 分类id
+        /// </summary>
+        public int? CateId { get; set; }
+    }
+
+    /// <summary>
     /// 获取用户消费记录
     /// </summary>
    public class GetCustomerCostsInput

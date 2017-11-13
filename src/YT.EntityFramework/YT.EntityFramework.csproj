@@ -153,10 +153,6 @@
     <Compile Include="EntityFramework\MilkDbContext.cs" />
     <Compile Include="EntityFramework\Repositories\YtRepositoryBase.cs" />
     <Compile Include="EntityFramework\AbpZeroDbMigrator.cs" />
-    <Compile Include="Migrations\201711130717028_INit.cs" />
-    <Compile Include="Migrations\201711130717028_INit.Designer.cs">
-      <DependentUpon>201711130717028_INit.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="YtDataModule.cs" />
     <Compile Include="Migrations\Seed\DefaultTenantBuilder.cs" />
@@ -175,11 +171,6 @@
       <Project>{6f11169f-136e-4b21-a03b-95696c0bce89}</Project>
       <Name>YT</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201711130717028_INit.resx">
-      <DependentUpon>201711130717028_INit.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
