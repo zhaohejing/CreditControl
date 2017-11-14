@@ -122,7 +122,7 @@ namespace YT.Dashboards
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<ProductDetail> GetProductDetail(EntityDto<int> input);
+          Task<ProductDetail> GetProductDetail(GetProductByFilter input);
     }
 }
 

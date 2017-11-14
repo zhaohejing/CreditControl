@@ -123,7 +123,6 @@ export default {
         }
       }
       tr {
-        height: 70px;
         border-bottom: 1px solid #ebebeb;
         td {
           font-size: 18px;
