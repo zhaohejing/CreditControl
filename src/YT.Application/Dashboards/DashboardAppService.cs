@@ -266,13 +266,14 @@ namespace YT.Dashboards
         public async Task<List<ProductDetail>> GetProducts(GetProductByFilter input)
         {
             var products = await _customerPriceRepository.GetAll().Where(c => c.Product.IsActive && c.Price > 0&&c.CustomerId==input.CustomerId)
-                .WhereIf(input.CateId.HasValue, c => c.Product.LevelOneId == input.CateId.Value).ToListAsync();
+                .WhereIf(input.CateId.HasValue, c => c.Product.LevelTwoId == input.CateId.Value).ToListAsync();
           
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
             foreach (var oc in products)
             {
                 var dto = oc.Product.MapTo<ProductDetail>();
+                dto.Price = oc.Price;
                 if (oc.Product.Profile.HasValue)
                 {
                     var file = await _binaryObjectManager.GetOrNullAsync(oc.Product.Profile.Value);
@@ -415,11 +416,12 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<ProductDetail> GetProductDetail(EntityDto<int> input)
         {
-            var product = await _productRepository.FirstOrDefaultAsync(c => c.Id == input.Id && c.IsActive);
-
-            var dto = product.MapTo<ProductDetail>();
-            if (!product.Profile.HasValue) return dto;
-            var file = await _binaryObjectManager.GetOrNullAsync(product.Profile.Value);
+            var product = await _customerPriceRepository.FirstOrDefaultAsync(c=>c.ProductId==input.Id);
+            if(product==null)throw new UserFriendlyException("该产品不存在");
+            var dto = product.Product.MapTo<ProductDetail>();
+            dto.Price = product.Price;
+            if (!product.Product.Profile.HasValue) return dto;
+            var file = await _binaryObjectManager.GetOrNullAsync(product.Product.Profile.Value);
             if (file != null)
             {
                 dto.ProfileUrl = Host + file.Url;

@@ -68,6 +68,11 @@ namespace YT.Products.Dtos
         [DisplayName("是否需要填写form表单")]
         public bool RequireForm { get; set; }
         /// <summary>
+        /// 价格
+        /// </summary>
+        [DisplayName("价格")]
+        public int Price { get; set; }
+        /// <summary>
         /// 二级分类
         /// </summary>
         [DisplayName("二级分类")]
