@@ -346,7 +346,7 @@ export default {
       resetModal: {
         isShow: false,
         title: "密码重置",
-        current: { passwor: 0, id: null }
+        current: { password: 0, id: null }
       }
     };
   },
@@ -425,7 +425,7 @@ export default {
         });
     },
     commitReset() {
-      chargeCustomer(this.resetModal.current)
+      resetCustomer(this.resetModal.current)
         .then(r => {
           if (r.data.success) {
             this.$refs.list.initData();

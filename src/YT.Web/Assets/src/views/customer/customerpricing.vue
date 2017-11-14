@@ -19,7 +19,8 @@
                     <td class="g-font14">{{++i}}</td>
                     <td>{{d.productName}}</td>
                     <td>{{d.levelName}}</td>
-                    <td> <InputNumber  :precision="0" v-model="d.price"></InputNumber></td>
+                    <td> 
+                      <InputNumber :min="1"  :precision="0" v-model="d.price"></InputNumber></td>
                 </tr>
                     </tbody>
                 </table>
