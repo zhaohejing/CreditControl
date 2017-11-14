@@ -304,8 +304,10 @@ namespace YT.Dashboards
             .ToListAsync();
             var output = new List<OrderProductDetail>();
             if (chargeRecordCount<=0) return new PagedResultDto<OrderProductDetail>(0,output);
+            var products =await _productRepository.GetAllListAsync();
             foreach (var o in chargeRecords)
             {
+                var p = products.FirstOrDefault(c => o.ProductId == c.Id);
                 var dto = new OrderProductDetail()
                 {
                     Id = o.Id,
@@ -318,7 +320,8 @@ namespace YT.Dashboards
                     OrderNum = o.OrderNum,
                     CreationTime = o.CreationTime,
                     State = o.State,
-                    ProductId = o.Id
+                    ProductId = o.Id,
+                    RequireForm = p?.RequireForm
                 };
                 if (o.Profile.HasValue)
                 {

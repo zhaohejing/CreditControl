@@ -166,5 +166,9 @@ namespace YT.Products.Dtos
         /// 资料id
         /// </summary>
         public int? FormId { get; set; }
+        /// <summary>
+        /// 是否需要表单
+        /// </summary>
+        public bool? RequireForm { get; set; }
     }
 }
