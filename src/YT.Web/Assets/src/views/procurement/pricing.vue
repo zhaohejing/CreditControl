@@ -17,7 +17,7 @@
                     <tbody>
                           <tr v-for="(d,i) in list" :key="i">
                     <td class="g-font14">{{++i}}</td>
-                    <td>{{d.productName}}</td>
+                    <td>{{d.customerName}}</td>
                     <td>{{d.contact}}</td>
                     <td> <InputNumber :min="1" :precision="0" v-model="d.price"></InputNumber></td>
                 </tr>
