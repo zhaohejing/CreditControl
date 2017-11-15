@@ -142,7 +142,6 @@ export default {
       });
     },
     commit() {
-      debugger;
       if (
         !this.current.productEditDto.levelOneId  ||
         !this.current.productEditDto.levelTwoId

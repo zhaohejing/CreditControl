@@ -34,7 +34,11 @@
             </milk-table>
         </Row>
         <!-- 添加和编辑窗口 -->
-        <Modal :width='800' :transfer='false' v-model='modal.isEdit' :title='modal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
+        <Modal ref="modal" :loading="modal.isloading" :width='800' :transfer='false'
+         v-model='modal.isEdit'
+         :title='modal.title' 
+         :mask-closable='false'
+          @on-ok='save' @on-cancel='cancel'>
             <modify-product ref='product' :productId='modal.current' v-if='modal.isEdit' />
         </Modal>
 
@@ -200,7 +204,8 @@ export default {
       modal: {
         isEdit: false,
         title: "添加",
-        current: null
+        current: null,
+        isloading:true
       },
       Ones: [],
       Twos: []
