@@ -147,6 +147,7 @@ export default {
         !this.current.productEditDto.levelTwoId
       ) {
         this.$Message.error("一级和二级分类不可为空!");
+         this.$root.eventHub.$emit("product",false);
         return;
       }
       this.$refs.product.validate(valid => {
@@ -154,18 +155,18 @@ export default {
           saveProduct(this.current)
             .then(response => {
               if (response.data.success) {
-                this.$root.eventHub.$emit("product");
+                this.$root.eventHub.$emit("product",true);
               } else {
-                this.$root.eventHub.$emit("product");
+                this.$root.eventHub.$emit("product",false);
               }
             })
             .catch(erroe => {
               this.$Message.error(erroe.error);
-              this.$root.eventHub.$emit("product");
+              this.$root.eventHub.$emit("product",false);
             });
         } else {
           this.$Message.error("请完善表单信息!");
-          this.$root.eventHub.$emit("product");
+          this.$root.eventHub.$emit("product",false);
         }
       });
     },

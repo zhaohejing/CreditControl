@@ -205,7 +205,7 @@ export default {
         isEdit: false,
         title: "添加",
         current: null,
-        isloading:true
+        isloading: true
       },
       Ones: [],
       Twos: []
@@ -215,8 +215,14 @@ export default {
     modifyProduct
   },
   created() {
-    this.$root.eventHub.$on("product", () => {
+    this.$root.eventHub.$on("product", result => {
+      debugger;
+      if(result){
       this.cancel();
+
+      }else{
+        this.changeLoading();
+      }
     });
     this.initCates(null);
   },
@@ -240,6 +246,12 @@ export default {
         if (r.data.success) {
           table.initData();
         }
+      });
+    },
+    changeLoading() {
+      this.modal.isloading = false;
+      this.$nextTick(() => {
+        this.modal.isloading = true;
       });
     },
     // 删除
@@ -282,6 +294,7 @@ export default {
       this.$refs.product.commit();
     },
     cancel() {
+       this.changeLoading();
       this.modal.isEdit = false;
       this.modal.title = "添加用户";
       this.modal.current = null;
