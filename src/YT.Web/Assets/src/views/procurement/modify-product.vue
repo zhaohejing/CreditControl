@@ -12,37 +12,34 @@
                     <Col :span='12'>
                     <FormItem label='是否需要填写表单' >
                          <i-switch v-model="current.productEditDto.RequireForm" size="large">
-                <span slot="open">是</span>
-                <span slot="close">否</span>
+                           <span slot="open">是</span>
+                           <span slot="close">否</span>
                           </i-switch>
-                        <!-- <InputNumber precision="0" :min='0' v-model='current.productEditDto.price' placeholder='价格'></InputNumber> -->
                     </FormItem>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col :span='12'>
-                    <FormItem label='一级分类'>
+                    <FormItem label='一级分类'   prop='levelone'>
                         <Select @on-change='pick' v-model='current.productEditDto.levelOneId' style='width:150px'>
                             <Option v-for='item in Series.OneList' :value='item.id' :key='item.id'>{{ item.name }}</Option>
                         </Select>
                     </FormItem>
                     </Col>
                     <Col :span='12'>
-                    <FormItem label='二级分类'>
+                    <FormItem label='二级分类'  prop='leveltwo'>
                         <Select v-model='current.productEditDto.levelTwoId' style='width:150px'>
                             <Option v-for='item in Series.TwoList' :value='item.id' :key='item.id'>{{ item.name }}</Option>
                         </Select>
                     </FormItem>
                     </Col>
                 </Row>
-
                 <Row>
                     <FormItem label='商品简介'>
                         <Input style='width:400px' v-model='current.productEditDto.description' type='textarea' :autosize='{minRows: 2,maxRows: 5}' placeholder='商品简介'></Input>
                     </FormItem>
                 </Row>
-
                 </Col>
                 <Col :span='6'>
                 <Upload multiple type='drag' :on-error='error' :on-success='success' :headers='upload.headers' :action='upload.url'>
@@ -55,7 +52,6 @@
             </Row>
             <Row>
                 <vue-tinymce ref='tinymce' v-model='current.productEditDto.content' :setting='settings'>
-
                 </vue-tinymce>
             </Row>
         </Form>
@@ -87,8 +83,8 @@ export default {
           id: this.productId,
           productName: "",
           RequireForm: true,
-          levelOneId: 0,
-          levelTwoId: 0,
+          levelOneId: null,
+          levelTwoId: null,
           description: "",
           content: "",
           isActive: true,
@@ -119,6 +115,9 @@ export default {
     this.init();
     this.initCate();
   },
+  activated() {
+    this.initCate();
+  },
   methods: {
     async init() {
       getProductForEdit({ id: this.current.productEditDto.id }).then(c => {
@@ -135,6 +134,7 @@ export default {
       });
     },
     pick(current) {
+      if (!current) return;
       getCates({ id: current }).then(c => {
         if (c.data.success && c.data.result) {
           this.Series.TwoList = c.data.result;
@@ -142,6 +142,14 @@ export default {
       });
     },
     commit() {
+      debugger;
+      if (
+        !this.current.productEditDto.levelOneId  ||
+        !this.current.productEditDto.levelTwoId
+      ) {
+        this.$Message.error("一级和二级分类不可为空!");
+        return;
+      }
       this.$refs.product.validate(valid => {
         if (valid) {
           saveProduct(this.current)
@@ -157,7 +165,7 @@ export default {
               this.$root.eventHub.$emit("product");
             });
         } else {
-          this.$Message.error("表单验证失败!");
+          this.$Message.error("请完善表单信息!");
           this.$root.eventHub.$emit("product");
         }
       });
