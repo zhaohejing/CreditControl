@@ -106,7 +106,8 @@ namespace YT.CustomerPreferencePrices
                     Price = c.tt == null ? 0 : c.tt.Price,
                     ProductId =c.product.Id,
                     ProductName = c.product.ProductName,
-                    LevelName = c.product.LevelOne.Name+$"({c.product.LevelTwo.Name})"
+                    LevelName =c.product.LevelOne!=null&&c.product.LevelTwo!=null?
+                    c.product.LevelOne.Name+$"({c.product.LevelTwo.Name})":string.Empty
                 }).ToList();
                 return result;
             }

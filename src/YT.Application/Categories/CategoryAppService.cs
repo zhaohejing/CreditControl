@@ -162,10 +162,7 @@ namespace YT.Categories
         /// </summary>
         public async Task DeleteCategoryAsync(EntityDto<int> input)
         {
-            var cate = await _categoryRepository.FirstOrDefaultAsync(input.Id);
-            if(cate.Name=="访谈类产品"|| cate.Name == "电视版"|| cate.Name == "网络版")
-                throw  new UserFriendlyException("访谈类不可删除");
-            cate.IsDeleted = true;
+            await _categoryRepository.DeleteAsync(c => c.Id == input.Id);
         }
 
         /// <summary>

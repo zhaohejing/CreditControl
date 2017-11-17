@@ -448,9 +448,6 @@ table {
 #hl-tree-table>tbody>.child-tr {
     background-color: #fff;
 }
-label {
-    margin: 0 8px;
-}
 .ms-tree-space {
     position: relative;
     top: 1px;

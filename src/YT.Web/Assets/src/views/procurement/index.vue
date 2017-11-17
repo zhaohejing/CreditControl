@@ -34,7 +34,11 @@
             </milk-table>
         </Row>
         <!-- 添加和编辑窗口 -->
-        <Modal :width='800' :transfer='false' v-model='modal.isEdit' :title='modal.title' :mask-closable='false' @on-ok='save' @on-cancel='cancel'>
+        <Modal ref="modal" :loading="modal.isloading" :width='800' :transfer='false'
+         v-model='modal.isEdit'
+         :title='modal.title' 
+         :mask-closable='false'
+          @on-ok='save' @on-cancel='cancel'>
             <modify-product ref='product' :productId='modal.current' v-if='modal.isEdit' />
         </Modal>
 
@@ -200,7 +204,8 @@ export default {
       modal: {
         isEdit: false,
         title: "添加",
-        current: null
+        current: null,
+        isloading: true
       },
       Ones: [],
       Twos: []
@@ -210,8 +215,14 @@ export default {
     modifyProduct
   },
   created() {
-    this.$root.eventHub.$on("product", () => {
+    this.$root.eventHub.$on("product", result => {
+      debugger;
+      if(result){
       this.cancel();
+
+      }else{
+        this.changeLoading();
+      }
     });
     this.initCates(null);
   },
@@ -235,6 +246,12 @@ export default {
         if (r.data.success) {
           table.initData();
         }
+      });
+    },
+    changeLoading() {
+      this.modal.isloading = false;
+      this.$nextTick(() => {
+        this.modal.isloading = true;
       });
     },
     // 删除
@@ -277,6 +294,7 @@ export default {
       this.$refs.product.commit();
     },
     cancel() {
+       this.changeLoading();
       this.modal.isEdit = false;
       this.modal.title = "添加用户";
       this.modal.current = null;
