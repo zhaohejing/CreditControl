@@ -72,7 +72,7 @@ namespace YT.Models
         /// <summary>
         /// 余额
         /// </summary>
-        public int Balance { get; set; } = 0;
+        public double Balance { get; set; } = 0;
         /// <summary>
         /// 状态
         /// </summary>
@@ -106,7 +106,7 @@ namespace YT.Models
         /// <summary>
         /// 产品价格
         /// </summary>
-        public int Price { get; set; }
+        public double Price { get; set; }
 
         public bool IsDeleted { get; set; }
     }
@@ -119,7 +119,7 @@ namespace YT.Models
         /// <summary>
         /// 金额
         /// </summary>
-        public int Balance { get; set; }
+        public double Balance { get; set; }
         /// <summary>
         /// 客户id
         /// </summary>
@@ -127,11 +127,11 @@ namespace YT.Models
         /// <summary>
         /// 消费
         /// </summary>
-        public int Cost { get; set; }
+        public double Cost { get; set; }
         /// <summary>
         /// 剩余金额
         /// </summary>
-        public int CurrentBalance { get; set; }
+        public double CurrentBalance { get; set; }
         /// <summary>
         /// 是否删除
         /// </summary>

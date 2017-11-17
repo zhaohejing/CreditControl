@@ -79,7 +79,7 @@ namespace YT.Dashboards.Dtos
         /// <summary>
         /// 金额
         /// </summary>
-        public int Balance { get; set; }
+        public double Balance { get; set; }
         /// <summary>
         /// 客户id
         /// </summary>
@@ -91,11 +91,11 @@ namespace YT.Dashboards.Dtos
         /// <summary>
         /// 消费
         /// </summary>
-        public int Cost { get; set; }
+        public double Cost { get; set; }
         /// <summary>
         /// 剩余金额
         /// </summary>
-        public int CurrentBalance { get; set; }
+        public double CurrentBalance { get; set; }
         /// <summary>
         /// 时间
         /// </summary>

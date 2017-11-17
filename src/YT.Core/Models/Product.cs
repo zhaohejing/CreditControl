@@ -99,11 +99,11 @@ namespace YT.Models
         /// <summary>
         /// 价格
         /// </summary>
-        public int TotalPrice { get; set; }
+        public double TotalPrice { get; set; }
         /// <summary>
         /// 单价
         /// </summary>
-        public int Price { get; set; }
+        public double Price { get; set; }
         /// <summary>
         /// 个数
         /// </summary>

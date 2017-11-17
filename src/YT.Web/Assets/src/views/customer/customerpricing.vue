@@ -20,7 +20,7 @@
                     <td>{{d.productName}}</td>
                     <td>{{d.levelName}}</td>
                     <td> 
-                      <InputNumber :min="1"  :precision="0" v-model="d.price"></InputNumber></td>
+                      <InputNumber :min="1"  :precision="2" v-model="d.price"></InputNumber></td>
                 </tr>
                     </tbody>
                 </table>

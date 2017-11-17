@@ -71,7 +71,7 @@ namespace YT.Products.Dtos
         /// 价格
         /// </summary>
         [DisplayName("价格")]
-        public int Price { get; set; }
+        public double Price { get; set; }
         /// <summary>
         /// 二级分类
         /// </summary>
@@ -153,7 +153,7 @@ namespace YT.Products.Dtos
         /// <summary>
         /// 单价
         /// </summary>
-        public int Price { get; set; }
+        public double Price { get; set; }
         /// <summary>
         /// 数量
         /// </summary>
@@ -161,7 +161,7 @@ namespace YT.Products.Dtos
         /// <summary>
         /// 总价
         /// </summary>
-        public int TotalPrice { get; set; }
+        public double TotalPrice { get; set; }
         /// <summary>
         /// 资料id
         /// </summary>

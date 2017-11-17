@@ -34,7 +34,7 @@ namespace YT.CustomerPreferencePrices.Dtos
         /// </summary>
         [DisplayName("产品价格")]
         [Required]
-        public int Price { get; set; }
+        public double Price { get; set; }
 
     }
 }
