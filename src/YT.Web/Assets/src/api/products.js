@@ -44,6 +44,12 @@ export function pricing(data) {
         data
     });
 }
+export function exportData(data) {
+    return fetch({
+        url: '/api/File/DownLoadFile?orderId=' + data,
+        method: 'post'
+    });
+}
 // 获取角色信息用于编辑
 export function getProduct(data) {
     return fetch({

@@ -54,7 +54,7 @@
         <Modal :width='800'
          :transfer='false'
          v-model='modal.isShow'
-          :title='modal.title'
+          :title='modal.title' ok-text="导出"
            :mask-closable='false' 
            @on-ok='save' @on-cancel='cancel'>
   <Form ref='form' :model='form'  inline>
@@ -126,8 +126,6 @@
                             <Col span="9">
                                 <template class="demo-upload-list" v-if="form.identityCard">
                                     <a :href="form.identityCardUrl" download="img">
-                                   
-
                                     </a>
                                     <img style="width:200px;height:150px;"  :src="form.identityCardUrl">
                                 </template>
@@ -194,7 +192,7 @@
 </template>
 
 <script>
-import { order, completeorder, getFormByOrder } from "api/products";
+import { order, exportData, completeorder, getFormByOrder } from "api/products";
 export default {
   name: "orderdetail",
   data() {
@@ -247,6 +245,10 @@ export default {
       this.$router.push({ path: "/orders" });
     },
     save() {
+      window.open(
+        "http://47.93.2.82:9999/api/File/DownLoadFile?orderId=" + this.order.id
+      );
+
       this.modal.isShow = false;
     },
     cancel() {
@@ -291,5 +293,4 @@ table.gridtable td {
   border-color: #666666;
   background-color: #ffffff;
 }
-
 </style>

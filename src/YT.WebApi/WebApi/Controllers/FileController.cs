@@ -4,14 +4,19 @@ using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Abp;
 using Abp.Auditing;
+using Abp.Domain.Repositories;
 using Abp.UI;
 using Abp.Web.Models;
 using Abp.WebApi.Authorization;
+using Swashbuckle.Swagger;
 using YT.Dto;
+using YT.Models;
 using YT.Storage;
 
 namespace YT.WebApi.Controllers
@@ -19,17 +24,25 @@ namespace YT.WebApi.Controllers
     public class FileController : YtApiControllerBase
     {
         private readonly IAppFolders _appFolders;
+        private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<Order> _ordeRepository;
         public static string Host => ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
         private readonly IBinaryObjectManager _binaryObjectManager;
+
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="appFolders"></param>
         /// <param name="binaryObjectManager"></param>
-        public FileController(IAppFolders appFolders, IBinaryObjectManager binaryObjectManager)
+        /// <param name="productRepository"></param>
+        /// <param name="ordeRepository"></param>
+        public FileController(IAppFolders appFolders, IBinaryObjectManager binaryObjectManager,
+            IRepository<Order> ordeRepository, IRepository<Product> productRepository)
         {
             _appFolders = appFolders;
             _binaryObjectManager = binaryObjectManager;
+            _ordeRepository = ordeRepository;
+            _productRepository = productRepository;
         }
 
         public AjaxResponse DownloadTempFile(FileDto file)
@@ -39,10 +52,11 @@ namespace YT.WebApi.Controllers
             {
                 throw new AbpException("文件信息不存在");
             }
-            return new AjaxResponse(new { type = file.FileType, token = file.FileToken, name = file.FileName });
+            return new AjaxResponse(new {type = file.FileType, token = file.FileToken, name = file.FileName});
         }
 
         #region 上传文件
+
         /// <summary>
         /// 图片上传  
         /// </summary>
@@ -70,7 +84,7 @@ namespace YT.WebApi.Controllers
                     const int maxSize = 10000000;
                     if (fileinfo.Length <= 0)
                     {
-                        throw new  UserFriendlyException("请选择上传的文件");
+                        throw new UserFriendlyException("请选择上传的文件");
                     }
                     if (fileinfo.Length > maxSize)
                     {
@@ -78,7 +92,8 @@ namespace YT.WebApi.Controllers
                     }
                     string fileExt = orfilename.Substring(orfilename.LastIndexOf('.'));
                     // 定义允许上传的文件扩展名
-                    if (string.IsNullOrEmpty(fileExt) || Array.IndexOf("png,jpeg,jpg,gif,bmp".Split(','), fileExt.Substring(1).ToLower()) == -1)
+                    if (string.IsNullOrEmpty(fileExt) ||
+                        Array.IndexOf("png,jpeg,jpg,gif,bmp".Split(','), fileExt.Substring(1).ToLower()) == -1)
                     {
                         throw new UserFriendlyException("图片类型不正确");
                     }
@@ -112,7 +127,7 @@ namespace YT.WebApi.Controllers
                         suffix = fileExt,
                         name = orfilename
                     });
-                    fileinfo.Delete();//删除原文件
+                    fileinfo.Delete(); //删除原文件
                 }
             }
             catch (Exception e)
@@ -160,7 +175,8 @@ namespace YT.WebApi.Controllers
                         //ext
                         string fileExt = orfilename.Substring(orfilename.LastIndexOf('.'));
                         //rename
-                        var ymd = DateTime.Now.ToString("yyyyMMdd", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                        var ymd = DateTime.Now.ToString("yyyyMMdd",
+                            System.Globalization.DateTimeFormatInfo.InvariantInfo);
                         var p = AbpSession.UserId?.ToString() ?? "total";
                         var pathName = $"{p}/{ymd}";
                         var temp = Path.Combine(_appFolders.ImageFolder, pathName);
@@ -192,7 +208,7 @@ namespace YT.WebApi.Controllers
                             name = orfilename
                         });
                     }
-                    fileinfo.Delete();//删除原文件
+                    fileinfo.Delete(); //删除原文件
                 }
             }
             catch (Exception e)
@@ -222,7 +238,49 @@ namespace YT.WebApi.Controllers
 
             }
         }
+
         #endregion 上传文件
 
-    }
+        [HttpGet]
+        public async Task<HttpResponseMessage> DownLoadFile(int orderId)
+        {
+            var order = await _ordeRepository.FirstOrDefaultAsync(orderId);
+            if (order == null) throw new UserFriendlyException("订单不存在");
+            var form = order.Form;
+            var product = await _productRepository.FirstOrDefaultAsync(order.ProductId);
+            if (product == null) throw new UserFriendlyException("商品不存在");
+            StringBuilder sb = new StringBuilder();
+            sb.Append("公司名称,所属行业,品牌名称,法人代表,法人联系方式,品牌负责人,品牌负责人联系方式,联系地址,邮编,订单类型\r\n");
+            sb.Append(form.CompanyName+",");
+            sb.Append(form.Industry + ",");
+            sb.Append(form.Brands + ",");
+            sb.Append(form.LegalPerson + ",");
+            sb.Append(form.LegalMobile + ",");
+            sb.Append(form.BrandsPerson + ",");
+            sb.Append(form.BrandsMobile + ",");
+            sb.Append(form.Address + ",");
+            sb.Append(form.PostNum + ",");
+            sb.Append(product.LevelOne?.Name + product.LevelTwo?.Name);
+            try
+            {
+
+                string file = sb.ToString();
+
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                result.Content = new StringContent(file,Encoding.Default);
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                result.Content.Headers.ContentDisposition.FileName = "数据导出.csv";
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError);
+            }
+
+        }
+
+    
+}
 }
