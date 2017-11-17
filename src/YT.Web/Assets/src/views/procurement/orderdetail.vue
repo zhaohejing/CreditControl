@@ -60,7 +60,8 @@
   <Form ref='form' :model='form'  inline>
                 <div class="infoBox">
                      <Row class='basic'>
-                        <Col span='24'>公司基本信息</Col>
+                        <Col span='22'>公司基本信息</Col>
+                        <Col span='2'><Button type="primary" @click="save">导出</Button></Col>
                     </Row>
                     <div class="infoInput">
                         <FormItem label="公司名称" prop='companyName'>
