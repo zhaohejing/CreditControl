@@ -96,5 +96,9 @@ namespace YT.Products
         /// </summary>
           Task CompleteOrder(EntityDto<int> input);
 
+        /// <summary>
+        /// 导出订单信息
+        /// </summary>
+        Task<FileDto> ExportOrdersAsync(GetOrderInput input);
     }
 }

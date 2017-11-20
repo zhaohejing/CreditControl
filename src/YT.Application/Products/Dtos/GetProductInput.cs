@@ -43,19 +43,31 @@ namespace YT.Products.Dtos
     public class GetOrderInput : PagedAndSortedInputDto, IShouldNormalize
     {
         /// <summary>
-        /// 模糊查询参数
+        /// 联系人
         /// </summary>
-        public string Name { get; set; }
+        public string Contact { get; set; }
         /// <summary>
-        /// 手机
+        /// 产品
         /// </summary>
-		public string Mobile { get; set; }
+		public string Product { get; set; }
         /// <summary>
-        /// 一级
+        /// 代理商
+        /// </summary>
+		public string Account { get; set; }
+        /// <summary>
+        /// 表单信息
+        /// </summary>
+		public bool? RequireForm { get; set; }
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool? State { get; set; }
+        /// <summary>
+        /// 开始
         /// </summary>
 		public DateTime? Start { get; set; }
         /// <summary>
-        /// 二级
+        /// 截至
         /// </summary>
 		public DateTime? End { get; set; }
 

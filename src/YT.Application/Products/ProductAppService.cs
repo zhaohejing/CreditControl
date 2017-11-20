@@ -28,22 +28,24 @@ namespace YT.Products
         private readonly IRepository<Product, int> _productRepository;
         private readonly IProductListExcelExporter _productListExcelExporter;
         private readonly IRepository<Order> _orderRepository;
-
+        private readonly IOrderExcelExporter _orderExcelExporter;
         private readonly IRepository<CustomerCost> _costRepository;
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="productRepository"></param>
-        /// <param name="productListExcelExporter"></param>
-        /// <param name="orderRepository"></param>
-        /// <param name="costRepository"></param>
+      /// <summary>
+      /// ctor
+      /// </summary>
+      /// <param name="productRepository"></param>
+      /// <param name="productListExcelExporter"></param>
+      /// <param name="orderRepository"></param>
+      /// <param name="costRepository"></param>
+      /// <param name="orderExcelExporter"></param>
         public ProductAppService(IRepository<Product, int> productRepository,
-            IProductListExcelExporter productListExcelExporter, IRepository<Order> orderRepository, IRepository<CustomerCost> costRepository)
+            IProductListExcelExporter productListExcelExporter, IRepository<Order> orderRepository, IRepository<CustomerCost> costRepository, IOrderExcelExporter orderExcelExporter)
         {
             _productRepository = productRepository;
             _productListExcelExporter = productListExcelExporter;
             _orderRepository = orderRepository;
             _costRepository = costRepository;
+            _orderExcelExporter = orderExcelExporter;
         }
 
 
@@ -89,8 +91,14 @@ namespace YT.Products
         public async Task<PagedResultDto<OrderListDto>> GetPagedOrdersAsync(GetOrderInput input)
         {
 
-            var query = _orderRepository.GetAll().WhereIf(!input.Name.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Name))
-                  .WhereIf(!input.Mobile.IsNullOrWhiteSpace(), c => c.Customer.Mobile.Contains(input.Mobile))
+            var query = _orderRepository.GetAll()
+                .WhereIf(!input.Contact.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Contact))
+                  .WhereIf(!input.Account.IsNullOrWhiteSpace(), c => c.Customer.CompanyName.Contains(input.Account))
+                  .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
+
+                  .WhereIf(input.State.HasValue, c => c.State == input.State)
+                  .WhereIf(input.RequireForm.HasValue, c => c.FormId != null)
+
                   .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
                   .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
 
@@ -107,6 +115,29 @@ namespace YT.Products
             productListDtos
             );
         }
+
+        /// <summary>
+        /// 导出订单信息
+        /// </summary>
+        public async Task<FileDto> ExportOrdersAsync(GetOrderInput input)
+        {
+
+            var query = _orderRepository.GetAll()
+                .WhereIf(!input.Contact.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Contact))
+                  .WhereIf(!input.Account.IsNullOrWhiteSpace(), c => c.Customer.CompanyName.Contains(input.Account))
+                  .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
+
+                  .WhereIf(input.State.HasValue, c => c.State==input.State)
+                  .WhereIf(input.RequireForm.HasValue, c => c.FormId!=null)
+
+                  .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                  .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
+            var orders =await query.ToListAsync();
+
+            var orderexport = orders.MapTo<List<OrderExportDto>>();
+          return  _orderExcelExporter.ExportToFile(orderexport);
+        }
+
 
         /// <summary>
         /// 获取订单详情

@@ -281,6 +281,29 @@ namespace YT.WebApi.Controllers
 
         }
 
-    
-}
+        [HttpGet]
+        [DisableAuditing]
+        public HttpResponseMessage Download(string filetype,string filetoken,string filename)
+        {
+            var filePath = Path.Combine(_appFolders.TempFolder, filetoken);
+            if (!System.IO.File.Exists(filePath))
+            {
+                throw new UserFriendlyException("文件不存在");
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            System.IO.File.Delete(filePath);
+            HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(fileBytes)
+            };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = filename
+            };
+            return result;
+        }
+    }
 }

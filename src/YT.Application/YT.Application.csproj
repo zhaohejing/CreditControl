@@ -202,6 +202,7 @@
     <Compile Include="Products\Exporting\IProductListExcelExporter.cs" />
     <Compile Include="Products\Exporting\ProductListExcelExporter.cs" />
     <Compile Include="Products\IProductAppService.cs" />
+    <Compile Include="Products\OrderExcelExporter.cs" />
     <Compile Include="Products\ProductAppService.cs" />
     <Compile Include="YtApplicationModule.cs" />
     <Compile Include="YtAppServiceBase.cs" />

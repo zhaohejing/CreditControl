@@ -11,7 +11,6 @@
             </Col>
             <Col :md="layout[2]">
             <slot name="actions">
-                  <Button v-if="showExport" type="primary" shape="circle"  @click.native="exportData">导出</Button>
             </slot>
             </Col>
         </Row>
@@ -36,17 +35,6 @@ export default {
     columns: {
       type: Array,
       required: true
-    },
-    //导出字段
-    exportcolumns: {
-      type: Array,
-      required: false
-    },
-    //导出字段
-    showExport: {
-      default: false,
-      type: Boolean,
-      required: false
     },
     //是否显示表头
     showHeader: {

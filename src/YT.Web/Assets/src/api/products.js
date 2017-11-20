@@ -50,6 +50,13 @@ export function exportData(data) {
         method: 'post'
     });
 }
+export function exportOrder(data) {
+    return fetch({
+        url: 'api/services/app/product/ExportOrdersAsync',
+        method: 'post',
+        data
+    });
+}
 // 获取角色信息用于编辑
 export function getProduct(data) {
     return fetch({

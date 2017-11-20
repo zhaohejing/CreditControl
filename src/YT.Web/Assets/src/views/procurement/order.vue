@@ -1,30 +1,50 @@
 <template>
     <div class="animated fadeIn">
         <Row>
-            <milk-table ref="list" :layout="[22,2]"  :columns="cols" :search-api="searchApi" :params="params">
+            <milk-table ref="list" :layout="[20,2,2]"  :columns="cols" :search-api="searchApi" :params="params">
                 <template slot="search">
-                    <Form ref="params" :model="params" inline :label-width="60">
+               <Form ref="params" :model="params" inline :label-width="60">
                         <FormItem label="联系人">
-                            <Input v-model="params.name" placeholder="请输入用户姓名"></Input>
+                            <Input v-model="params.contact" placeholder="请输入联系人"></Input>
                         </FormItem>
-                        <FormItem label="手机号码">
-                            <Input v-model="params.mobile" placeholder="请输入手机号码"></Input>
+                        <FormItem label="商品名">
+                            <Input v-model="params.product" placeholder="请输入商品名"></Input>
                         </FormItem>
+                          <FormItem label="代理商">
+                            <Input v-model="params.account" placeholder="请输入代理商"></Input>
+                        </FormItem>
+                   <FormItem label="状态">
+                    <Select v-model="params.state" style="width:160px">
+                       <Option value="">请选择</Option>
+                       <Option value="true">完成</Option>
+                       <Option value="false">未完成</Option>
+                    </Select>
+                   </FormItem>
+                <FormItem label="是否表单">
+                    <Select v-model="params.requireForm" style="width:160px">
+                       <Option value="">请选择</Option>
+                       <Option value="true">是</Option>
+                       <Option value="false">否</Option>
+                    </Select>
+                </FormItem>
                         <FormItem label="开始时间">
                             <DatePicker type="date" :editable="false" v-model="params.start" placeholder="开始时间" style="width: 140px"></DatePicker>
                         </FormItem>
                         <FormItem label="截至时间">
                             <DatePicker type="date" :editable="false" v-model="params.end" placeholder="截至时间" style="width: 140px"></DatePicker>
-                        </FormItem>
-                    </Form>
+                 </FormItem>
+               </Form>
                 </template>
+             <template slot='actions'>
+                    <Button @click.native='exportData' type='primary'>导出</Button>
+             </template>   
             </milk-table>
         </Row>
     </div>
 </template>
 
 <script>
-import { orders, order, completeorder } from "api/products";
+import { orders, order, completeorder, exportOrder } from "api/products";
 export default {
   name: "account",
   data() {
@@ -43,7 +63,7 @@ export default {
           key: "totalPrice"
         },
         {
-          title: "用户名称",
+          title: "联系人",
           key: "contact"
         },
         {
@@ -117,7 +137,15 @@ export default {
         }
       ],
       searchApi: orders,
-      params: { name: "", mobile: "", start: null, end: null },
+      params: {
+        contact: "",
+        product: "",
+        account: "",
+        requireForm: null,
+        state: null,
+        start: null,
+        end: null
+      },
       modal: {
         isShow: false,
         title: "订单详情",
@@ -154,6 +182,25 @@ export default {
             });
         }
       });
+    },
+    exportData() {
+      exportOrder(this.params)
+        .then(r => {
+          if (r.data.success) {
+            let file = r.data.result;
+            let url =
+              "http://47.93.2.82:9999/api/File/Download?fileType=" +
+              file.fileType +
+              "&fileToken=" +
+              file.fileToken +
+              "&fileName=" +
+              file.fileName;
+            window.open(url);
+          }
+        })
+        .catch(e => {
+          this.$Message.error(e.response.data.error.message);
+        });
     },
     detail(row) {
       this.$router.push({ path: "/order", query: { id: row.id } });

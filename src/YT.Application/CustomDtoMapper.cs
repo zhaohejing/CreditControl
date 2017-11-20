@@ -41,6 +41,20 @@ namespace YT
                 .ForMember(dto => dto.Mobile, options => options.MapFrom(c => c.Customer.Mobile))
                 .ForMember(dto => dto.Contact, options => options.MapFrom(c => c.Customer.Contact))
                 .ForMember(dto => dto.CompanyName, options => options.MapFrom(c => c.Customer.CompanyName));
+
+            mapper.CreateMap<Order, OrderExportDto>()
+                .ForMember(dto => dto.Mobile, options => options.MapFrom(c => c.Customer.Mobile))
+                .ForMember(dto => dto.Contact, options => options.MapFrom(c => c.Customer.Contact))
+                .ForMember(dto => dto.CompanyName, options => options.MapFrom(c => c.Customer.CompanyName))
+
+                .ForMember(dto => dto.Address, options => options.MapFrom(c => c.Form.Address))
+                .ForMember(dto => dto.BrandsPerson, options => options.MapFrom(c => c.Form.BrandsPerson))
+                .ForMember(dto => dto.Brands, options => options.MapFrom(c => c.Form.Brands))
+                .ForMember(dto => dto.BrandsMobile, options => options.MapFrom(c => c.Form.BrandsMobile))
+                .ForMember(dto => dto.FormName, options => options.MapFrom(c => c.Form.CompanyName))
+                .ForMember(dto => dto.Industry, options => options.MapFrom(c => c.Form.Industry))
+                .ForMember(dto => dto.LegalMobile, options => options.MapFrom(c => c.Form.LegalMobile))
+                .ForMember(dto => dto.LegalPerson, options => options.MapFrom(c => c.Form.LegalPerson));
         }
     }
 }
