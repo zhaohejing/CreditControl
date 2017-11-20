@@ -16,8 +16,8 @@
                    <FormItem label="状态">
                     <Select v-model="params.state" style="width:160px">
                        <Option value="">请选择</Option>
-                       <Option value="true">完成</Option>
-                       <Option value="false">未完成</Option>
+                       <Option value="true">已完成</Option>
+                       <Option value="false">已取消</Option>
                     </Select>
                    </FormItem>
                 <FormItem label="是否表单">

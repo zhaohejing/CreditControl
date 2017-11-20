@@ -92,15 +92,15 @@ namespace YT.Products
         {
 
             var query = _orderRepository.GetAll()
-                .WhereIf(!input.Contact.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Contact))
-                  .WhereIf(!input.Account.IsNullOrWhiteSpace(), c => c.Customer.CompanyName.Contains(input.Account))
-                  .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
+               .WhereIf(!input.Contact.IsNullOrWhiteSpace(), c => c.Customer.Contact.Contains(input.Contact))
+                 .WhereIf(!input.Account.IsNullOrWhiteSpace(), c => c.Customer.CompanyName.Contains(input.Account))
+                 .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
 
-                  .WhereIf(input.State.HasValue, c => c.State == input.State)
-                  .WhereIf(input.RequireForm.HasValue, c => c.FormId != null)
-
-                  .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
-                  .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
+                 .WhereIf(input.State.HasValue, c => c.State == input.State)
+                 .WhereIf(input.RequireForm.HasValue && input.RequireForm.Value, c => c.FormId.HasValue && c.Form != null)
+                 .WhereIf(input.RequireForm.HasValue && !input.RequireForm.Value, c => !c.FormId.HasValue)
+                 .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
+                 .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
 
             var productCount = await query.CountAsync();
 
@@ -128,8 +128,8 @@ namespace YT.Products
                   .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
 
                   .WhereIf(input.State.HasValue, c => c.State==input.State)
-                  .WhereIf(input.RequireForm.HasValue, c => c.FormId!=null)
-
+                  .WhereIf(input.RequireForm.HasValue&&input.RequireForm.Value, c => c.FormId.HasValue&& c.Form != null)
+                  .WhereIf(input.RequireForm.HasValue&&!input.RequireForm.Value, c => !c.FormId.HasValue)
                   .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
                   .WhereIf(input.End.HasValue, c => c.CreationTime < input.End.Value);
             var orders =await query.ToListAsync();
