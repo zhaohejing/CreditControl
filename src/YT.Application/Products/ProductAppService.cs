@@ -96,7 +96,9 @@ namespace YT.Products
                  .WhereIf(!input.Account.IsNullOrWhiteSpace(), c => c.Customer.CompanyName.Contains(input.Account))
                  .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
 
-                 .WhereIf(input.State.HasValue, c => c.State == input.State)
+                 .WhereIf(input.State==1, c => c.State.HasValue&&c.State.Value)
+                 .WhereIf(input.State==2, c => c.State.HasValue&&!c.State.Value)
+                 .WhereIf(input.State==3, c => !c.State.HasValue)
                  .WhereIf(input.RequireForm.HasValue && input.RequireForm.Value, c => c.FormId.HasValue && c.Form != null)
                  .WhereIf(input.RequireForm.HasValue && !input.RequireForm.Value, c => !c.FormId.HasValue)
                  .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)
@@ -127,7 +129,9 @@ namespace YT.Products
                   .WhereIf(!input.Account.IsNullOrWhiteSpace(), c => c.Customer.CompanyName.Contains(input.Account))
                   .WhereIf(!input.Product.IsNullOrWhiteSpace(), c => c.ProductName.Contains(input.Product))
 
-                  .WhereIf(input.State.HasValue, c => c.State==input.State)
+                  .WhereIf(input.State == 1, c => c.State.HasValue && c.State.Value)
+                 .WhereIf(input.State == 2, c => c.State.HasValue && !c.State.Value)
+                 .WhereIf(input.State == 3, c => !c.State.HasValue)
                   .WhereIf(input.RequireForm.HasValue&&input.RequireForm.Value, c => c.FormId.HasValue&& c.Form != null)
                   .WhereIf(input.RequireForm.HasValue&&!input.RequireForm.Value, c => !c.FormId.HasValue)
                   .WhereIf(input.Start.HasValue, c => c.CreationTime >= input.Start.Value)

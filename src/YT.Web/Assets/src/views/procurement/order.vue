@@ -15,9 +15,10 @@
                         </FormItem>
                    <FormItem label="状态">
                     <Select v-model="params.state" style="width:160px">
-                       <Option value="">请选择</Option>
-                       <Option value="true">已完成</Option>
-                       <Option value="false">已取消</Option>
+                       <Option value="0">请选择</Option>
+                       <Option value="1">已完成</Option>
+                       <Option value="2">已取消</Option>
+                       <Option value="3">未完成</Option>
                     </Select>
                    </FormItem>
                 <FormItem label="是否表单">
@@ -142,7 +143,7 @@ export default {
         product: "",
         account: "",
         requireForm: null,
-        state: null,
+        state: 0,
         start: null,
         end: null
       },

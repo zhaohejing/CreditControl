@@ -61,7 +61,7 @@ namespace YT.Products.Dtos
         /// <summary>
         /// 是否完成
         /// </summary>
-        public bool? State { get; set; }
+        public int State { get; set; }
         /// <summary>
         /// 开始
         /// </summary>
