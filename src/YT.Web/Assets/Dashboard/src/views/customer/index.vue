@@ -131,7 +131,7 @@
         <Modal :transfer='false' v-model='chargeModal.isShow' :title='chargeModal.title' :mask-closable='false' @on-ok='commitCharge' @on-cancel='cancel'>
             <Form ref="charge" :model="chargeModal.current" inline :label-width="120">
                 <FormItem label="充值金额" prop="name">
-                    <InputNumber :min="1" v-model="chargeModal.current.money" placeholder="充值金额"></InputNumber>
+                    <InputNumber  v-model="chargeModal.current.money" placeholder="充值金额"></InputNumber>
                 </FormItem>
             </Form>
         </Modal>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
+using Abp.Auditing;
 using Abp.Authorization;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
@@ -17,7 +18,6 @@ namespace YT.Adsences
     /// <summary>
     /// 公告管理服务实现
     /// </summary>
-    [AbpAuthorize]
 
 
     public class AdsenceAppService : YtAppServiceBase, IAdsenceAppService
@@ -69,6 +69,8 @@ namespace YT.Adsences
         /// <summary>
         /// 通过Id获取公告管理信息进行编辑或修改 
         /// </summary>
+        [AbpAuthorize]
+
         public async Task<GetAdsenceForEditOutput> GetAdsenceForEditAsync(NullableIdDto<int> input)
         {
             var output = new GetAdsenceForEditOutput();
@@ -104,6 +106,8 @@ namespace YT.Adsences
         /// <summary>
         /// 发布公告
         /// </summary>
+        [AbpAuthorize]
+
         public async Task PublicAdsenceAsync(EntityDto<int> input)
         {
             var entity = await _adsenceRepository.GetAsync(input.Id);
@@ -112,6 +116,8 @@ namespace YT.Adsences
         /// <summary>
         /// 新增或更改公告管理
         /// </summary>
+        [AbpAuthorize]
+
         public async Task CreateOrUpdateAdsenceAsync(CreateOrUpdateAdsenceInput input)
         {
             if (input.AdsenceEditDto.Id.HasValue)
@@ -151,6 +157,7 @@ namespace YT.Adsences
         /// <summary>
         /// 删除公告管理
         /// </summary>
+        [AbpAuthorize]
         public async Task DeleteAdsenceAsync(EntityDto<int> input)
         {
             await _adsenceRepository.DeleteAsync(input.Id);
@@ -159,6 +166,7 @@ namespace YT.Adsences
         /// <summary>
         /// 批量删除公告管理
         /// </summary>
+        [AbpAuthorize]
         public async Task BatchDeleteAdsenceAsync(List<int> input)
         {
             await _adsenceRepository.DeleteAsync(s => input.Contains(s.Id));

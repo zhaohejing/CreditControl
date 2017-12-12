@@ -111,6 +111,10 @@ namespace YT.Products.Dtos
         /// </summary>
 
         public int Count { get; set; } = 1;
+        /// <summary>
+        /// 是否可以购买
+        /// </summary>
+        public bool CanBuy { get; set; }
     }
     /// <summary>
     /// 客户已有订单

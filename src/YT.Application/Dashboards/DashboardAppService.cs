@@ -419,7 +419,10 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<ProductDetail> GetProductDetail(GetProductByFilter input)
         {
-            var product = await _customerPriceRepository.FirstOrDefaultAsync(c=>c.ProductId==input.CateId.Value&&c.CustomerId==input.CustomerId);
+            var customer = await _customerRepository.FirstOrDefaultAsync(input.CustomerId);
+            if(customer==null) throw new UserFriendlyException("客户信息不存在");
+            var product = await _customerPriceRepository.FirstOrDefaultAsync(c=>c.ProductId
+            ==input.CateId.Value&&c.CustomerId==input.CustomerId);
             if(product==null)throw new UserFriendlyException("该产品不存在");
             var dto = product.Product.MapTo<ProductDetail>();
             dto.Price = product.Price;
@@ -429,6 +432,7 @@ namespace YT.Dashboards
             {
                 dto.ProfileUrl = Host + file.Url;
             }
+            dto.CanBuy = customer.Balance > product.Price;
             return dto;
 
         }
