@@ -133,7 +133,7 @@ export default {
       this.getApiData();
     }
   },
-  computed() {}
+  computed: {}
 };
 </script>
 

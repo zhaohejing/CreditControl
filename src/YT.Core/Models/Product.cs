@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -227,5 +228,18 @@ namespace YT.Models
         /// 文件类型
         /// </summary>
         public ProfileType ProfileType { get; set; }
+    }
+    /// <summary>
+    /// 公告管理
+    /// </summary>
+    [Table("Adsence")]
+    public class Adsence : CreationAuditedEntity,ISoftDelete,IPassivable
+    {
+        [Required]
+        public string Title { get; set; }
+        public string Content { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public bool IsActive { get; set; }
     }
 }

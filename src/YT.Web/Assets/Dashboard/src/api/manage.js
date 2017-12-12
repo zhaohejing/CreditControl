@@ -89,4 +89,3 @@ export function getInfo() {
     method: 'post'
   });
 }
-

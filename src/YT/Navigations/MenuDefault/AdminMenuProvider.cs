@@ -30,7 +30,8 @@ namespace YT.Navigations.MenuDefault
                new MenuDefinition("用户管理","/customers","person-stalker",true,StaticPermissionsName.Page_Customers),
             
                new MenuDefinition("系列管理","/series","calendar",true,StaticPermissionsName.Page_Series),
-               
+               new MenuDefinition("公告管理","/public","calendar",true,StaticPermissionsName.Page_Public),
+
                 new MenuDefinition("财务管理","","ios-calculator",true,StaticPermissionsName.Page_Finance)
                 {
                     Childs = new List<MenuDefinition>()

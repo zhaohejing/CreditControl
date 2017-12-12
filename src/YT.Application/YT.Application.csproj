@@ -145,6 +145,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adsences\AdsenceAppService.cs" />
+    <Compile Include="Adsences\Dtos\AdsenceEditDto.cs" />
+    <Compile Include="Adsences\Dtos\AdsenceListDto.cs" />
+    <Compile Include="Adsences\Dtos\CreateOrUpdateAdsenceInput.cs" />
+    <Compile Include="Adsences\Dtos\GetAdsenceForEditOutput.cs" />
+    <Compile Include="Adsences\Dtos\GetAdsenceInput.cs" />
+    <Compile Include="Adsences\IAdsenceAppService.cs" />
     <Compile Include="Categories\CategoryAppService.cs" />
     <Compile Include="Categories\Dtos\CategoryEditDto.cs" />
     <Compile Include="Categories\Dtos\CategoryListDto.cs" />

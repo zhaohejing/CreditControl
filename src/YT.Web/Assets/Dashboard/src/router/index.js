@@ -44,6 +44,12 @@ export const asyncRouterMap = [{
                 component: r => require(['views/Dashboard'], r)
             },
             {
+                path: '/public',
+                name: '公告管理',
+                icon: 'speedometer',
+                component: r => require(['views/adsence/Index'], r)
+            },
+            {
                 path: '',
                 name: '采购管理',
                 icon: 'person-stalker',

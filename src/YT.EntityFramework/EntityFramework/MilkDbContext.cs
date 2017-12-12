@@ -41,6 +41,11 @@ namespace YT.EntityFramework
         /// 资质附件
         /// </summary>
         public  virtual  IDbSet<FormProfile> FormProfiles { get; set; }
+        /// <summary>
+        /// 公告管理
+        /// </summary>
+        public  virtual  IDbSet<Adsence> Adsences { get; set; }
+        
         public new virtual IDbSet<Organization> OrganizationUnits { get; set; }
 
         public virtual IDbSet<Customer> Customers { get; set; }
