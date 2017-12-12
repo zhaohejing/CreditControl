@@ -52,8 +52,8 @@
 
 <script>
 export default {
-  name: 'aside'
-}
+  name: "aside"
+};
 </script>
 <style type="text/css">
 .wz-progress-show-info .wz-progress-outer {
@@ -61,20 +61,16 @@ export default {
   margin-right: 0px;
 }
 </style>
-
-
 <style scoped>
 .text-muted {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-
 .demo-i-circle-custom h1 {
   color: #3f414d;
   font-size: 28px;
   font-weight: normal;
 }
-
 .demo-i-circle-custom p {
   color: #657180;
   font-size: 14px;
