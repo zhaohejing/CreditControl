@@ -13,5 +13,12 @@ namespace YT.Models
     {
 
     }
-  
+
+    public enum ProfileType
+    {
+        营业执照=1,
+        身份证=2,
+        业务资料=3,
+        特有许可证=4
+    }
 }

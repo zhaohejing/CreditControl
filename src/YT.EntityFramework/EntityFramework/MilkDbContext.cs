@@ -37,7 +37,10 @@ namespace YT.EntityFramework
         /// 权限配置
         /// </summary>
         public virtual IDbSet<YtPermission> YtPermissions { get; set; }
-
+        /// <summary>
+        /// 资质附件
+        /// </summary>
+        public  virtual  IDbSet<FormProfile> FormProfiles { get; set; }
         public new virtual IDbSet<Organization> OrganizationUnits { get; set; }
 
         public virtual IDbSet<Customer> Customers { get; set; }

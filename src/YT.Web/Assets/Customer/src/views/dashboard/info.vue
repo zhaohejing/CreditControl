@@ -8,7 +8,7 @@
       <Form ref='form' :model='form' :rules='ruleValidate' label-position="top">
         <div class="infoBox">
           <Row class='basic'>
-            <Col span='24'>公司基本信息</Col>
+            <Col span='24'>客户基本信息</Col>
           </Row>
           <div class="infoInput">
             <FormItem label="公司名称" prop='companyName'>
@@ -45,7 +45,7 @@
         </div>
         <div class="infoBox">
           <Row class='basic'>
-            <Col span='24'>资质上传</Col>
+            <Col span='24'>资料上传</Col>
           </Row>
           <Row class='fileUpload'>
             <Row>
@@ -91,7 +91,7 @@
                   <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
                 </div>
               </Upload>
-              <p class='g9b9ea0 g-center'>企业或品牌Logo（上传）</p>
+              <p class='g9b9ea0 g-center'>相关业务资料上传</p>
               </Col>
               <Col span="9" offset="6">
               <template class="demo-upload-list" v-if="form.companyLogo">
@@ -105,55 +105,14 @@
                   <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
                 </div>
               </Upload>
-              <p class='g9b9ea0 g-center'>企业所属行业特有许可证电子版上传</p>
+              <p class='g9b9ea0 g-center'>企业所属行业特有许可证或企业荣誉</p>
               </Col>
             </Row>
           </Row>
         </div>
-        <div class="infoBox infoTextArea">
-          <Row class="basic" style="margin:0">
-            <Col span='24'>需求描述</Col>
-          </Row>
-          <Row class="c9">
-            <col span="24">一、公司概述（800字内）</col>
-          </Row>
-          <Input v-model="form.companyOverview" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">二、公司发展历程（800字内）</col>
-          </Row>
-          <Input v-model="form.companyHistory" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">三、领导人履历（800字内）</col>
-          </Row>
-          <Input v-model="form.leadershipResume" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">四、公司产品或服务介绍（500字内）</col>
-          </Row>
-          <Input v-model="form.companyProduct" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">五、相关专利介绍（500字内）</col>
-          </Row>
-          <Input v-model="form.relevantPatent" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">六、公司或个人所获荣誉（500字内）</col>
-          </Row>
-          <Input v-model="form.companyhonor" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">七、是否参与或从事过公益事业（500字内）</col>
-          </Row>
-          <Input v-model="form.publicWelfareUndertakings" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">八、近三年是否有重大舆情</col>
-          </Row>
-          <Input v-model="form.majorSecret" type="textarea" :rows="17"></Input>
-          <Row class="c9">
-            <col span="24">九、其他说明（800字内）</col>
-          </Row>
-          <Input v-model="form.other" type="textarea" :rows="17"></Input>
-          <Row class="g-center submitButton">
+         <Row class="g-center submitButton">
             <Button @click="submit" type="primary">提交并结算</Button>
           </Row>
-        </div>
         <BackTop> </BackTop>
       </Form>
     </div>
