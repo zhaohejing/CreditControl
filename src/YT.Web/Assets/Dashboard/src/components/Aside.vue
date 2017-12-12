@@ -52,8 +52,8 @@
 
 <script>
 export default {
-  name: 'aside'
-}
+  name: "aside"
+};
 </script>
 <style type="text/css">
 .wz-progress-show-info .wz-progress-outer {
@@ -61,8 +61,6 @@ export default {
   margin-right: 0px;
 }
 </style>
-
-
 <style scoped>
 .text-muted {
   margin-top: 1rem;
