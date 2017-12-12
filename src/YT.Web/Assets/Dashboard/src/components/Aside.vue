@@ -66,7 +66,6 @@ export default {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-
 .demo-i-circle-custom h1 {
   color: #3f414d;
   font-size: 28px;
