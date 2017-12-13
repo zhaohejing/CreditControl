@@ -1,220 +1,206 @@
 <template>
-    <div class="detail">
-        <Row>
-            <Col span="24">
-            <Icon type="chevron-left"></Icon>
-            <a @click="returnUp">返回上一页</a>
-            </Col>
-        </Row>
-        <div class="detialMain">
-            <Row class="MainBox">
-                <div v-if="!product.canBuy" class="warninfo">您的余额不足,请先去充值</div>
-                <div class="detailBox">
-                    <div class="detailImg g-center">
-                        <img style="width:400px;height:200px;" :src="product.profileUrl" />
-                        <div class="tag">{{ product.levelTwoName }}</div>
-                    </div>
-                    <div class="detailCon">
-                        <h3>{{ product.productName }}</h3>
-                        <p v-html="product.content"></p>
-                    </div>
-                </div>
-                <Row class="detialFootTag">
-                    <div class="g-footPrice">
-                        <span class="singlePrice">单价：{{product.price}}元</span>
-                        <div v-if="!product.requireForm" class="unitPrice">
-                            <Button type="ghost" class="g-add" @click="minus"  :disabled="product.count<=1">-
-                            </Button><Input class="input" v-model="product.count" style="width:60px">
-                            </Input><Button type="ghost"  class="g-add" @click="plus">+</Button>
-                        </div>
-                        <Button :disabled="!product.canBuy" class="order" @click="order" type="primary">立即预定</Button>
-                    </div>
-                </Row>
-            </Row>
-        </div>
+  <div class='info'>
+    <div class='infoMain'>
+      <Row class='infoTitle'>
+        <Col span='24' class='g-center'>{{info.title}}</Col>
+      </Row>
+      <hr style="height:5px;border:none;border-top:5px groove"/>
+      <Row>
+        <Col span='24' class='g-time'>{{info.creationTime| formatDate}}</Col>
+      </Row>
+      <Row class='infoTitle'>
+        <Col span='24' class='g-center'>
+        <div v-html="info.content"></div>
+        </Col>
+      </Row>
+      <BackTop> </BackTop>
     </div>
+  </div>
 </template>
+
 <script>
-import { detail, createOrder } from "api/product";
+import { info } from "api/public";
+import { parseTime } from "utils/index";
 export default {
   data() {
     return {
-      product: { profileUrl: "" },
-      from: "/dashboard",
-      params: {
-        customerId: localStorage.getItem("Credit-Id"),
-        cateId: null
-      }
+      info: {}
     };
   },
-  created() {
-    this.init();
+  components: {},
+  // 过滤器
+  filters: {
+    formatDate(time) {
+      return parseTime(time);
+    }
   },
-  activated() {
-    this.from = this.$route.query.from;
-    this.init();
+  created() {
+    this.Init();
   },
   methods: {
-    init() {
-      this.params.cateId = this.$route.query.id;
-      detail(this.params)
+    Init() {
+      const id = this.$route.params.id;
+      info({
+        id: id
+      })
         .then(r => {
           if (r.data.success) {
-            this.product = r.data.result;
+            this.info = r.data.result;
           }
         })
         .catch(e => {
           this.$Message.error(e.response.data.error.message);
         });
-    },
-    order() {
-      this.$Modal.confirm({
-        title: "购买确认",
-        content: "确定要购买当前商品么?",
-        onOk: () => {
-          const param = {
-            customerId: localStorage.getItem("Credit-Id"),
-            count: this.product.count,
-            productId: this.product.id
-          };
-          createOrder(param)
-            .then(r => {
-              if (r.data.success) {
-                this.$Message.success("订购成功");
-                const orderId = r.data.result.id;
-                if (this.product.item.requireForm) {
-                  this.$router.push({
-                    path: "/info",
-                    query: { orderId: orderId }
-                  });
-                } else {
-                  this.$router.push({ path: "/order" });
-                }
-              }
-            })
-            .catch(e => {
-              this.$Message.error(e.response.data.error.message);
-            });
-        }
-      });
-    },
-    minus() {
-      this.product.count--;
-    },
-    plus() {
-      this.product.count++;
-    },
-    // 返回上一页
-    returnUp() {
-      this.$router.push({ path: this.from, query: { id: null } });
     }
   }
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style rel='stylesheet/scss' lang='scss'>
+div {
+  font-family: "Microsoft Yahei";
+}
+
 .g-center {
   text-align: center;
 }
-.warninfo {
-  background-color: red;
-  height: 20px;
-  font-style: center;
+
+.g-time {
+  text-align: center;
+  font-family: "Microsoft Yahei";
+  font-size: 10px;
 }
-.detail {
-  padding: 40px 106px;
+
+.info {
+  .infoMain {
+    background: #f5f5f6;
+    padding-bottom: 35px;
+    overflow: auto;
+    .ivu-form-item-required .ivu-form-item-label:before {
+      display: none;
+    }
+    .infoTitle {
+      padding-top: 40px;
+      font-size: 20px;
+      color: #373d41;
+    }
+    .infoBox {
+      width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 58px 96px;
+      border-bottom: 2px solid #ebebeb;
+      .basic {
+        font-size: 20px;
+        color: #373d41;
+        margin-bottom: 46px;
+      }
+      .infoInput {
+        width: 490px;
+        margin: 0 auto;
+        label {
+          color: #9b9ea0;
+          font-size: 14px;
+        }
+        input {
+          height: 40px;
+          border-radius: 0;
+        }
+      }
+      .c9 {
+        color: #9b9ea0;
+        font-size: 14px;
+        padding-top: 35px;
+        margin-bottom: 8px;
+      }
+    }
+    .infoTextArea {
+      textarea.ivu-input {
+        padding: 12px;
+      }
+    }
+    .submitButton {
+      margin: 120px 0 62px;
+      button {
+        width: 200px;
+        height: 40px;
+        background: #679fec;
+        padding: 0;
+        border: 1px solid #679fec;
+        border-radius: 0;
+        font-size: 14px;
+      }
+    }
+    .fileUpload {
+      width: 645px;
+      margin: 0 auto;
+      img {
+        width: 160px;
+        height: 80px;
+        border: 1px solid #c4c5c7;
+      }
+      .fileBox {
+        width: 160px;
+        height: 80px;
+        line-height: 98px;
+      }
+      .ivu-upload-drag {
+        margin: 0 auto;
+        width: 160px;
+        height: 80px;
+        line-height: 98px;
+        border: 1px solid #c4c5c7;
+        border-radius: 0;
+      }
+      .g9b9ea0 {
+        color: #9b9ea0;
+        font-size: 14px;
+      }
+      .g-marginLeft {
+        margin: 0 143px 0 36px;
+      }
+    }
+  }
+}
+
+.demo-upload-list {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 4px;
+}
+
+.demo-upload-list img {
+  width: 100%;
   height: 100%;
-  a {
-    color: #383d41;
-  }
-  .detialMain {
-    width: 100%;
-    padding: 22px 48px 48px 48px;
-  }
-  .MainBox {
-    box-shadow: 0px 0px 7px 4px rgba(1, 34, 63, 0.1);
-  }
-  .detailBox {
-    padding: 30px 30px 66px 30px;
-    .detailImg {
-      border-bottom: 1px solid #ebebeb;
-      .tag {
-        width: 120px;
-        height: 30px;
-        background: #ccddf4;
-        font-size: 14px;
-        color: #679feb;
-        text-align: center;
-        line-height: 30px;
-        margin: 20px auto;
-      }
-    }
-    .detailCon {
-      padding: 24px 174px;
-      h3 {
-        font-weight: normal;
-        font-size: 15px;
-        color: #4d4d4d;
-      }
-      p {
-        line-height: 26px;
-        font-size: 14px;
-        color: #999;
-        padding-top: 12px;
-      }
-    }
-  }
-  .detialFootTag {
-    width: 100%;
-    height: 60px;
-    background: #f7f7f7;
-    line-height: 60px;
-    .g-footPrice {
-      width: 100%;
-      text-align: right;
-      padding-right: 58px;
-    }
-    .singlePrice {
-      color: #679feb;
-      font-size: 15px;
-    }
-    .unitPrice {
-      width: 120px;
-      height: 26px;
-      line-height: 26px;
-      display: inline;
-      margin: 0 44px;
-    }
-    .g-add {
-      width: 28px;
-      height: 26px;
-      line-height: 26px;
-      text-align: center;
-      padding: 0;
-      color: #ccc;
-      border: 1px solid #bbb;
-      border-radius: 0;
-    }
-    .order {
-      width: 102px;
-      height: 26px;
-      background: #4f5873;
-      text-align: center;
-      line-height: 26px;
-      padding: 0;
-      border: 1px solid #4f5873;
-      border-radius: 0;
-    }
-    .input input {
-      height: 26px;
-      text-align: center;
-      line-height: 26px;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      background: #f7f7f7;
-      border: 1px solid #bbb;
-    }
-  }
+}
+
+.demo-upload-list-cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.demo-upload-list:hover .demo-upload-list-cover {
+  display: block;
+}
+
+.demo-upload-list-cover i {
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 0 2px;
 }
 </style>

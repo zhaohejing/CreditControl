@@ -64,7 +64,7 @@ dashboard = [{
         component: r => require(["views/dashboard/infos"], r)
       },
       {
-        path: "/info/:id",
+        path: "/ainfo/:id",
         name: "info",
         component: r => require(["views/dashboard/adsenceinfo"], r)
       }

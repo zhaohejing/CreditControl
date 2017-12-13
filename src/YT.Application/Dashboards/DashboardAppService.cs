@@ -16,8 +16,10 @@ using Abp.UI;
 using YT.ChargeRecords.Dtos;
 using YT.Customers.Dtos;
 using YT.Dashboards.Dtos;
+using YT.Dto;
 using YT.Models;
 using YT.Products.Dtos;
+using YT.Products.Exporting;
 using YT.Storage;
 
 
@@ -39,29 +41,31 @@ namespace YT.Dashboards
         private readonly IRepository<CustomerForm> _formRepository;
         private readonly IRepository<CustomerPreferencePrice> _customerPriceRepository;
         private readonly IBinaryObjectManager _objectManager;
+        private readonly IProductListExcelExporter _iexcelExporter;
 
 
-       /// <summary>
-       /// ctor
-       /// </summary>
-       /// <param name="customerRepository"></param>
-       /// <param name="smtpEmailSenderConfiguration"></param>
-       /// <param name="cateRepository"></param>
-       /// <param name="productRepository"></param>
-       /// <param name="binaryObjectManager"></param>
-       /// <param name="ordeRepository"></param>
-       /// <param name="costRepository"></param>
-       /// <param name="applyRepository"></param>
-       /// <param name="objectManager"></param>
-       /// <param name="formRepository"></param>
-       /// <param name="customerPriceRepository"></param>
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="customerRepository"></param>
+        /// <param name="smtpEmailSenderConfiguration"></param>
+        /// <param name="cateRepository"></param>
+        /// <param name="productRepository"></param>
+        /// <param name="binaryObjectManager"></param>
+        /// <param name="ordeRepository"></param>
+        /// <param name="costRepository"></param>
+        /// <param name="applyRepository"></param>
+        /// <param name="objectManager"></param>
+        /// <param name="formRepository"></param>
+        /// <param name="customerPriceRepository"></param>
+        /// <param name="iexcelExporter"></param>
         public DashboardAppService(
             IRepository<Customer> customerRepository,
             ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
             IRepository<Category> cateRepository,
             IRepository<Product> productRepository,
             IBinaryObjectManager binaryObjectManager,
-            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository, IRepository<CustomerPreferencePrice> customerPriceRepository)
+            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository, IRepository<CustomerPreferencePrice> customerPriceRepository, IProductListExcelExporter iexcelExporter)
         {
             _customerRepository = customerRepository;
             _smtpEmailSenderConfiguration = smtpEmailSenderConfiguration;
@@ -74,6 +78,41 @@ namespace YT.Dashboards
             _objectManager = objectManager;
             _formRepository = formRepository;
             _customerPriceRepository = customerPriceRepository;
+            _iexcelExporter = iexcelExporter;
+        }
+
+        /// <summary>
+        /// 导出订单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<FileDto> ExportOrders(GetHaveProductInput input)
+        {
+            var query = _ordeRepository.GetAll().Where(c => c.CustomerId == input.CustomerId);
+            var chargeRecords = await query
+            .OrderBy(input.Sorting)
+            .PageBy(input)
+            .ToListAsync();
+            var products = await _productRepository.GetAllListAsync();
+            var output = (from o in chargeRecords
+                          let p = products.FirstOrDefault(c => o.ProductId == c.Id)
+                          select new OrderProductDetail()
+                          {
+                              Id = o.Id,
+                              Cate = o.LevelTwo,
+                              Count = o.Count,
+                              CustomerName = o.Form.CompanyName,
+                              FormId = o.FormId,
+                              Price = o.Price,
+                              ProductName = o.ProductName,
+                              TotalPrice = o.TotalPrice,
+                              OrderNum = o.OrderNum,
+                              CreationTime = o.CreationTime,
+                              State = o.State,
+                              ProductId = o.Id,
+                              RequireForm = p?.RequireForm
+                          }).ToList();
+            return _iexcelExporter.ExportOrderToFile(output.ToList());
         }
 
         /// <summary>
@@ -143,7 +182,7 @@ namespace YT.Dashboards
         {
             var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.CustomerId);
             if (customer == null) throw new UserFriendlyException("该账户不存在");
-            var order = await _ordeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNum)&&!c.State.HasValue);
+            var order = await _ordeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNum) && !c.State.HasValue);
             if (order == null) throw new UserFriendlyException("该订单不存在");
             order.State = input.State;
             if (input.State)
@@ -175,7 +214,7 @@ namespace YT.Dashboards
         public async Task ModifyForm(CustomerFormEditDto input)
         {
             var order = await _ordeRepository.FirstOrDefaultAsync(input.OrderId);
-            if(order==null)throw new UserFriendlyException("订单信息不存在");
+            if (order == null) throw new UserFriendlyException("订单信息不存在");
             var form = input.MapTo<CustomerForm>();
             await _formRepository.InsertOrUpdateAsync(form);
             await CurrentUnitOfWork.SaveChangesAsync();
@@ -192,7 +231,7 @@ namespace YT.Dashboards
             DateTime left = now.AddMonths(-input.Num);
             var lists = await _costRepository.GetAll().Where(c => c.CustomerId == input.CustomerId
                                                                    && c.CreationTime >= left
-            ).OrderByDescending(c=>c.CreationTime).ToListAsync();
+            ).OrderByDescending(c => c.CreationTime).ToListAsync();
             if (!lists.Any()) return null;
             return lists.MapTo<List<CustomerCostListDto>>();
         }
@@ -265,9 +304,9 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<List<ProductDetail>> GetProducts(GetProductByFilter input)
         {
-            var products = await _customerPriceRepository.GetAll().Where(c => c.Product.IsActive && c.Price > 0&&c.CustomerId==input.CustomerId)
+            var products = await _customerPriceRepository.GetAll().Where(c => c.Product.IsActive && c.Price > 0 && c.CustomerId == input.CustomerId)
                 .WhereIf(input.CateId.HasValue, c => c.Product.LevelTwoId == input.CateId.Value).ToListAsync();
-          
+
             var output = new List<ProductDetail>();
             if (!products.Any()) return output;
             foreach (var oc in products)
@@ -295,16 +334,16 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<PagedResultDto<OrderProductDetail>> GetHaveProducts(GetHaveProductInput input)
         {
-          
-            var query = _ordeRepository.GetAll().Where(c=>c.CustomerId==input.CustomerId);
+
+            var query = _ordeRepository.GetAll().Where(c => c.CustomerId == input.CustomerId);
             var chargeRecordCount = await query.CountAsync();
             var chargeRecords = await query
             .OrderBy(input.Sorting)
             .PageBy(input)
             .ToListAsync();
             var output = new List<OrderProductDetail>();
-            if (chargeRecordCount<=0) return new PagedResultDto<OrderProductDetail>(0,output);
-            var products =await _productRepository.GetAllListAsync();
+            if (chargeRecordCount <= 0) return new PagedResultDto<OrderProductDetail>(0, output);
+            var products = await _productRepository.GetAllListAsync();
             foreach (var o in chargeRecords)
             {
                 var p = products.FirstOrDefault(c => o.ProductId == c.Id);
@@ -313,6 +352,7 @@ namespace YT.Dashboards
                     Id = o.Id,
                     Cate = o.LevelTwo,
                     Count = o.Count,
+                    CustomerName = o.Form.CompanyName,
                     FormId = o.FormId,
                     Price = o.Price,
                     ProductName = o.ProductName,
@@ -420,10 +460,10 @@ namespace YT.Dashboards
         public async Task<ProductDetail> GetProductDetail(GetProductByFilter input)
         {
             var customer = await _customerRepository.FirstOrDefaultAsync(input.CustomerId);
-            if(customer==null) throw new UserFriendlyException("客户信息不存在");
-            var product = await _customerPriceRepository.FirstOrDefaultAsync(c=>c.ProductId
-            ==input.CateId.Value&&c.CustomerId==input.CustomerId);
-            if(product==null)throw new UserFriendlyException("该产品不存在");
+            if (customer == null) throw new UserFriendlyException("客户信息不存在");
+            var product = await _customerPriceRepository.FirstOrDefaultAsync(c => c.ProductId
+            == input.CateId.Value && c.CustomerId == input.CustomerId);
+            if (product == null) throw new UserFriendlyException("该产品不存在");
             var dto = product.Product.MapTo<ProductDetail>();
             dto.Price = product.Price;
             if (!product.Product.Profile.HasValue) return dto;

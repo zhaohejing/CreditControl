@@ -9,12 +9,23 @@ import "babel-polyfill"
 Vue.config.productionTip = false
 
 Vue.use(iView);
+Vue.prototype.$down = (type, token, name) => {
+  const url =
+    "http://192.168.0.202:8888/api/File/Download?fileType=" +
+    type +
+    "&fileToken=" +
+    token +
+    "&fileName=" +
+    name;
+  window.open(url);
+}
+
 /* eslint-disable no-new */
 new Vue({
-    el: "#app",
-    router,
-    template: "<App/>",
-    components: {
-        App
-    }
+  el: "#app",
+  router,
+  template: "<App/>",
+  components: {
+    App
+  }
 })

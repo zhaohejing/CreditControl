@@ -1,28 +1,29 @@
 <template>
-    <div class='contentMain'>
-        <Breadcrumb class='breadHead'>
-            <BreadcrumbItem>公告通知</BreadcrumbItem>
-        </Breadcrumb>
-        <div class='g-mianBox'>
-            <Row class='g-bm' v-for='item in result' :key='item.id'>
-                <div class='g-width'>
-                <Col span='12' class='g-center'>
-                    <span>{{item.title}}</span>
-                </Col>
-                 <Col span='12' class='g-center'>
-                    <span>{{item.title}}</span>
-                </Col>
-                </div>
-            </Row>
-            <Row v-if='result.length == 0' style='padding:50px 0'>
-                暂无相关产品
-            </Row>
+  <div class='contentMain'>
+    <Breadcrumb class='breadHead'>
+      <BreadcrumbItem>公告通知</BreadcrumbItem>
+    </Breadcrumb>
+    <div class='g-mianBox'>
+      <Row @click.native="details(item)" class='g-bm' v-for='item in result' :key='item.id'>
+        <div class='g-width'>
+          <Col span='12' class='g-left'>
+          <span>{{item.title}}</span>
+          </Col>
+          <Col span='12' class='g-right'>
+          <span>{{item.creationTime | formatDate}}</span>
+          </Col>
         </div>
+      </Row>
+      <Row v-if='result.length == 0' style='padding:50px 0'>
+        暂无相关产品
+      </Row>
     </div>
+  </div>
 </template>
 
 <script>
 import { infos, info } from "api/public";
+import { parseTime } from "utils/index";
 export default {
   data() {
     return {
@@ -33,6 +34,12 @@ export default {
         skipCount: 0
       }
     };
+  },
+  // 过滤器
+  filters: {
+    formatDate(time) {
+      return parseTime(time);
+    }
   },
   created() {
     this.init();
@@ -48,8 +55,7 @@ export default {
     // 查看详情
     details(item) {
       this.$router.push({
-        path: "/detail",
-        params: { id: item.id }
+        path: "/ainfo/" + item.id
       });
     }
   }
@@ -57,8 +63,12 @@ export default {
 </script>
 
 <style rel='stylesheet/scss' lang='scss'>
-.g-center {
-  text-align: center;
+.g-left {
+  text-align: left;
+}
+
+.g-right {
+  text-align: right;
 }
 
 .contentMain {
@@ -84,102 +94,9 @@ export default {
     .g-bm {
       border-bottom: 1px solid #ebebeb;
       padding: 10px 0;
-      margin-bottom: 37px;
-      .g-width {
-        span {
-          display: inline-block;
-          width: 120px;
-          height: 30px;
-          background: #ccddf4;
-          font-size: 14px;
-          color: #679feb;
-          text-align: center;
-          line-height: 30px;
-          margin-top: 16px;
-        }
-      }
-      h2 {
-        font-size: 15px;
-        font-weight: normal;
-        padding-bottom: 16px;
-      }
-      p {
-        font-size: 14px;
-        color: #999;
-        line-height: 26px;
-        border-bottom: 1px solid #ebebeb;
-        padding-bottom: 20px;
-        margin-bottom: 16px;
-        max-height: 85px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-      }
       .g-rightFootTag {
         margin-top: 16px;
-        .lookDetail {
-          width: 82px;
-          height: 26px;
-          background: #4f5873;
-          text-align: center;
-          line-height: 26px;
-          padding: 0;
-          border: 1px solid #4f5873;
-          border-radius: 0;
-        }
-        .singlePrice {
-          display: inline-block;
-          width: 102px;
-          height: 26px;
-          border: 1px solid #ebebeb;
-          color: #ccc;
-          text-align: center;
-          line-height: 26px;
-          font-size: 12px;
-          vertical-align: middle;
-          margin: 0 26px;
-        }
-        .unitPrice {
-          width: 120px;
-          height: 26px;
-          line-height: 26px;
-          display: inline;
-        }
-        .g-add {
-          width: 28px;
-          height: 26px;
-          line-height: 26px;
-          text-align: center;
-          padding: 0;
-          color: #ccc;
-          border: 1px solid #ebebeb;
-          border-radius: 0;
-        }
-        .order {
-          width: 102px;
-          height: 26px;
-          background: #4f5873;
-          text-align: center;
-          line-height: 26px;
-          padding: 0;
-          border: 1px solid #4f5873;
-          border-radius: 0;
-          margin-left: 26px;
-        }
-        .input input {
-          height: 26px;
-          text-align: center;
-          line-height: 26px;
-          border-radius: 0;
-          border-left: none;
-          border-right: none;
-        }
       }
-    }
-    .g-bm:last-child {
-      border-bottom: none;
     }
   }
 }

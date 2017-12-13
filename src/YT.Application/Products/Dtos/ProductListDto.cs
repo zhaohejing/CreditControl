@@ -126,6 +126,10 @@ namespace YT.Products.Dtos
         /// </summary>
         public string OrderNum { get; set; }
         /// <summary>
+        /// 客户名称
+        /// </summary>
+        public string CustomerName { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreationTime { get; set; }

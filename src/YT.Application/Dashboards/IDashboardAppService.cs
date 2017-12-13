@@ -8,6 +8,7 @@ using Abp.Application.Services.Dto;
 using YT.ChargeRecords.Dtos;
 using YT.Customers.Dtos;
 using YT.Dashboards.Dtos;
+using YT.Dto;
 using YT.Products.Dtos;
 
 namespace YT.Dashboards
@@ -32,11 +33,17 @@ namespace YT.Dashboards
         Task<CustomerListDto> GetInfo(EntityDto<int> input);
 
         /// <summary>
+        /// 导出订单
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        Task<FileDto> ExportOrders(GetHaveProductInput input);
+        /// <summary>
         /// 获取用户消费记录
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-          Task<List<CustomerCostListDto>> GetCustomerCosts(GetCustomerCostsInput input);
+        Task<List<CustomerCostListDto>> GetCustomerCosts(GetCustomerCostsInput input);
 
         /// <summary>
         /// 获取订单详情

@@ -68,6 +68,13 @@ export function modifyForm(data) {
     data
   });
 }
+export function exportOrders(data) {
+  return fetch({
+    url: "/api/services/app/dashboard/ExportOrders",
+    method: "post",
+    data
+  });
+}
 export function costs(data) {
   return fetch({
     url: "/api/services/app/dashboard/GetCustomerCosts",

@@ -20,6 +20,12 @@ namespace YT.Adsences.Dtos
         /// 是否发布
         /// </summary>
         public      bool IsActive { get; set; }
+        ///内容
+        /// <summary>
+        /// 内容
+        /// </summary>
+        [DisplayName("内容")]
+        public string Content { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>

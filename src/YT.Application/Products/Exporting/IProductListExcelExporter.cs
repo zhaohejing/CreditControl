@@ -15,7 +15,11 @@ namespace YT.Products.Exporting
         /// </summary>
         FileDto ExportProductToFile(List<ProductListDto> productListDtos);
 
-
+        /// <summary>
+        /// 导出产品到EXCEL文件
+        /// <param name="orders">导出信息的DTO</param>
+        /// </summary>
+        FileDto ExportOrderToFile(List<OrderProductDetail> orders);
 
     }
 }

@@ -1,6 +1,11 @@
 <template>
   <div class="order">
     <head-top-tag></head-top-tag>
+     <Row class='infoTitle'>
+        <Col span='18' ><p class='title'>订单信息</p></Col>
+        <Col span='6' ><div @click.native="exportData" class='export'>导出订单</div></Col>
+      </Row>
+       <hr style="height:5px;border:none;border-top:5px groove"/>
     <div v-if="orders.length>0" class="orderMain">
       <div v-for="item in orders" :key="item.id">
         <Row class="orderTop">
@@ -16,6 +21,7 @@
           </Col>
         </Row>
         <Row class="orderCon">
+          <span class="customer">客户名称:{{ item.customerName }}</span>
           <span>单价：{{ item.price }}元</span>
           <span>数量：{{ item.count }}</span>
           <span>合计：￥{{ item.totalPrice }}</span>
@@ -25,16 +31,13 @@
             </font>
           </span>
           <span style="color:#c47373">
-            <font @click="cancelOrder(item)" v-if="item.state==null" v-bind:class="[{ colorAcitve: item.state },
-                                                                                           errorClass]">
+            <!-- <font @click="cancelOrder(item)" v-if="item.state==null" v-bind:class="[{ colorAcitve: item.state },errorClass]">
               取消订单
-            </font>
-            <font v-if="item.state" v-bind:class="[{ colorAcitve: item.state },
-                                                                                           errorClass]">
+            </font> -->
+            <font v-if="item.state" v-bind:class="[{ colorAcitve: item.state },errorClass]">
               已完成
             </font>
-            <font v-if="item.state!=null&&!item.state" v-bind:class="[{ colorAcitve: item.state },
-                                                                                           errorClass]">
+            <font v-if="item.state!=null&&!item.state" v-bind:class="[{ colorAcitve: item.state },errorClass]">
               已取消
             </font>
           </span>
@@ -74,7 +77,7 @@
 <script>
 import HeadTopTag from "components/HeadTop";
 import FooterTag from "components/Footer";
-import { orders } from "api/product";
+import { orders, exportOrders } from "api/product";
 import { parseTime } from "utils/index";
 export default {
   data() {
@@ -126,7 +129,9 @@ export default {
     Init() {
       const id = localStorage.getItem("Credit-Id");
       if (!id) {
-        this.$router.push({ path: "/login" });
+        this.$router.push({
+          path: "/login"
+        });
         return;
       }
       this.params.customerId = id;
@@ -140,22 +145,67 @@ export default {
     linkToDetail(item) {
       this.$router.push({
         path: "/detail",
-        query: { id: item.productId, from: "/order" }
+        query: {
+          id: item.productId,
+          from: "/order"
+        }
       });
     },
     // 修改客户资料
     modifyForm(item) {
-      this.$router.push({ path: "/info", query: { orderId: item.id } });
+      this.$router.push({
+        path: "/info",
+        query: {
+          orderId: item.id
+        }
+      });
     },
     // 取消订单
     cancelOrder(item) {
-      this.$router.push({ path: "/cancelorder", query: { id: item.id } });
+      this.$router.push({
+        path: "/cancelorder",
+        query: {
+          id: item.id
+        }
+      });
+    },
+    exportData() {
+      exportOrders({ customerId: this.customerId }).then(r => {
+        if (r.data.success) {
+          if (r.success) {
+            this.$down(
+              r.data.result.fileType,
+              r.data.result.fileToken,
+              r.data.result.fileName
+            );
+          }
+        }
+      });
     }
   }
 };
 </script>
-
 <style rel="stylesheet/scss" lang="scss" scoped>
+.infoTitle {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 20px;
+  color: #373d41;
+  .title {
+    margin-left: 270px;
+    text-align: center;
+  }
+  .export {
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #2d8cf0;
+    font-size: 14px;
+    text-align: center;
+    margin-left: 50px;
+  }
+}
+
 .order {
   height: 100%;
   .orderMain {
@@ -194,7 +244,14 @@ export default {
     .orderCon {
       text-align: right;
       padding-bottom: 24px;
-      border-bottom: 1px solid #ebebeb;
+      border-bottom: 1px solid #c3c2c2;
+      .customer {
+        display: inline-block;
+        padding-right: 435px;
+        font-size: 14px;
+        min-width: 100px;
+        overflow: hidden;
+      }
       span {
         display: inline-block;
         padding-right: 44px;
