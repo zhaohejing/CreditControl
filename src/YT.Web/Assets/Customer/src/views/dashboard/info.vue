@@ -116,7 +116,7 @@
               </Col>
             </Row>
             <Row v-if="images">
-              <enlargeimg :data="images"></enlargeimg>
+              <enlargeimg @remove="childRemove" :data="images"></enlargeimg>
             </Row>
           </Row>
         </div>
@@ -160,6 +160,7 @@
 import HeadTopTag from "components/HeadTop";
 import FooterTag from "components/Footer";
 import { getFormByOrder, modifyForm } from "api/product";
+import { deleteFile } from "api/public";
 import enlargeimg from "enlargeimg";
 export default {
   data() {
@@ -220,6 +221,12 @@ export default {
     }
   },
   methods: {
+    childRemove(guid) {
+      deleteFile(guid);
+      this.form.formProfiles = this.form.formProfiles.filter(
+        c => c.profileId !== guid
+      );
+    },
     Init() {
       const order = this.$route.query.orderId;
       getFormByOrder({

@@ -13,3 +13,9 @@ export function info(data) {
     data
   });
 }
+export function deleteFile(data) {
+  return fetch({
+    url: "/api/File/DeleteFile?guid=" + data,
+    method: "get"
+  });
+}
