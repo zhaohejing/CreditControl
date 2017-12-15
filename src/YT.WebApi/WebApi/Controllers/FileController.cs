@@ -25,6 +25,7 @@ namespace YT.WebApi.Controllers
     {
         private readonly IAppFolders _appFolders;
         private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<FormProfile> _profile;
         private readonly IRepository<Order> _ordeRepository;
         public static string Host => ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
         private readonly IBinaryObjectManager _binaryObjectManager;
@@ -225,6 +226,7 @@ namespace YT.WebApi.Controllers
         [HttpGet]
         public async Task DeleteFile(Guid guid)
         {
+            await _profile.DeleteAsync(c => c.ProfileId == guid);
             var file = await _binaryObjectManager.GetOrNullAsync(guid);
             if (file != null)
             {
@@ -235,12 +237,11 @@ namespace YT.WebApi.Controllers
                         File.Delete(filePath);
                         await _binaryObjectManager.DeleteAsync(guid);
                     }
-
             }
         }
 
         #endregion 上传文件
-
+      
         [HttpGet]
         public async Task<HttpResponseMessage> DownLoadFile(int orderId)
         {

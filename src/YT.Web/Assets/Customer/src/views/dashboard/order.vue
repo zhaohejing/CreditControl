@@ -3,7 +3,7 @@
     <head-top-tag></head-top-tag>
      <Row class='infoTitle'>
         <Col span='18' ><p class='title'>订单信息</p></Col>
-        <Col span='6' ><div @click.native="exportData" class='export'>导出订单</div></Col>
+        <Col span='6' ><div @click="exportData" class='export'>导出订单</div></Col>
       </Row>
        <hr style="height:5px;border:none;border-top:5px groove"/>
     <div v-if="orders.length>0" class="orderMain">
@@ -21,12 +21,12 @@
           </Col>
         </Row>
         <Row class="orderCon">
-          <span class="customer">客户名称:{{ item.customerName }}</span>
+          <span  class="customer"><p v-if="item.formId&&item.customerName">客户名称:{{ item.customerName }}</p></span>
           <span>单价：{{ item.price }}元</span>
           <span>数量：{{ item.count }}</span>
           <span>合计：￥{{ item.totalPrice }}</span>
           <span class="g-color" @click="modifyForm(item)">
-            <font v-if="item.requireForm &&item.state==null " v-bind:class="[{ hiddenAcitve: item.state }, errorClass]">
+            <font v-if="item.requireForm &&item.state==null" v-bind:class="[{ hiddenAcitve: item.state }, errorClass]">
               修改客户资料
             </font>
           </span>
@@ -172,13 +172,11 @@ export default {
     exportData() {
       exportOrders({ customerId: this.customerId }).then(r => {
         if (r.data.success) {
-          if (r.success) {
-            this.$down(
-              r.data.result.fileType,
-              r.data.result.fileToken,
-              r.data.result.fileName
-            );
-          }
+          this.$down(
+            r.data.result.fileType,
+            r.data.result.fileToken,
+            r.data.result.fileName
+          );
         }
       });
     }
