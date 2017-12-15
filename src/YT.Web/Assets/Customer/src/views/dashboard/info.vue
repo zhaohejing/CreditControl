@@ -49,6 +49,7 @@
           </Row>
           <Row class='fileUpload'>
             <Row>
+              <Col span="6"><h3>企业营业执照副本</h3></Col>
               <Col span="9">
               <template class="demo-upload-list" v-if="form.license">
                 <img :src="form.licenseUrl">
@@ -63,7 +64,24 @@
               </Upload>
               <p class='g9b9ea0 g-center'>企业有效期营业执照复本电子版上传</p>
               </Col>
-              <Col span="9" offset="6">
+            </Row>
+            <Row>
+              <Col span="6"><h3>企业法人身份证</h3></Col>
+              <Col span="9">
+              <template class="demo-upload-list" v-if="form.license">
+                <img :src="form.licenseUrl">
+                <div class="demo-upload-list-cover">
+                  <Icon type="ios-trash-outline" @click.native="removeLicense(form.license)"></Icon>
+                </div>
+              </template>
+              <Upload v-else type='drag' :on-error="licenseerror" :on-success="licensesuccess" :headers="upload.headers" :action="upload.url">
+                <div class='fileBox'>
+                  <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
+                </div>
+              </Upload>
+              <p class='g9b9ea0 g-center'>身份证正面</p>
+              </Col>
+              <Col span="9" >
               <template class="demo-upload-list" v-if="form.permitCard">
                 <img :src="form.permitCardUrl">
                 <div class="demo-upload-list-cover">
@@ -75,44 +93,61 @@
                   <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
                 </div>
               </Upload>
-              <p class='g9b9ea0 g-center'>企业法人身份证正反面电子版上传</p>
+              <p class='g9b9ea0 g-center'>身份证反面</p>
               </Col>
             </Row>
-            <Row style="margin-top:45px">
-              <Col span="9">
-              <template class="demo-upload-list" v-if="form.identityCard">
-                <img :src="form.identityCardUrl">
+            <Row>
+                <Col span="12"><h3>企业所属行业特有许可证或企业荣誉</h3></Col>
+                <Col span="12">
+                     <template class="demo-upload-list" v-if="form.license">
+                <img :src="form.licenseUrl">
                 <div class="demo-upload-list-cover">
-                  <Icon type="ios-trash-outline" @click.native="removeLicense(form.identityCard)"></Icon>
+                  <Icon type="ios-trash-outline" @click.native="removeLicense(form.license)"></Icon>
                 </div>
               </template>
-              <Upload v-else type='drag' :on-error="carderror" :on-success="cardsuccess" :headers="upload.headers" :action="upload.url">
-                <div class='fileBox'>
-                  <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
-                </div>
-              </Upload>
-              <p class='g9b9ea0 g-center'>相关业务资料上传</p>
-              </Col>
-              <Col span="9" offset="6">
-              <template class="demo-upload-list" v-if="form.companyLogo">
-                <img :src="form.companyLogoUrl">
-                <div class="demo-upload-list-cover">
-                  <Icon type="ios-trash-outline" @click.native="removeLogo(form.companyLogo)"></Icon>
-                </div>
-              </template>
-              <Upload v-else type='drag' :on-error="logoerror" :on-success="logosuccess" :headers="upload.headers" :action="upload.url">
+              <Upload v-else type='drag' :on-error="licenseerror" :on-success="licensesuccess" :headers="upload.headers" :action="upload.url">
                 <div class='fileBox'>
                   <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
                 </div>
               </Upload>
               <p class='g9b9ea0 g-center'>企业所属行业特有许可证或企业荣誉</p>
-              </Col>
+                </Col>
+            </Row>
+            <Row>
+              <enlargeimg :data="files"></enlargeimg>
             </Row>
           </Row>
         </div>
-         <Row class="g-center submitButton">
-            <Button @click="submit" type="primary">提交并结算</Button>
+
+        <div class="infoBox">
+          <Row class='basic'>
+            <Col span='24'>相关资料</Col>
           </Row>
+          <Row class='fileUpload'>
+            <Row>
+                <Col span="12"><h3>相关业务资料</h3></Col>
+              <Col span="12">
+              <template class="demo-upload-list" v-if="form.license">
+                <img :src="form.licenseUrl">
+                <div class="demo-upload-list-cover">
+                  <Icon type="ios-trash-outline" @click.native="removeLicense(form.license)"></Icon>
+                </div>
+              </template>
+              <Upload v-else type='drag' :on-error="licenseerror" :on-success="licensesuccess" :headers="upload.headers" :action="upload.url">
+                <div class='fileBox'>
+                  <Icon type='ios-plus-empty' size='38' style='color: #d3d3d3'></Icon>
+                </div>
+              </Upload>
+              <p class='g9b9ea0 g-center'>企业有效期营业执照复本电子版上传</p>
+              </Col>
+            </Row>
+
+          </Row>
+        </div>
+
+        <Row class="g-center submitButton">
+          <Button @click="submit" type="primary">提交并结算</Button>
+        </Row>
         <BackTop> </BackTop>
       </Form>
     </div>
@@ -125,6 +160,7 @@
 import HeadTopTag from "components/HeadTop";
 import FooterTag from "components/Footer";
 import { getFormByOrder, modifyForm } from "api/product";
+import enlargeimg from "enlargeimg";
 export default {
   data() {
     return {
@@ -134,15 +170,42 @@ export default {
         // headers: { 'Content-Type': 'multipart/form-data' }
         headers: {}
       },
+      files: [
+        {
+          path:
+            "http://tupian.enterdesk.com/uploadfile/2013/1219/20131219053302481.jpg"
+        },
+        {
+          path:
+            "http://tupian.enterdesk.com/uploadfile/2013/1219/20131219053302481.jpg"
+        },
+        {
+          path:
+            "http://tupian.enterdesk.com/uploadfile/2013/1219/20131219053302481.jpg"
+        }
+      ],
       ruleValidate: {
-        companyName: [{ required: true, message: "公司名称不能为空", trigger: "blur" }],
-        email: [{ type: "email", message: "邮箱格式不正确", trigger: "blur" }]
+        companyName: [
+          {
+            required: true,
+            message: "公司名称不能为空",
+            trigger: "blur"
+          }
+        ],
+        email: [
+          {
+            type: "email",
+            message: "邮箱格式不正确",
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
   components: {
     FooterTag,
-    HeadTopTag
+    HeadTopTag,
+    enlargeimg
   },
   created() {
     this.Init();
@@ -153,7 +216,9 @@ export default {
   methods: {
     Init() {
       const order = this.$route.query.orderId;
-      getFormByOrder({ id: order })
+      getFormByOrder({
+        id: order
+      })
         .then(r => {
           if (r.data.success) {
             this.form = r.data.result;
@@ -168,7 +233,9 @@ export default {
       this.form.orderId = this.$route.query.orderId;
       modifyForm(this.form).then(r => {
         if (r.data.success) {
-          this.$router.push({ path: "/order" });
+          this.$router.push({
+            path: "/order"
+          });
         }
       });
     },
@@ -308,9 +375,7 @@ div {
     }
     .fileUpload {
       width: 645px;
-      margin: 0 auto;
       img {
-        width: 160px;
         height: 80px;
         border: 1px solid #c4c5c7;
       }

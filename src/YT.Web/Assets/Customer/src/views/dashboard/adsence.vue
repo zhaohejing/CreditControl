@@ -3,7 +3,9 @@
         <Row class="settingMain">
             <div class="settingTop">
                 <col span="24">
-                <img :src="imgUrl" style="width:87px;height:42px">
+                <img
+                 :src="imgUrl"
+                style="width:87px;height:42px">
                 </col>
                 <div class="g-center g-text">
                     尊敬的合作伙伴，信用华夏很高兴能为您服务，如果您遇到任何问题<br/> 请致电客服服务或发邮件
