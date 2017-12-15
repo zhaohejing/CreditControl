@@ -189,6 +189,27 @@ namespace YT.Models
         /// </summary>
         public string BrandsPerson { get; set; }
         /// <summary>
+        /// 营业执照
+        /// </summary>
+        public Guid? License { get; set; }
+        public string LicenseUrl { get; set; }
+        /// <summary>
+        /// 身份证正面
+        /// </summary>
+        public Guid? TopIdCard { get; set; }
+        /// <summary>
+        /// 显示路径
+        /// </summary>
+        public string TopIdCardUrl { get; set; }
+        /// <summary>
+        /// 背面
+        /// </summary>
+        public Guid? BottomIdCard { get; set; }
+        /// <summary>
+        /// 显示路径
+        /// </summary>
+        public string BottomIdCardUrl { get; set; }
+        /// <summary>
         /// 品牌负责人手机
         /// </summary>
         public string BrandsMobile { get; set; }

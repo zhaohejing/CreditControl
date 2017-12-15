@@ -40,32 +40,34 @@ namespace YT.Dashboards
         private readonly IRepository<ApplyCharge> _applyRepository;
         private readonly IRepository<CustomerForm> _formRepository;
         private readonly IRepository<CustomerPreferencePrice> _customerPriceRepository;
+        private readonly IRepository<FormProfile> _profileRepository;
         private readonly IBinaryObjectManager _objectManager;
         private readonly IProductListExcelExporter _iexcelExporter;
 
 
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="customerRepository"></param>
-        /// <param name="smtpEmailSenderConfiguration"></param>
-        /// <param name="cateRepository"></param>
-        /// <param name="productRepository"></param>
-        /// <param name="binaryObjectManager"></param>
-        /// <param name="ordeRepository"></param>
-        /// <param name="costRepository"></param>
-        /// <param name="applyRepository"></param>
-        /// <param name="objectManager"></param>
-        /// <param name="formRepository"></param>
-        /// <param name="customerPriceRepository"></param>
-        /// <param name="iexcelExporter"></param>
+       /// <summary>
+       /// ctor
+       /// </summary>
+       /// <param name="customerRepository"></param>
+       /// <param name="smtpEmailSenderConfiguration"></param>
+       /// <param name="cateRepository"></param>
+       /// <param name="productRepository"></param>
+       /// <param name="binaryObjectManager"></param>
+       /// <param name="ordeRepository"></param>
+       /// <param name="costRepository"></param>
+       /// <param name="applyRepository"></param>
+       /// <param name="objectManager"></param>
+       /// <param name="formRepository"></param>
+       /// <param name="customerPriceRepository"></param>
+       /// <param name="iexcelExporter"></param>
+       /// <param name="profileRepository"></param>
         public DashboardAppService(
             IRepository<Customer> customerRepository,
             ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
             IRepository<Category> cateRepository,
             IRepository<Product> productRepository,
             IBinaryObjectManager binaryObjectManager,
-            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository, IRepository<CustomerPreferencePrice> customerPriceRepository, IProductListExcelExporter iexcelExporter)
+            IRepository<Order> ordeRepository, IRepository<CustomerCost> costRepository, IRepository<ApplyCharge> applyRepository, IBinaryObjectManager objectManager, IRepository<CustomerForm> formRepository, IRepository<CustomerPreferencePrice> customerPriceRepository, IProductListExcelExporter iexcelExporter, IRepository<FormProfile> profileRepository)
         {
             _customerRepository = customerRepository;
             _smtpEmailSenderConfiguration = smtpEmailSenderConfiguration;
@@ -79,6 +81,7 @@ namespace YT.Dashboards
             _formRepository = formRepository;
             _customerPriceRepository = customerPriceRepository;
             _iexcelExporter = iexcelExporter;
+            _profileRepository = profileRepository;
         }
 
         /// <summary>
@@ -216,6 +219,11 @@ namespace YT.Dashboards
             var order = await _ordeRepository.FirstOrDefaultAsync(input.OrderId);
             if (order == null) throw new UserFriendlyException("订单信息不存在");
             var form = input.MapTo<CustomerForm>();
+            if (input.Id.HasValue)
+            {
+            await _profileRepository.DeleteAsync(c => c.FormId == form.Id);
+
+            }
             await _formRepository.InsertOrUpdateAsync(form);
             await CurrentUnitOfWork.SaveChangesAsync();
             order.FormId = form.Id;
@@ -250,17 +258,13 @@ namespace YT.Dashboards
                 {
                     model.LicenseUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.License.Value))?.Url;
                 }
-                if (model.IdentityCard.HasValue)
+                if (model.TopIdCard.HasValue)
                 {
-                    model.IdentityCardUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.IdentityCard.Value))?.Url;
+                    model.TopIdCardUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.TopIdCard.Value))?.Url;
                 }
-                if (model.CompanyLogo.HasValue)
+                if (model.BottomIdCard.HasValue)
                 {
-                    model.CompanyLogoUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.CompanyLogo.Value))?.Url;
-                }
-                if (model.PermitCard.HasValue)
-                {
-                    model.PermitCardUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.PermitCard.Value))?.Url;
+                    model.BottomIdCardUrl = Host + (await _binaryObjectManager.GetOrNullAsync(model.BottomIdCard.Value))?.Url;
                 }
                 return model;
             }
@@ -352,7 +356,7 @@ namespace YT.Dashboards
                     Id = o.Id,
                     Cate = o.LevelTwo,
                     Count = o.Count,
-                    CustomerName = o.Form.CompanyName,
+                    CustomerName = o.Form?.CompanyName,
                     FormId = o.FormId,
                     Price = o.Price,
                     ProductName = o.ProductName,

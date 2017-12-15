@@ -1,6 +1,9 @@
+using System.Configuration;
+using System.Transactions;
 using AutoMapper;
 using YT.Authorization.Users;
 using YT.Authorization.Users.Dto;
+using YT.Dashboards.Dtos;
 using YT.Managers.Users;
 using YT.Models;
 using YT.Products.Dtos;
@@ -14,7 +17,7 @@ namespace YT
     {
         private static volatile bool _mappedBefore;
         private static readonly object SyncObj = new object();
-
+        private static readonly string Host = ConfigurationManager.AppSettings.Get("WebSiteRootAddress");
         public static void CreateMappings(IMapperConfigurationExpression mapper)
         {
             lock (SyncObj)
@@ -36,6 +39,11 @@ namespace YT
                 .ForMember(dto => dto.Password, options => options.Ignore())
                 .ReverseMap()
                 .ForMember(user => user.Password, options => options.Ignore());
+
+            mapper.CreateMap<FormProfile, FormProfileDto>()
+                .ForMember(dto => dto.ProfileName, opt => opt.MapFrom(c => c.Profile.Name))
+                .ForMember(dto => dto.ProfileUrl, opt => opt.MapFrom(c => Host + c.Profile.Url));
+           
 
             mapper.CreateMap<Order, OrderListDto>()
                 .ForMember(dto => dto.Mobile, options => options.MapFrom(c => c.Customer.Mobile))
