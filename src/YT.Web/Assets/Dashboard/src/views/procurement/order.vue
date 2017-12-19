@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { orders, order, completeorder, exportOrder } from "api/products";
+import { orders, order, payBack, exportOrder } from "api/products";
 export default {
   name: "account",
   data() {
@@ -114,22 +114,22 @@ export default {
                 "查看"
               )
             );
-            if (!params.row || params.row.state == null) {
+            if (params.row.state) {
               childs.push(
                 h(
                   "Button",
                   {
                     props: {
-                      type: "error",
+                      type: "primary",
                       size: "small"
                     },
                     on: {
                       click: () => {
-                        this.complete(params.row);
+                        this.payback(params.row);
                       }
                     }
                   },
-                  "完成"
+                  "退款"
                 )
               );
             }
@@ -165,14 +165,14 @@ export default {
   },
   methods: {
     // 完成
-    complete(model) {
+    payback(model) {
       var table = this.$refs.list;
       this.$Modal.confirm({
         title: "操作提示",
-        content: "确定要完成当前订单么?",
+        content: "确定要退款么?",
         onOk: () => {
           const parms = { id: model.id };
-          completeorder(parms)
+          payBack(parms)
             .then(c => {
               if (c.data.success) {
                 table.initData();

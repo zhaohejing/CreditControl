@@ -49,7 +49,10 @@ export default {
         },
         {
           title: "状态",
-          key: "isActive"
+          key: "isActive",
+          render: (h, params) => {
+            return params.row.isActive ? "已发布" : "未发布";
+          }
         },
         {
           title: "创建时间",

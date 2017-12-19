@@ -45,22 +45,22 @@ namespace YT.Dashboards
         private readonly IProductListExcelExporter _iexcelExporter;
 
 
-       /// <summary>
-       /// ctor
-       /// </summary>
-       /// <param name="customerRepository"></param>
-       /// <param name="smtpEmailSenderConfiguration"></param>
-       /// <param name="cateRepository"></param>
-       /// <param name="productRepository"></param>
-       /// <param name="binaryObjectManager"></param>
-       /// <param name="ordeRepository"></param>
-       /// <param name="costRepository"></param>
-       /// <param name="applyRepository"></param>
-       /// <param name="objectManager"></param>
-       /// <param name="formRepository"></param>
-       /// <param name="customerPriceRepository"></param>
-       /// <param name="iexcelExporter"></param>
-       /// <param name="profileRepository"></param>
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="customerRepository"></param>
+        /// <param name="smtpEmailSenderConfiguration"></param>
+        /// <param name="cateRepository"></param>
+        /// <param name="productRepository"></param>
+        /// <param name="binaryObjectManager"></param>
+        /// <param name="ordeRepository"></param>
+        /// <param name="costRepository"></param>
+        /// <param name="applyRepository"></param>
+        /// <param name="objectManager"></param>
+        /// <param name="formRepository"></param>
+        /// <param name="customerPriceRepository"></param>
+        /// <param name="iexcelExporter"></param>
+        /// <param name="profileRepository"></param>
         public DashboardAppService(
             IRepository<Customer> customerRepository,
             ISmtpEmailSenderConfiguration smtpEmailSenderConfiguration,
@@ -178,17 +178,46 @@ namespace YT.Dashboards
             return dto;
         }
         /// <summary>
-        /// 完成订单
+        /// 退款
+        /// </summary>
+        /// <param name="inputDto"></param>
+        /// <returns></returns>
+        public async Task PayBackOrder(EntityDto<int> inputDto)
+        {
+            var order = await _ordeRepository.FirstOrDefaultAsync(inputDto.Id);
+            if (order == null) throw new UserFriendlyException("该订单不存在");
+            var customer = await _customerRepository.FirstOrDefaultAsync(order.CustomerId);
+            order.State = false;
+            var total = customer.Balance + order.TotalPrice;
+            await _costRepository.InsertAsync(new CustomerCost()
+            {
+                Cost = -order.TotalPrice,
+                Balance = customer.Balance,
+                CurrentBalance = total,
+                CustomerId = customer.Id
+            });
+            customer.Balance += order.TotalPrice;
+
+        }
+        /// <summary>
+        /// 创建订单扩展信息
         /// </summary>
         /// <returns></returns>
-        public async Task CompleteOrder(CompleteOrderInput input)
+        public async Task ModifyForm(CustomerFormEditDto input)
         {
             var customer = await _customerRepository.FirstOrDefaultAsync(c => c.Id == input.CustomerId);
             if (customer == null) throw new UserFriendlyException("该账户不存在");
-            var order = await _ordeRepository.FirstOrDefaultAsync(c => c.OrderNum.Equals(input.OrderNum) && !c.State.HasValue);
-            if (order == null) throw new UserFriendlyException("该订单不存在");
-            order.State = input.State;
-            if (input.State)
+
+            var order = await _ordeRepository.FirstOrDefaultAsync(input.OrderId);
+            if (order == null) throw new UserFriendlyException("订单信息不存在");
+
+            var form = input.MapTo<CustomerForm>();
+            if (input.Id.HasValue)
+            {
+                await _profileRepository.DeleteAsync(c => c.FormId == form.Id);
+            }
+            await _formRepository.InsertOrUpdateAsync(form);
+            if (!order.State.HasValue)
             {
                 if (customer.Balance < order.TotalPrice)
                 {
@@ -202,29 +231,9 @@ namespace YT.Dashboards
                 customer.Balance -= order.TotalPrice;
                 cost.Cost = order.TotalPrice;
                 cost.CurrentBalance = customer.Balance;
-
                 await _costRepository.InsertAsync(cost);
+                order.State = true;
             }
-            else
-            {
-                order.CancelReason = input.CancelReason;
-            }
-        }
-        /// <summary>
-        /// 创建订单扩展信息
-        /// </summary>
-        /// <returns></returns>
-        public async Task ModifyForm(CustomerFormEditDto input)
-        {
-            var order = await _ordeRepository.FirstOrDefaultAsync(input.OrderId);
-            if (order == null) throw new UserFriendlyException("订单信息不存在");
-            var form = input.MapTo<CustomerForm>();
-            if (input.Id.HasValue)
-            {
-            await _profileRepository.DeleteAsync(c => c.FormId == form.Id);
-
-            }
-            await _formRepository.InsertOrUpdateAsync(form);
             await CurrentUnitOfWork.SaveChangesAsync();
             order.FormId = form.Id;
         }
@@ -338,7 +347,6 @@ namespace YT.Dashboards
         /// <returns></returns>
         public async Task<PagedResultDto<OrderProductDetail>> GetHaveProducts(GetHaveProductInput input)
         {
-
             var query = _ordeRepository.GetAll().Where(c => c.CustomerId == input.CustomerId);
             var chargeRecordCount = await query.CountAsync();
             var chargeRecords = await query
@@ -435,6 +443,10 @@ namespace YT.Dashboards
             if (product == null) throw new UserFriendlyException("该产品不存在");
             var price = product.CustomerPrices.First(c => c.CustomerId == customer.Id);
             var totalPrice = price.Price * input.Count;
+            if (customer.Balance < totalPrice)
+            {
+                throw new UserFriendlyException("账户下余额不足,请充值后再试");
+            }
             var dto = new Order()
             {
                 CustomerId = input.CustomerId,
@@ -449,6 +461,19 @@ namespace YT.Dashboards
                 LevelTwo = product.LevelTwo.Name,
                 Profile = product.Profile
             };
+            if (!product.RequireForm)
+            {
+                dto.State = true;
+                var cost = new CustomerCost()
+                {
+                    Balance = customer.Balance,
+                    CustomerId = customer.Id
+                };
+                customer.Balance -= dto.TotalPrice;
+                cost.Cost = dto.TotalPrice;
+                cost.CurrentBalance = customer.Balance;
+                await _costRepository.InsertAsync(cost);
+            }
             dto = await _ordeRepository.InsertAsync(dto);
             await CurrentUnitOfWork.SaveChangesAsync();
             return dto.MapTo<OrderListDto>();

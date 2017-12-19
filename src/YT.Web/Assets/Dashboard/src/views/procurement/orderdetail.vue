@@ -47,7 +47,7 @@
         <Row>
             <Col :span="4" offset="9">
             <Button type="ghost" @click="back" style="margin-left: 8px">返回</Button>
-            <Button v-if="order.state==null" type="primary" @click="complete">完成</Button>
+            <Button v-if="order.state" type="primary" @click="payback">退款</Button>
             </Col>
         </Row>
            <!-- 添加和编辑窗口 -->
@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import { order, exportData, completeorder, getFormByOrder } from "api/products";
+import { order, exportData, payBack, getFormByOrder } from "api/products";
 export default {
   name: "orderdetail",
   data() {
@@ -223,13 +223,13 @@ export default {
         });
     },
     // 完成
-    complete() {
+    payback() {
       this.$Modal.confirm({
         title: "操作提示",
-        content: "确定要完成当前订单么?",
+        content: "确定要退款么?",
         onOk: () => {
           const parms = { id: this.order.id };
-          completeorder(parms)
+          payBack(parms)
             .then(c => {
               if (c.data.success) {
                 this.$Message.success("提交成功");

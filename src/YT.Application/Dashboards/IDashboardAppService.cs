@@ -33,6 +33,12 @@ namespace YT.Dashboards
         Task<CustomerListDto> GetInfo(EntityDto<int> input);
 
         /// <summary>
+        /// 退款
+        /// </summary>
+        /// <param name="inputDto"></param>
+        /// <returns></returns>
+        Task PayBackOrder(EntityDto<int> inputDto);
+        /// <summary>
         /// 导出订单
         /// </summary>
         /// <param name="input"></param>
@@ -89,11 +95,8 @@ namespace YT.Dashboards
         /// <returns></returns>
         Task ResetPassword(ResetPasswordInput input);
 
-        /// <summary>
-        /// 完成订单
-        /// </summary>
-        /// <returns></returns>
-        Task CompleteOrder(CompleteOrderInput input);
+       
+      //  Task CompleteOrder(CompleteOrderInput input);
         /// <summary>
         /// 修改密码
         /// </summary>

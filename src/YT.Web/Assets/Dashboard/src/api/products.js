@@ -104,9 +104,9 @@ export function order(data) {
         data
     });
 }
-export function completeorder(data) {
+export function payBack(data) {
     return fetch({
-        url: '/api/services/app/product/CompleteOrder',
+        url: '/api/services/app/dashboard/PayBackOrder',
         method: 'post',
         data
     });

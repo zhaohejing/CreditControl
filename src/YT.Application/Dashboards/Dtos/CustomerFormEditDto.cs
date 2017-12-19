@@ -19,6 +19,10 @@ namespace YT.Dashboards.Dtos
         /// </summary>
         public int? Id { get; set; }
         /// <summary>
+        /// 客户id
+        /// </summary>
+        public int CustomerId { get; set; }
+        /// <summary>
         /// 订单id
         /// </summary>
         public int OrderId { get; set; }
