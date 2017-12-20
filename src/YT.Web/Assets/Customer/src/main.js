@@ -11,7 +11,7 @@ Vue.config.productionTip = false
 Vue.use(iView);
 Vue.prototype.$down = (type, token, name) => {
   const url =
-    "http://192.168.0.202:8888/api/File/Download?fileType=" +
+    "http://47.93.2.82:9999/api/File/Download?fileType=" +
     type +
     "&fileToken=" +
     token +

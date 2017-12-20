@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     home() {
-      this.$router.push({ path: "/dashboard", query: { id: null } });
+      this.$router.push({ path: "/infos", query: { id: null } });
     },
     exit() {
       localStorage.clear();
@@ -76,7 +76,7 @@ export default {
       float: left;
       width: 400px;
       padding-left: 32px;
-      &:hover{
+      &:hover {
         cursor: pointer;
       }
     }
@@ -116,7 +116,7 @@ export default {
     }
     .g-leftBorder {
       border-left: 1px solid #2a2f32;
-      margin-right: -3px
+      margin-right: -3px;
     }
     span {
       display: inline-block;

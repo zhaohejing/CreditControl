@@ -135,4 +135,3 @@ namespace YT.Dashboards
           Task<ProductDetail> GetProductDetail(GetProductByFilter input);
     }
 }
-
