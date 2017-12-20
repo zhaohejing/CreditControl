@@ -167,7 +167,7 @@ export default {
     return {
       form: {},
       upload: {
-        url: "http://192.168.0.202:8888/api/File/ImageUpload",
+        url: "http://47.93.2.82:9999/api/File/ImageUpload",
         // headers: { 'Content-Type': 'multipart/form-data' }
         headers: {}
       },
@@ -236,6 +236,7 @@ export default {
           if (r.data.success) {
             this.form = r.data.result;
             this.form.orderId = this.$route.query.id;
+            this.form.customerId = localStorage.getItem("Credit-Id");
           }
         })
         .catch(e => {
